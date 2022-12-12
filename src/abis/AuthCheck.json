@@ -1,0 +1,8 @@
+{
+  "abi": [{"inputs":[{"internalType":"address","name":"src","type":"address"},{"internalType":"address","name":"dst","type":"address"},{"internalType":"bytes4","name":"sig","type":"bytes4"}],"name":"canCall","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}],
+  "networks": {
+    "1": {
+      "address": "0x47b485673Cc06590CA44667b495C6bA294fd7cDB"
+    }
+  }
+}

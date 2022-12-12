@@ -1,0 +1,7 @@
+node_modules/
+.idea/
+.env
+esm/
+umd/
+
+src/types/contracts/generated
