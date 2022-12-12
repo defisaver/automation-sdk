@@ -1,6 +1,6 @@
 import type { LegacyAutomationConstructorParams } from '../../../types';
 
-import AaveV2Subscriptions from '../../../abis/AaveV2Subscriptions.json';
+import AaveV2Subscriptions from '../../../abis/legacy/AaveV2Subscriptions.json';
 import { PROTOCOLS } from '../../../constants';
 
 import LegacyAutomation from '../../private/LegacyAutomation';

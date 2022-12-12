@@ -1,6 +1,6 @@
 import type { LegacyAutomationConstructorParams } from '../../../types';
 
-import MakerSubscriptions from '../../../abis/MakerSubscriptions.json';
+import MakerSubscriptions from '../../../abis/legacy/MakerSubscriptions.json';
 import { PROTOCOLS } from '../../../constants';
 
 import LegacyAutomation from '../../private/LegacyAutomation';
