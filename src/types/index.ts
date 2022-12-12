@@ -4,6 +4,7 @@ import type {
   ChainId, ProtocolIds,
   MainnetBundles, ArbitrumBundles, OptimismBundles,
   MainnetStrategies, OptimismStrategies, ArbitrumStrategies,
+  StrategiesIds,
 } from '../constants';
 
 export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -31,7 +32,7 @@ export interface Protocol {
 }
 
 export interface Strategy {
-  strategyId: string,
+  strategyId: StrategiesIds,
   protocol: Protocol,
   isBundle?: boolean,
 }

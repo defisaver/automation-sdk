@@ -6,7 +6,9 @@ import type {
 
 import type { ChainId } from '../../constants';
 import SubStorage from '../../abis/SubStorage.json';
-import { ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO } from '../../constants';
+import {
+  ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO, StrategiesIds,
+} from '../../constants';
 
 import { addToObjectIf, isDefined } from '../../services/utils';
 import { getAbiItem, makeContract } from '../../services/contractService';
@@ -115,7 +117,7 @@ export default class StrategiesAutomation extends Automation {
     };
 
     if (position.protocol.name === ProtocolIds.MakerDAO) {
-      if (position.strategy.strategyId === 'smart-savings-liquidation-protection') { // TODO - Do not use string
+      if (position.strategy.strategyId === StrategiesIds.SavingsLiqProtection) { // TODO - Do not use string
         position.strategyData.decoded.triggerData = encodingService.makerRatioTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.makerRepayFromSavingsSubData.decode(this.web3, subStruct.subData);
 
@@ -129,7 +131,7 @@ export default class StrategiesAutomation extends Automation {
         //   boostEnabled: false,
         // };
       }
-      if (['close-on-price-to-debt', 'close-on-price-to-coll'].includes(position.strategy.strategyId)) {
+      if ([StrategiesIds.CloseOnPriceToDebt, StrategiesIds.CloseOnPriceToColl].includes(position.strategy.strategyId)) {
         position.strategyData.decoded.triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
         // item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss';
@@ -141,7 +143,7 @@ export default class StrategiesAutomation extends Automation {
         //       boostEnabled: false,
         //     };
       }
-      if (['trailing-stop-coll', 'trailing-stop-dai'].includes(position.strategy.strategyId)) {
+      if ([StrategiesIds.TrailingStopToColl, StrategiesIds.TrailingStopToDebt].includes(position.strategy.strategyId)) {
         position.strategyData.decoded.triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
         //     item.strategyName = 'trailing-stop';
@@ -154,7 +156,7 @@ export default class StrategiesAutomation extends Automation {
     }
 
     if (position.protocol.name === ProtocolIds.Liquity) {
-      if (position.strategy.strategyId === 'close-on-price-to-coll') {
+      if (position.strategy.strategyId === StrategiesIds.CloseOnPriceToColl) {
         position.strategyData.decoded.triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
 
@@ -167,8 +169,8 @@ export default class StrategiesAutomation extends Automation {
         //       boostEnabled: false,
         //     };
       }
-      if (position.strategy.strategyId === 'close-on-price-to-coll') {
-        position.strategyData.decoded.triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
+      if (position.strategy.strategyId === StrategiesIds.TrailingStopToColl) {
+        position.strategyData.decoded.triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
         // item.strategyName = 'trailing-stop';
         //     item.graphData = {
@@ -180,7 +182,7 @@ export default class StrategiesAutomation extends Automation {
     }
 
     if (position.protocol.name === ProtocolIds.Aave) {
-      if (['aave-v3-repay', 'aave-v3-boost'].includes(position.strategy.strategyId)) {
+      if ([StrategiesIds.Repay, StrategiesIds.Boost].includes(position.strategy.strategyId)) {
         position.strategyData.decoded.triggerData = encodingService.aaveRatioTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.aaveLeverageManagementSubData.decode(this.web3, subStruct.subData);
 
@@ -198,7 +200,7 @@ export default class StrategiesAutomation extends Automation {
         //       item.subId2 = subId;
         //     }
       }
-      if (['aave-v3-close-to-debt', 'aave-v3-close-to-collateral'].includes(position.strategy.strategyId)) {
+      if ([StrategiesIds.CloseToDebt, StrategiesIds.CloseToCollateral].includes(position.strategy.strategyId)) {
         position.strategyData.decoded.triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.aaveV3QuotePriceSubData.decode(this.web3, subStruct.subData);
 
@@ -224,7 +226,7 @@ export default class StrategiesAutomation extends Automation {
     }
 
     if (position.protocol.name === ProtocolIds.Compound) {
-      if (['compound-v3-repay', 'compound-v3-boost', 'compound-v3-eoa-repay', 'compound-v3-eoa-boost'].includes(position.strategy.strategyId)) {
+      if ([StrategiesIds.Repay, StrategiesIds.Boost, StrategiesIds.EoaRepay, StrategiesIds.EoaBoost].includes(position.strategy.strategyId)) {
         position.strategyData.decoded.triggerData = encodingService.compoundV3RatioTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.compoundV3LeverageManagementSubData.decode(this.web3, subStruct.subData);
 
@@ -247,7 +249,7 @@ export default class StrategiesAutomation extends Automation {
     }
 
     if (position.protocol.name === ProtocolIds.ChickenBonds) {
-      if (position.strategy.strategyId === 'rebond') {
+      if (position.strategy.strategyId === StrategiesIds.Rebond) {
         position.strategyData.decoded.triggerData = encodingService.cBondsRebondTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.cBondsRebondSubData.decode(this.web3, subStruct.subData);
       }
