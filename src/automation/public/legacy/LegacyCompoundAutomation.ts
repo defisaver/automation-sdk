@@ -1,4 +1,4 @@
-import type { LegacyAutomationConstructorParams } from '../../../types';
+import type { ContractJson, LegacyAutomationConstructorParams } from '../../../types';
 
 import CompoundV2Subscriptions from '../../../abis/legacy_CompoundV2Subscriptions.json';
 import { PROTOCOLS } from '../../../constants';
@@ -9,7 +9,7 @@ export default class LegacyAaveAutomation extends LegacyAutomation {
   constructor(args: LegacyAutomationConstructorParams) {
     super({
       provider: args.provider,
-      subscriptionsJson: CompoundV2Subscriptions,
+      subscriptionsJson: CompoundV2Subscriptions as ContractJson,
       monitorAddress: '0xB1cF8DE8e791E4Ed1Bd86c03E2fc1f14389Cb10a',
       protocol: PROTOCOLS.CompoundV2,
     });

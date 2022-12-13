@@ -1,4 +1,4 @@
-import type { LegacyAutomationConstructorParams } from '../../../types';
+import type { ContractJson, LegacyAutomationConstructorParams } from '../../../types';
 
 import MakerSubscriptions from '../../../abis/legacy_MakerSubscriptions.json';
 import { PROTOCOLS } from '../../../constants';
@@ -9,7 +9,7 @@ export default class LegacyMakerAutomation extends LegacyAutomation {
   constructor(args: LegacyAutomationConstructorParams) {
     super({
       provider: args.provider,
-      subscriptionsJson: MakerSubscriptions,
+      subscriptionsJson: MakerSubscriptions as ContractJson,
       monitorAddress: '0x1816A86C4DA59395522a42b871bf11A4E96A1C7a',
       protocol: PROTOCOLS.MakerDao,
     });
