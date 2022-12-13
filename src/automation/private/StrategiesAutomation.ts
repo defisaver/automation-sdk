@@ -10,12 +10,13 @@ import {
   ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO, StrategiesIds, RatioState,
 } from '../../constants';
 
-import { addToObjectIf, isDefined } from '../../services/utils';
+import { addToObjectIf, isDefined, wethToEthByAddress } from '../../services/utils';
 import { getAbiItem, makeContract } from '../../services/contractService';
+import { multicall } from '../../services/ethereumService';
+import { getRatioStateInfoForAaveCloseStrategy } from '../../services/encodingService';
 import * as encodingService from '../../services/encodingService';
 
 import Automation from './Automation';
-import { multicall } from '../../services/ethereumService';
 
 interface ConstructorParams extends AutomationConstructorParams {
   chainId: ChainId,
@@ -79,7 +80,7 @@ export default class StrategiesAutomation extends Automation {
 
   // @ts-ignore
   protected getParsedSubscriptions(subscriptionEventData, strategiesSubsData): AutomatedPosition | null {
-    const { subStruct, proxy } = subscriptionEventData;
+    const { subStruct, proxy, subId } = subscriptionEventData;
     const { isEnabled } = strategiesSubsData;
 
     const id = subStruct.strategyOrBundleId as StrategyOrBundleIds;
@@ -129,6 +130,7 @@ export default class StrategiesAutomation extends Automation {
           minOptimalRatio: +subData.targetRatio,
           repayEnabled: true,
           boostEnabled: false,
+          strategyName: position.strategy.strategyId,
         };
       }
       if ([StrategiesIds.CloseOnPriceToDebt, StrategiesIds.CloseOnPriceToColl].includes(position.strategy.strategyId)) {
@@ -138,14 +140,14 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
 
-        // const isTakeProfit = +triggerData.state === RatioState.OVER; // TODO
-        // item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss';
+        const isTakeProfit = +triggerData.state === RatioState.OVER;
 
         position.specific = {
           price: +triggerData.price,
           closeToAssetAddr: subData.closeToAssetAddr,
           repayEnabled: false,
           boostEnabled: false,
+          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss',
         };
       }
       if ([StrategiesIds.TrailingStopToColl, StrategiesIds.TrailingStopToDebt].includes(position.strategy.strategyId)) {
@@ -155,12 +157,11 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
 
-        // item.strategyName = 'trailing-stop'; TODO
-
         position.specific = {
           triggerPercentage: +triggerData.triggerPercentage,
           roundId: +triggerData.roundId,
           closeToAssetAddr: subData.closeToAssetAddr,
+          strategyName: 'trailing-stop',
         };
       }
     }
@@ -173,14 +174,14 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
 
-        // const isTakeProfit = +triggerData.state === RatioState.OVER;
-        // item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss'; // TODO
+        const isTakeProfit = +triggerData.state === RatioState.OVER;
 
         position.specific = {
           price: +triggerData.price,
           closeToAssetAddr: subData.closeToAssetAddr,
           repayEnabled: false,
           boostEnabled: false,
+          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss',
         };
       }
       if (position.strategy.strategyId === StrategiesIds.TrailingStopToColl) {
@@ -190,11 +191,11 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
 
-        // item.strategyName = 'trailing-stop'; // TODO
         position.specific = {
           triggerPercentage: +triggerData.triggerPercentage,
           roundId: +triggerData.roundId,
           closeToAssetAddr: subData.closeToAssetAddr,
+          strategyName: 'trailing-stop',
         };
       }
     }
@@ -208,18 +209,24 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.subData = subData;
 
         const isRepay = position.strategy.strategyId === StrategiesIds.Repay;
-        // item.strategyName = 'leverage-management'; // TODO
 
         if (isRepay) {
-          position.specific.minRatio = triggerData.ratio;
-          position.specific.minOptimalRatio = subData.targetRatio;
-          // position.specific.subId1 = subId; // TODO
+          position.specific = {
+            minRatio: triggerData.ratio,
+            minOptimalRatio: subData.targetRatio,
+            subId1: subId,
+          };
         } else {
-          position.specific.maxRatio = triggerData.ratio;
-          position.specific.maxOptimalRatio = subData.targetRatio;
-          position.specific.boostEnabled = isEnabled;
-          // position.specific.subId2 = subId; // TODO
+          position.specific = {
+            maxRatio: triggerData.ratio,
+            maxOptimalRatio: subData.targetRatio,
+            boostEnabled: isEnabled,
+            subId2: subId,
+          };
         }
+
+        position.specific.strategyName = 'leverage-management';
+        position.specific.mergeWithOthersOfSameName = true;
       }
       if ([StrategiesIds.CloseToDebt, StrategiesIds.CloseToCollateral].includes(position.strategy.strategyId)) {
         const triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(this.web3, subStruct.triggerData);
@@ -240,12 +247,14 @@ export default class StrategiesAutomation extends Automation {
           strategyOrBundleId: +subStruct.strategyOrBundleId,
         };
 
-        // const { ratioState } = getRatioStateInfoForAaveCloseStrategy( // TODO - ?
-        //   item.graphData.ratioState,
-        //   item.graphData.collAsset.symbol,
-        //   item.graphData.debtAsset.symbol,
-        // );
-        // item.strategyName = ratioState === strategiesConstants.RATIO_STATE_OVER ? 'take-profit' : 'stop-loss';
+        const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
+          position.specific.ratioState,
+          wethToEthByAddress(position.specific.collAsset),
+          wethToEthByAddress(position.specific.debtAsset),
+          this.chainId,
+        );
+
+        position.specific.strategyName = ratioState === RatioState.OVER ? 'take-profit' : 'stop-loss';
       }
     }
 
@@ -258,20 +267,25 @@ export default class StrategiesAutomation extends Automation {
         position.strategyData.decoded.subData = subData;
 
         const isRepay = [StrategiesIds.Repay, StrategiesIds.EoaRepay].includes(position.strategy.strategyId);
-        // const isEOA = position.strategy.strategyId.includes('eoa'); // TODO
 
-        // item.strategyName = `leverage-management${isEOA ? '-eoa' : ''}`;
         if (isRepay) {
-          position.specific.minRatio = triggerData.ratio;
-          position.specific.minOptimalRatio = subData.targetRatio;
-          // position.specific.subId1 = subId; // TODO
+          position.specific = {
+            minRatio: triggerData.ratio,
+            minOptimalRatio: subData.targetRatio,
+            subId1: subId,
+          };
         } else {
-          position.specific.maxRatio = triggerData.ratio;
-          position.specific.maxOptimalRatio = subData.targetRatio;
-          position.specific.boostEnabled = isEnabled;
-          // item.subId2 = subId; // TODO
+          position.specific = {
+            maxRatio: triggerData.ratio,
+            maxOptimalRatio: subData.targetRatio,
+            boostEnabled: isEnabled,
+            subId2: subId,
+          };
         }
-        //     item.mergeWithOthersOfSameName = true; // show both leverage-management bundles as a single strategy TODO ??
+
+        const isEOA = position.strategy.strategyId.includes('eoa');
+        position.specific.strategyName = `leverage-management${isEOA ? '-eoa' : ''}`;
+        position.specific.mergeWithOthersOfSameName = true;
       }
     }
 
@@ -279,6 +293,8 @@ export default class StrategiesAutomation extends Automation {
       if (position.strategy.strategyId === StrategiesIds.Rebond) {
         position.strategyData.decoded.triggerData = encodingService.cBondsRebondTriggerData.decode(this.web3, subStruct.triggerData);
         position.strategyData.decoded.subData = encodingService.cBondsRebondSubData.decode(this.web3, subStruct.subData);
+
+        position.specific.mergeWithOthersOfSameName = true;
       }
     }
 
