@@ -12,7 +12,7 @@
     "build": "npm run lint && npm run build:umd && npm run build:esm",
     "documentMD": "npx typedoc --plugin typedoc-plugin-markdown --out docs/md",
     "document": "npx typedoc --out docs/default",
-    "lint": "node_modules/.bin/eslint . --ext .ts",
+    "lint": "node_modules/.bin/eslint ./src",
     "prepare": "husky install"
   },
   "author": "DeFi Saver",
@@ -48,6 +48,7 @@
     "eslint-plugin-react": "^7.31.11",
     "husky": "^8.0.0",
     "jsdoc-to-markdown": "^6.0.1",
+    "react": "^18.2.0",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0",
     "typedoc": "^0.23.20",
