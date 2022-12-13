@@ -7,7 +7,7 @@ import type {
 import type { ChainId } from '../../constants';
 import SubStorage from '../../abis/SubStorage.json';
 import {
-  ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO, StrategiesIds,
+  ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO, StrategiesIds, RatioState,
 } from '../../constants';
 
 import { addToObjectIf, isDefined } from '../../services/utils';
@@ -117,133 +117,160 @@ export default class StrategiesAutomation extends Automation {
     };
 
     if (position.protocol.name === ProtocolIds.MakerDAO) {
-      if (position.strategy.strategyId === StrategiesIds.SavingsLiqProtection) { // TODO - Do not use string
-        position.strategyData.decoded.triggerData = encodingService.makerRatioTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.makerRepayFromSavingsSubData.decode(this.web3, subStruct.subData);
+      if (position.strategy.strategyId === StrategiesIds.SavingsLiqProtection) {
+        const triggerData = encodingService.makerRatioTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.makerRepayFromSavingsSubData.decode(this.web3, subStruct.subData);
 
-        // position.strategy = {
-        //
-        // }
-        // item.graphData = {
-        //   minRatio: +item.triggerData.ratio,
-        //   minOptimalRatio: +item.subData.targetRatio,
-        //   repayEnabled: true,
-        //   boostEnabled: false,
-        // };
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        position.specific = {
+          minRatio: +triggerData.ratio,
+          minOptimalRatio: +subData.targetRatio,
+          repayEnabled: true,
+          boostEnabled: false,
+        };
       }
       if ([StrategiesIds.CloseOnPriceToDebt, StrategiesIds.CloseOnPriceToColl].includes(position.strategy.strategyId)) {
-        position.strategyData.decoded.triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
+
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        // const isTakeProfit = +triggerData.state === RatioState.OVER; // TODO
         // item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss';
-        //     const isTakeProfit = +item.triggerData.state === strategiesConstants.RATIO_STATE_OVER;
-        //     item.graphData = {
-        //       price: +item.triggerData.price,
-        //       closeToAssetAddr: item.subData.closeToAssetAddr,
-        //       repayEnabled: false,
-        //       boostEnabled: false,
-        //     };
+
+        position.specific = {
+          price: +triggerData.price,
+          closeToAssetAddr: subData.closeToAssetAddr,
+          repayEnabled: false,
+          boostEnabled: false,
+        };
       }
       if ([StrategiesIds.TrailingStopToColl, StrategiesIds.TrailingStopToDebt].includes(position.strategy.strategyId)) {
-        position.strategyData.decoded.triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
-        //     item.strategyName = 'trailing-stop';
-        //     item.graphData = {
-        //       triggerPercentage: +item.triggerData.triggerPercentage,
-        //       roundId: +item.triggerData.roundId,
-        //       closeToAssetAddr: item.subData.closeToAssetAddr,
-        //     };
+        const triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
+
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        // item.strategyName = 'trailing-stop'; TODO
+
+        position.specific = {
+          triggerPercentage: +triggerData.triggerPercentage,
+          roundId: +triggerData.roundId,
+          closeToAssetAddr: subData.closeToAssetAddr,
+        };
       }
     }
 
     if (position.protocol.name === ProtocolIds.Liquity) {
       if (position.strategy.strategyId === StrategiesIds.CloseOnPriceToColl) {
-        position.strategyData.decoded.triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
 
-        //     const isTakeProfit = +item.triggerData.state === strategiesConstants.RATIO_STATE_OVER;
-        //     item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss';
-        //     item.graphData = {
-        //       price: +item.triggerData.price,
-        //       closeToAssetAddr: item.subData.closeToAssetAddr,
-        //       repayEnabled: false,
-        //       boostEnabled: false,
-        //     };
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        // const isTakeProfit = +triggerData.state === RatioState.OVER;
+        // item.strategyName = isTakeProfit ? 'take-profit' : 'stop-loss'; // TODO
+
+        position.specific = {
+          price: +triggerData.price,
+          closeToAssetAddr: subData.closeToAssetAddr,
+          repayEnabled: false,
+          boostEnabled: false,
+        };
       }
       if (position.strategy.strategyId === StrategiesIds.TrailingStopToColl) {
-        position.strategyData.decoded.triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
-        // item.strategyName = 'trailing-stop';
-        //     item.graphData = {
-        //       triggerPercentage: +item.triggerData.triggerPercentage,
-        //       roundId: +item.triggerData.roundId,
-        //       closeToAssetAddr: item.subData.closeToAssetAddr,
-        //     };
+        const triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
+
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        // item.strategyName = 'trailing-stop'; // TODO
+        position.specific = {
+          triggerPercentage: +triggerData.triggerPercentage,
+          roundId: +triggerData.roundId,
+          closeToAssetAddr: subData.closeToAssetAddr,
+        };
       }
     }
 
     if (position.protocol.name === ProtocolIds.Aave) {
       if ([StrategiesIds.Repay, StrategiesIds.Boost].includes(position.strategy.strategyId)) {
-        position.strategyData.decoded.triggerData = encodingService.aaveRatioTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.aaveLeverageManagementSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.aaveRatioTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.aaveLeverageManagementSubData.decode(this.web3, subStruct.subData);
 
-        //     const isRepay = item.strategyName === 'aave-v3-repay';
-        //     item.strategyName = 'leverage-management';
-        //     item.graphData = {};
-        //     if (isRepay) {
-        //       item.graphData.repayFrom = item.triggerData.ratio;
-        //       item.graphData.repayTo = item.subData.targetRatio;
-        //       item.subId1 = subId;
-        //     } else {
-        //       item.graphData.boostFrom = item.triggerData.ratio;
-        //       item.graphData.boostTo = item.subData.targetRatio;
-        //       item.graphData.boostEnabled = isEnabled;
-        //       item.subId2 = subId;
-        //     }
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        const isRepay = position.strategy.strategyId === StrategiesIds.Repay;
+        // item.strategyName = 'leverage-management'; // TODO
+
+        if (isRepay) {
+          position.specific.minRatio = triggerData.ratio;
+          position.specific.minOptimalRatio = subData.targetRatio;
+          // position.specific.subId1 = subId; // TODO
+        } else {
+          position.specific.maxRatio = triggerData.ratio;
+          position.specific.maxOptimalRatio = subData.targetRatio;
+          position.specific.boostEnabled = isEnabled;
+          // position.specific.subId2 = subId; // TODO
+        }
       }
       if ([StrategiesIds.CloseToDebt, StrategiesIds.CloseToCollateral].includes(position.strategy.strategyId)) {
-        position.strategyData.decoded.triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.aaveV3QuotePriceSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.aaveV3QuotePriceSubData.decode(this.web3, subStruct.subData);
 
-        //     item.graphData = {
-        //       collAsset: getAssetInfoByAddress(wethToEthByAddress(item.subData.collAsset)),
-        //       collAssetId: item.subData.collAssetId,
-        //       debtAsset: getAssetInfoByAddress(wethToEthByAddress(item.subData.debtAsset)),
-        //       debtAssetId: item.subData.debtAssetId,
-        //       baseToken: getAssetInfoByAddress(wethToEthByAddress(item.triggerData.baseTokenAddress)),
-        //       quoteToken: getAssetInfoByAddress(wethToEthByAddress(item.triggerData.quoteTokenAddress)),
-        //       price: item.triggerData.price,
-        //       ratioState: item.triggerData.ratioState,
-        //       strategyOrBundleId: Number(subStruct.strategyOrBundleId),
-        //     };
-        //     const { ratioState } = getRatioStateInfoForAaveCloseStrategy( // TODO - ?
-        //       item.graphData.ratioState,
-        //       item.graphData.collAsset.symbol,
-        //       item.graphData.debtAsset.symbol,
-        //     );
-        //     item.strategyName = ratioState === strategiesConstants.RATIO_STATE_OVER ? 'take-profit' : 'stop-loss';
-        //     item.title = ratioState === strategiesConstants.RATIO_STATE_OVER ? t('strategies.take_profit_title') : t('strategies.stop_loss_title');
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        position.specific = {
+          collAsset: subData.collAsset,
+          collAssetId: subData.collAssetId,
+          debtAsset: subData.debtAsset,
+          debtAssetId: subData.debtAssetId,
+          baseToken: triggerData.baseTokenAddress,
+          quoteToken: triggerData.quoteTokenAddress,
+          price: triggerData.price,
+          ratioState: triggerData.ratioState,
+          strategyOrBundleId: +subStruct.strategyOrBundleId,
+        };
+
+        // const { ratioState } = getRatioStateInfoForAaveCloseStrategy( // TODO - ?
+        //   item.graphData.ratioState,
+        //   item.graphData.collAsset.symbol,
+        //   item.graphData.debtAsset.symbol,
+        // );
+        // item.strategyName = ratioState === strategiesConstants.RATIO_STATE_OVER ? 'take-profit' : 'stop-loss';
       }
     }
 
     if (position.protocol.name === ProtocolIds.Compound) {
       if ([StrategiesIds.Repay, StrategiesIds.Boost, StrategiesIds.EoaRepay, StrategiesIds.EoaBoost].includes(position.strategy.strategyId)) {
-        position.strategyData.decoded.triggerData = encodingService.compoundV3RatioTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.compoundV3LeverageManagementSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.compoundV3RatioTriggerData.decode(this.web3, subStruct.triggerData);
+        const subData = encodingService.compoundV3LeverageManagementSubData.decode(this.web3, subStruct.subData);
 
-        //     const isRepay = ['compound-v3-repay', 'compound-v3-eoa-repay'].includes(position.strategy.strategyId);
-        //     const isEOA = item.strategyName.includes('eoa');
-        //     item.strategyName = `leverage-management${isEOA ? '-eoa' : ''}`;
-        //     item.graphData = {};
-        //     if (isRepay) {
-        //       item.graphData.repayFrom = item.triggerData.ratio;
-        //       item.graphData.repayTo = item.subData.targetRatio;
-        //       item.subId1 = subId;
-        //     } else {
-        //       item.graphData.boostFrom = item.triggerData.ratio;
-        //       item.graphData.boostTo = item.subData.targetRatio;
-        //       item.graphData.boostEnabled = isEnabled;
-        //       item.subId2 = subId;
-        //     }
+        position.strategyData.decoded.triggerData = triggerData;
+        position.strategyData.decoded.subData = subData;
+
+        const isRepay = [StrategiesIds.Repay, StrategiesIds.EoaRepay].includes(position.strategy.strategyId);
+        // const isEOA = position.strategy.strategyId.includes('eoa'); // TODO
+
+        // item.strategyName = `leverage-management${isEOA ? '-eoa' : ''}`;
+        if (isRepay) {
+          position.specific.minRatio = triggerData.ratio;
+          position.specific.minOptimalRatio = subData.targetRatio;
+          // position.specific.subId1 = subId; // TODO
+        } else {
+          position.specific.maxRatio = triggerData.ratio;
+          position.specific.maxOptimalRatio = subData.targetRatio;
+          position.specific.boostEnabled = isEnabled;
+          // item.subId2 = subId; // TODO
+        }
         //     item.mergeWithOthersOfSameName = true; // show both leverage-management bundles as a single strategy TODO ??
       }
     }
