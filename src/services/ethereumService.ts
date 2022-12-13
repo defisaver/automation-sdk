@@ -9,7 +9,7 @@ import UniMulticall from '../abis/UniMulticall.json';
 
 import { makeContract } from './contractService';
 
-export interface FormattedMulticallCalls {
+interface FormattedMulticallCalls {
   callData: string,
   target: EthereumAddress,
   gasLimit: number,
@@ -42,8 +42,8 @@ export async function multicall(
   }));
 
   const callResult = await multicallContract.methods.multicall(
-    formattedCalls.filter(item => item.target !== '0x0')).call({}, block,
-  );
+    formattedCalls.filter(item => item.target !== '0x0'),
+  ).call({}, block);
 
   let formattedResult = [];
 

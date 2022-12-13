@@ -1,17 +1,17 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
-import type { BlockNumber, ContractJson, MadeContract } from '../types';
+import type { BlockNumber, ContractJson, WrappedContract } from '../types';
 
 import type { ChainId } from '../constants';
 import type { BaseContract } from '../types/contracts/generated/types';
 
 import { isDefined } from './utils';
 
-export function makeContract <T extends BaseContract>(
+export function makeContract(
   web3: Web3,
   contractJson: ContractJson,
   chainId: ChainId,
-): MadeContract {
+): WrappedContract {
   const { abi } = contractJson;
 
   let _address = '';
@@ -33,7 +33,7 @@ export function makeContract <T extends BaseContract>(
     address: _address,
     createdBlock: _createdBlock,
     get() {
-      return new web3.eth.Contract(abi, _address) as any as T;
+      return new web3.eth.Contract(abi, _address) as BaseContract;
     },
   };
 }

@@ -7,13 +7,15 @@ import type {
   StrategiesIds,
 } from '../constants';
 
+import type { BlockType } from './contracts/generated/types';
+
 export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type WithRequired<T, K extends keyof T> = Partial<Omit<T, K>> & Required<Pick<T, K>>;
 
 export type EthereumAddress = string;
 
-export type BlockNumber = string | number | 'latest' | 'pending' | 'earliest' | 'genesis';
+export type BlockNumber = BlockType;
 
 export interface ContractJson {
   abi: AbiItem[],
@@ -25,7 +27,7 @@ export interface ContractJson {
   }
 }
 
-export interface MadeContract {
+export interface WrappedContract {
   abi: AbiItem[],
   address: EthereumAddress,
   createdBlock: BlockNumber,

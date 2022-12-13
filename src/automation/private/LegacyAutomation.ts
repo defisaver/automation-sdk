@@ -1,7 +1,7 @@
 import type Web3 from 'web3';
 import type {
   EthereumAddress, LegacyAutomatedPosition, LegacyAutomationConstructorParams, Protocol,
-  ContractJson, MadeContract,
+  ContractJson, WrappedContract, PlaceholderType,
 } from '../../types';
 
 import { ChainId, ProtocolIds } from '../../constants';
@@ -21,7 +21,7 @@ export default class LegacyAutomation extends Automation {
 
   protected monitorAddress: EthereumAddress;
 
-  protected subscriptionsContract: MadeContract;
+  protected subscriptionsContract: WrappedContract;
 
   protected protocol: Protocol;
 
@@ -38,7 +38,7 @@ export default class LegacyAutomation extends Automation {
 
   protected assertSubscriptionContract() {
     if (isUndefined(this.subscriptionsContract)) {
-      throw new Error(`Assertion for property 'protocol' failed. \nGot: '${this.subscriptionsContract}.`);
+      throw new Error(`Assertion for property 'subscriptionsContract' failed. \nGot: '${this.subscriptionsContract}.`);
     }
   }
 
@@ -96,7 +96,7 @@ export default class LegacyAutomation extends Automation {
     return this.protocol.id === ProtocolIds.MakerDAO ? 'owner' : 'user';
   }
 
-  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<any> {
+  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<PlaceholderType> {
     let subscriptions = await this.subscriptionsContract.get().methods.getSubscribers().call();
 
     if (addresses) {
