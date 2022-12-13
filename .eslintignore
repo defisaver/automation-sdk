@@ -4,3 +4,4 @@ test
 docs
 webpack.umd.js
 umd
+src/types/contracts/generated/*

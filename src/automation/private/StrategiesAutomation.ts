@@ -1,7 +1,13 @@
 import type Web3 from 'web3';
-import type { PastEventOptions } from 'web3-eth-contract';
+import type { PastEventOptions, EventData } from 'web3-eth-contract';
 import type {
-  AutomatedPosition, BundleOrStrategy, StrategyOrBundleIds, PlaceholderType, EthereumAddress, AutomationConstructorParams,
+  AutomatedPosition,
+  BundleOrStrategy,
+  StrategyOrBundleIds,
+  PlaceholderType,
+  EthereumAddress,
+  AutomationConstructorParams,
+  ContractJson,
 } from '../../types';
 
 import type { ChainId } from '../../constants';
@@ -37,11 +43,12 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected getSubStorageContract() {
-    // @ts-ignore // TODO - Contract typing
-    return makeContract(this.web3, SubStorage, this.chainId);
+    const contractJson = SubStorage as ContractJson;
+    return makeContract(this.web3, contractJson, this.chainId);
   }
 
-  protected getEventFromSubStorage(event: string, options?: PastEventOptions) { // TODO Event names type? Generated?
+  // TODO Event names type? Generated?
+  protected async getEventFromSubStorage(event: string, options?: PastEventOptions): Promise<EventData[]> {
     const subStorageContract = this.getSubStorageContract();
 
     return subStorageContract.get().getPastEvents(
@@ -67,11 +74,11 @@ export default class StrategiesAutomation extends Automation {
     return multicall(this.web3, this.chainId, multicallCalls);
   }
 
-  protected getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
+  protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
     return this.getEventFromSubStorage('Subscribe', options);
   }
 
-  protected getUpdateDataEventsFromSubStorage(options?: PastEventOptions) {
+  protected async getUpdateDataEventsFromSubStorage(options?: PastEventOptions) {
     return this.getEventFromSubStorage('UpdateData', options);
   }
 

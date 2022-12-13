@@ -2,7 +2,7 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
 
-import type { BlockNumber, EthereumAddress } from '../types';
+import type { BlockNumber, ContractJson, EthereumAddress } from '../types';
 import type { ChainId } from '../constants';
 
 import UniMulticall from '../abis/UniMulticall.json';
@@ -32,8 +32,8 @@ export async function multicall(
   calls: MulticallCalls[],
   block: BlockNumber = 'latest',
 ): Promise<FormattedMulticallResult[]> {
-  // @ts-ignore // TODO
-  const multicallContract = makeContract(web3, UniMulticall, chainId).get();
+  const contractJson = UniMulticall as ContractJson;
+  const multicallContract = makeContract(web3, contractJson, chainId).get();
 
   const formattedCalls: FormattedMulticallCalls[] = calls.map((call) => ({
     callData: web3.eth.abi.encodeFunctionCall(call.abiItem, call.params),

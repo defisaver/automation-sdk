@@ -17,13 +17,21 @@ export type BlockNumber = string | number | 'latest' | 'pending' | 'earliest' | 
 
 export interface ContractJson {
   abi: AbiItem[],
-  networks: {
+  networks?: {
     [key in ChainId as string]: {
-      createdBlock: number,
+      createdBlock?: number,
       address: EthereumAddress,
     }
   }
 }
+
+export interface MadeContract {
+  abi: AbiItem[],
+  address: EthereumAddress,
+  createdBlock: BlockNumber,
+  get: Function,
+}
+
 
 export interface Protocol {
   id: ProtocolIds,
@@ -99,7 +107,7 @@ export interface LegacyAutomationConstructorParams {
   provider: Web3,
   monitorAddress: EthereumAddress,
   protocol: Protocol,
-  subscriptionsJson: any,
+  subscriptionsJson: ContractJson,
 }
 
 export type PlaceholderType = any; // TODO - fix any types

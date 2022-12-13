@@ -1,6 +1,7 @@
 import type Web3 from 'web3';
 import type {
   EthereumAddress, LegacyAutomatedPosition, LegacyAutomationConstructorParams, Protocol,
+  ContractJson, MadeContract,
 } from '../../types';
 
 import { ChainId, ProtocolIds } from '../../constants';
@@ -9,7 +10,7 @@ import { getAbiItem, makeContract } from '../../services/contractService';
 import { multicall } from '../../services/ethereumService';
 import { isAddress, isUndefined } from '../../services/utils';
 
-import AuthCheck from '../../abis/AuthCheck.json';
+import AuthCheck from '../../abis/legacy_AuthCheck.json';
 
 import Automation from './Automation';
 
@@ -20,7 +21,7 @@ export default class LegacyAutomation extends Automation {
 
   protected monitorAddress: EthereumAddress;
 
-  protected subscriptionsContract: any;
+  protected subscriptionsContract: MadeContract;
 
   protected protocol: Protocol;
 
@@ -60,15 +61,13 @@ export default class LegacyAutomation extends Automation {
     this.assert();
   }
 
-  // @ts-ignore
-  protected getSubscriptionsContract(contractJson) {
-    // @ts-ignore // TODO - Contract typing
+  protected getSubscriptionsContract(contractJson: ContractJson) {
     return makeContract(this.web3, contractJson, this.chainId);
   }
 
   protected getAuthCheckContract() {
-    // @ts-ignore // TODO - Contract typing
-    return makeContract(this.web3, AuthCheck, this.chainId);
+    const contractJson = AuthCheck as ContractJson;
+    return makeContract(this.web3, contractJson, this.chainId);
   }
 
   protected async isMonitorAuthorized(address: EthereumAddress, caller: EthereumAddress): Promise<boolean> {
