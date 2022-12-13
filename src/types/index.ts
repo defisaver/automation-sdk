@@ -13,6 +13,8 @@ export type WithRequired<T, K extends keyof T> = Partial<Omit<T, K>> & Required<
 
 export type EthereumAddress = string;
 
+// ne kontam opcije latest,pending,earliest,genesis
+// zasto string | number ajde da izbegavamo to i da bude samo jedno
 export type BlockNumber = string | number | 'latest' | 'pending' | 'earliest' | 'genesis';
 
 export interface ContractJson {
@@ -25,6 +27,7 @@ export interface ContractJson {
   }
 }
 
+// ovo ime nije bas najsrecnije, ContractWrapper je meni bolje, ContractWithMeta
 export interface MadeContract {
   abi: AbiItem[],
   address: EthereumAddress,
@@ -87,6 +90,8 @@ export type MainnetBundleInfo = BundleInfo<MainnetBundles>;
 export type OptimismBundleInfo = BundleInfo<OptimismBundles>;
 export type ArbitrumBundleInfo = BundleInfo<ArbitrumBundles>;
 
+// ovaj tip nema smisla jer za bilo koji chainId dobijas bilo koji strategies info iako to nije tacno
+// prebaciti ovo u interface i za svaki network definisati tip
 export type StrategiesInfo = {
   [key in ChainId]: MainnetStrategiesInfo | OptimismStrategiesInfo | ArbitrumStrategiesInfo
 };

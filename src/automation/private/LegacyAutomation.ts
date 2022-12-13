@@ -38,6 +38,7 @@ export default class LegacyAutomation extends Automation {
 
   protected assertSubscriptionContract() {
     if (isUndefined(this.subscriptionsContract)) {
+      // ovde ostao protokol
       throw new Error(`Assertion for property 'protocol' failed. \nGot: '${this.subscriptionsContract}.`);
     }
   }
@@ -96,7 +97,7 @@ export default class LegacyAutomation extends Automation {
     return this.protocol.id === ProtocolIds.MakerDAO ? 'owner' : 'user';
   }
 
-  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<any> {
+  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<any> { // Promise<any>?
     let subscriptions = await this.subscriptionsContract.get().methods.getSubscribers().call();
 
     if (addresses) {

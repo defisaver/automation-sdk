@@ -123,7 +123,10 @@ export default class StrategiesAutomation extends Automation {
       },
       specific: {},
     };
-
+    // ovo mi se ne svidja
+    // svako ovo parsovanje bi trebalo da je funkcija, do koje se stize sa protokol name-om i strategyId-om
+    // takodje svaka ta funkcija treba da bude ogranicena sa predefinisanim tipom funkcije koji vraca informacije o strategiji
+    // takodje treba prodiskutovati eventualno ova imena propova, ovo specific mi cudno
     if (position.protocol.name === ProtocolIds.MakerDAO) {
       if (position.strategy.strategyId === StrategiesIds.SavingsLiqProtection) {
         const triggerData = encodingService.makerRatioTriggerData.decode(this.web3, subStruct.triggerData);
@@ -154,7 +157,7 @@ export default class StrategiesAutomation extends Automation {
           closeToAssetAddr: subData.closeToAssetAddr,
           repayEnabled: false,
           boostEnabled: false,
-          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss',
+          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss', // enum-ovati ovo potencijalno, ili u AutomationData definisati strategyName
         };
       }
       if ([StrategiesIds.TrailingStopToColl, StrategiesIds.TrailingStopToDebt].includes(position.strategy.strategyId)) {

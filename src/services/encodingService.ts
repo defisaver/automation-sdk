@@ -11,6 +11,13 @@ import { ZERO_ADDRESS, RatioState } from '../constants';
 
 // TODO - Add types and typings (triggerData, subData, check ratioState and if that is a good name)
 
+// nema smisla da triggeri u subdata budu u jednom fajlu, takodje i nema smisla da budu za sve protokole
+// ja bih podelio po protokolima, i onda liquityEncodingService ima liquity triggere i liquity subove
+// alternativno ako mislis da ce triggera biti manje(sto ne mora da bude istina za godinu dve, u zavisnosti od kompleksnosti strategija) -
+// - mozes da sve triggere stavis u jedan fajl, a sve automatizacije razvrstas po protokolima
+// idealno, subData i triggerData su razvrstani i po protokolima i po njima, pa svaki protokol ima triggerDataEncoders i subDataEncoders
+
+// zasto su ove tri funkcije "funkcije" a ne const-ovi
 export function getRatioStateInfoForAaveCloseStrategy(currentRatioState: RatioState, collAsset: EthereumAddress, debtAsset: EthereumAddress, chainId: ChainId) {
   // Flip only if stable/volatile to keep human-readable trigger price setting
   const shouldFlip = getAssetInfoByAddress(collAsset, chainId).isStable && !getAssetInfoByAddress(debtAsset, chainId).isStable;
@@ -23,17 +30,23 @@ export function getRatioStateInfoForAaveCloseStrategy(currentRatioState: RatioSt
   return { shouldFlip, ratioState };
 }
 
+// ovo je util zar ne?
 export function compareSubHashes(web3: Web3, currentSubHash: string, newSubStructDecoded: object): boolean {
   return currentSubHash === web3.utils.keccak256(web3.eth.abi.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
 }
 
+// ovo je util zar ne?
 export function encodeSubId(subIdDec = '0') {
   return new Dec(subIdDec).toHex().slice(2).padStart(8, '0');
 }
 
+// razmisljam da li ovo moze pametno da se tipizira, ali nisam pametan iskreno
+// mozda je cak moguce imati trigger generator funkciju koja prima encode i decode funkcije iz kojih onda lakse moze da se ekstrapolira tip
+// cimaj pa mozemo da probamo eventualno
+// u krajnjem slucaju mozemo da napravimo genericki tip koji prima dva druga tipa i osigurava return type funkcija
 export const makerRatioTriggerData = {
   encode(web3: Web3, vaultId: number, ratio: string, ratioState: RatioState) {
-    const _ratio = web3.utils.toWei(new Dec(ratio).div(100).toString());
+    const _ratio = web3.utils.toWei(new Dec(ratio).div(100).toString()); // ovo moze da bude util funkcija
     return [web3.eth.abi.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, _ratio, ratioState])];
   },
   decode(web3: Web3, triggerData: [string]): { vaultId: number, ratioState: number, ratio: string } {
@@ -178,7 +191,7 @@ export const aaveV3QuotePriceTriggerData = {
     ratioState: RatioState,
   ): [string] {
     // Price is always in 8 decimals
-    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
+    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString(); // util od ovoga
     return [web3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
   },
   decode(
@@ -274,7 +287,7 @@ export const compoundV3RatioTriggerData = {
     ratio: number,
     ratioState: RatioState,
   ): [string] {
-    const _ratio = web3.utils.toWei(new Dec(ratio).div(100).toString());
+    const _ratio = web3.utils.toWei(new Dec(ratio).div(100).toString()); // ja bih promenljive sa _ u args stavljao,idk
     return [web3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, _ratio, ratioState])];
   },
   decode(

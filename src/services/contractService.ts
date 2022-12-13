@@ -7,6 +7,7 @@ import type { BaseContract } from '../types/contracts/generated/types';
 
 import { isDefined } from './utils';
 
+// ovde MadeContract treba da bude generic a ne da se u returnu radi implikacija tipa
 export function makeContract <T extends BaseContract>(
   web3: Web3,
   contractJson: ContractJson,

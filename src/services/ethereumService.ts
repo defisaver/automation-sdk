@@ -9,6 +9,7 @@ import UniMulticall from '../abis/UniMulticall.json';
 
 import { makeContract } from './contractService';
 
+// kapiram ako si hteo da sve za multicall bude u jednom fajlu, ali nek bude ime fajla bar mutlicallService
 export interface FormattedMulticallCalls {
   callData: string,
   target: EthereumAddress,

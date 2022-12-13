@@ -172,7 +172,7 @@ export const enum ArbitrumBundles {
 export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   [MainnetBundles.MAKER_REPAY_FROM_SMART_SAVINGS_YEARN]: {
     bundleId: ProtocolIds.Yearn,
-    bundleName: 'Yearn',
+    bundleName: 'Yearn', // msm da se bundleName-ovi ne koriste nigde na frontu?
     strategyId: StrategiesIds.SavingsLiqProtection,
     protocol: PROTOCOLS.MakerDao,
   },
