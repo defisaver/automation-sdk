@@ -1,15 +1,27 @@
 import Dec from 'decimal.js';
-import { getAssetInfo } from '@defisaver/tokens';
+import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 
 import type Web3 from 'web3';
-import type { RatioState, ChainId } from '../constants';
+import type { ChainId } from '../constants';
 import type { EthereumAddress } from '../types';
 
 import { compareAddresses } from './utils';
-import { ZERO_ADDRESS } from '../constants';
+import { ZERO_ADDRESS, RatioState } from '../constants';
 
 // TODO - Add types and typings (triggerData, subData, check ratioState and if that is a good name)
+
+export function getRatioStateInfoForAaveCloseStrategy(currentRatioState: RatioState, collAsset: EthereumAddress, debtAsset: EthereumAddress, chainId: ChainId) {
+  // Flip only if stable/volatile to keep human-readable trigger price setting
+  const shouldFlip = getAssetInfoByAddress(collAsset, chainId).isStable && !getAssetInfoByAddress(debtAsset, chainId).isStable;
+  let ratioState = currentRatioState;
+  if (shouldFlip) {
+    ratioState = currentRatioState === RatioState.OVER
+      ? ratioState = RatioState.UNDER
+      : ratioState = RatioState.OVER;
+  }
+  return { shouldFlip, ratioState };
+}
 
 export function compareSubHashes(web3: Web3, currentSubHash: string, newSubStructDecoded: object): boolean {
   return currentSubHash === web3.utils.keccak256(web3.eth.abi.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
