@@ -1,13 +1,12 @@
-import type { AbiItem } from 'web3-utils';
 import type Web3 from 'web3';
+import type { AbiItem } from 'web3-utils';
+import type { BlockType } from './contracts/generated/types';
 import type {
   ChainId, ProtocolIds,
   MainnetBundles, ArbitrumBundles, OptimismBundles,
   MainnetStrategies, OptimismStrategies, ArbitrumStrategies,
   StrategiesIds,
 } from '../constants';
-
-import type { BlockType } from './contracts/generated/types';
 
 export type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -16,6 +15,11 @@ export type WithRequired<T, K extends keyof T> = Partial<Omit<T, K>> & Required<
 export type EthereumAddress = string;
 
 export type BlockNumber = BlockType;
+
+export interface SubscriptionOptions {
+  toBlock: BlockNumber,
+  fromBlock: BlockNumber,
+}
 
 export interface ContractJson {
   abi: AbiItem[],
@@ -27,11 +31,11 @@ export interface ContractJson {
   }
 }
 
-export interface WrappedContract {
+export interface WrappedContract<T> {
   abi: AbiItem[],
   address: EthereumAddress,
   createdBlock: BlockNumber,
-  get: Function,
+  contract: T,
 }
 
 
@@ -60,12 +64,12 @@ export interface AutomatedPosition {
   strategy: BundleOrStrategy,
   strategyData: {
     encoded: { // TODO type this?
-      triggerData: any,
-      subData: any,
+      triggerData: PlaceholderType,
+      subData: PlaceholderType,
     },
     decoded: { // TODO type this?
-      triggerData: any,
-      subData: any,
+      triggerData: PlaceholderType,
+      subData: PlaceholderType,
     },
   },
   specific: any, // TODO type this for every strategy specific?
@@ -89,13 +93,17 @@ export type MainnetBundleInfo = BundleInfo<MainnetBundles>;
 export type OptimismBundleInfo = BundleInfo<OptimismBundles>;
 export type ArbitrumBundleInfo = BundleInfo<ArbitrumBundles>;
 
-export type StrategiesInfo = {
-  [key in ChainId]: MainnetStrategiesInfo | OptimismStrategiesInfo | ArbitrumStrategiesInfo
-};
+export interface StrategiesInfo {
+  [ChainId.Ethereum]: MainnetStrategiesInfo,
+  [ChainId.Optimism]: OptimismStrategiesInfo,
+  [ChainId.Arbitrum]: ArbitrumStrategiesInfo
+}
 
-export type BundlesInfo = {
-  [key in ChainId]: MainnetBundleInfo | OptimismBundleInfo | ArbitrumBundleInfo
-};
+export interface BundlesInfo {
+  [ChainId.Ethereum]: MainnetBundleInfo,
+  [ChainId.Optimism]: OptimismBundleInfo,
+  [ChainId.Arbitrum]: ArbitrumBundleInfo
+}
 
 export type StrategyOrBundleIds =
   MainnetStrategies & OptimismStrategies & ArbitrumStrategies
@@ -109,7 +117,24 @@ export interface LegacyAutomationConstructorParams {
   provider: Web3,
   monitorAddress: EthereumAddress,
   protocol: Protocol,
-  subscriptionsJson: ContractJson,
+  subscriptionsJson: WrappedContract<PlaceholderType>,
+}
+
+export declare namespace Multicall {
+  interface Calls {
+    abiItem: AbiItem,
+    target: EthereumAddress,
+    gasLimit?: number,
+    params: PlaceholderType[],
+  }
+  interface FormattedCalls {
+    callData: string,
+    target: EthereumAddress,
+    gasLimit: number,
+  }
+  interface Payload {
+    [key: string]: PlaceholderType,
+  }
 }
 
 export type PlaceholderType = any; // TODO - fix any types
