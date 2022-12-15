@@ -1,42 +1,25 @@
-// @ts-nocheck // TODO - Add types and typings
 import type Web3 from 'web3';
-import type { AbiItem } from 'web3-utils';
-
-import type { BlockNumber, ContractJson, EthereumAddress } from '../types';
+import type { EventData, PastEventOptions } from 'web3-eth-contract';
+import type {
+  BlockNumber, Multicall, PlaceholderType, WrappedContract,
+} from '../types';
 import type { ChainId } from '../constants';
 
-import UniMulticall from '../abis/UniMulticall.json';
+import { makeUniMulticallContract } from './contractService';
+import { addToObjectIf, isDefined } from './utils';
 
-import { makeContract } from './contractService';
-
-interface FormattedMulticallCalls {
-  callData: string,
-  target: EthereumAddress,
-  gasLimit: number,
-}
-
-interface MulticallCalls {
-  abiItem: AbiItem,
-  target: EthereumAddress,
-  gasLimit?: number,
-  params: any[],
-}
-
-interface FormattedMulticallResult {
-  [key: string]: any,
-}
+const { mockedWeb3 } = process;
 
 export async function multicall(
   web3: Web3,
   chainId: ChainId,
-  calls: MulticallCalls[],
+  calls: Multicall.Calls[],
   block: BlockNumber = 'latest',
-): Promise<FormattedMulticallResult[]> {
-  const contractJson = UniMulticall as ContractJson;
-  const multicallContract = makeContract(web3, contractJson, chainId).get();
+): Promise<Multicall.Payload[]> {
+  const multicallContract = makeUniMulticallContract(web3, chainId).contract;
 
-  const formattedCalls: FormattedMulticallCalls[] = calls.map((call) => ({
-    callData: web3.eth.abi.encodeFunctionCall(call.abiItem, call.params),
+  const formattedCalls: Multicall.FormattedCalls[] = calls.map((call) => ({
+    callData: mockedWeb3.eth.abi.encodeFunctionCall(call.abiItem, call.params),
     target: call.target || '0x0',
     gasLimit: call.gasLimit || 1e6,
   }));
@@ -45,14 +28,27 @@ export async function multicall(
     formattedCalls.filter(item => item.target !== '0x0'),
   ).call({}, block);
 
-  let formattedResult = [];
+  let formattedResult: Multicall.Payload[] = [];
 
   callResult.returnData.forEach(([success, gasUsed, result], i) => {
-    const formattedRes = result !== '0x'
-      ? web3.eth.abi.decodeParameters(calls[i].abiItem.outputs, result)
-      : undefined;
+    const formattedRes = (result !== '0x'
+      ? mockedWeb3.eth.abi.decodeParameters(calls[i].abiItem.outputs!, result)
+      : undefined) as Multicall.Payload;
     formattedResult = [...formattedResult, formattedRes];
   });
 
   return formattedResult;
+}
+
+export function getEventsFromContract(
+  wrappedContract: WrappedContract<PlaceholderType>,
+  event: string, options?: PastEventOptions,
+): Promise<EventData[]> {
+  return wrappedContract.contract.getPastEvents(
+    event,
+    {
+      ...addToObjectIf(isDefined(options), options),
+      fromBlock: wrappedContract.createdBlock,
+    },
+  );
 }
