@@ -1,24 +1,19 @@
 import type Web3 from 'web3';
-import type { PastEventOptions, EventData } from 'web3-eth-contract';
+import type { EventData, PastEventOptions } from 'web3-eth-contract';
 import type {
-  AutomatedPosition,
-  BundleOrStrategy,
-  StrategyOrBundleIds,
-  PlaceholderType,
-  EthereumAddress,
-  AutomationConstructorParams,
-  ContractJson,
+  AutomatedPosition, AutomationConstructorParams, BundleOrStrategy, EthereumAddress, PlaceholderType,
+  StrategyOrBundleIds, SubscriptionOptions, WrappedContract,
 } from '../../types';
+import type { Subscribe } from '../../types/contracts/generated/SubStorage';
 
 import type { ChainId } from '../../constants';
-import SubStorage from '../../abis/SubStorage.json';
 import {
-  ProtocolIds, BUNDLES_INFO, STRATEGIES_INFO, StrategiesIds, RatioState,
+  BUNDLES_INFO, ProtocolIds, RatioState, STRATEGIES_INFO, StrategiesIds,
 } from '../../constants';
 
 import { addToObjectIf, isDefined, wethToEthByAddress } from '../../services/utils';
-import { getAbiItem, makeContract } from '../../services/contractService';
-import { multicall } from '../../services/ethereumService';
+import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
+import { getEventsFromContract, multicall } from '../../services/ethereumService';
 import { getRatioStateInfoForAaveCloseStrategy } from '../../services/encodingService';
 import * as encodingService from '../../services/encodingService';
 
@@ -33,35 +28,24 @@ export default class StrategiesAutomation extends Automation {
 
   protected web3: Web3;
 
+  protected subStorageContract: WrappedContract<PlaceholderType>;
+
   constructor(args: ConstructorParams) {
     super();
 
     this.web3 = args.provider;
     this.chainId = args.chainId;
+    this.subStorageContract = makeSubStorageContract(this.web3, this.chainId);
 
     this.assert();
   }
 
-  protected getSubStorageContract() {
-    const contractJson = SubStorage as ContractJson;
-    return makeContract(this.web3, contractJson, this.chainId);
-  }
-
-  // TODO Event names type? Generated?
   protected async getEventFromSubStorage(event: string, options?: PastEventOptions): Promise<EventData[]> {
-    const subStorageContract = this.getSubStorageContract();
-
-    return subStorageContract.get().getPastEvents(
-      event,
-      {
-        ...addToObjectIf(isDefined(options), options),
-        fromBlock: subStorageContract.createdBlock,
-      },
-    );
+    return getEventsFromContract(this.subStorageContract, event, options);
   }
 
   protected async getStrategiesSubs(subIds: number[]): Promise<PlaceholderType> {
-    const subStorageContract = this.getSubStorageContract();
+    const subStorageContract = this.subStorageContract;
 
     const defaultOptions = {
       target: subStorageContract.address,
@@ -70,7 +54,6 @@ export default class StrategiesAutomation extends Automation {
 
     const multicallCalls = subIds.map((subId) => ({ ...defaultOptions, params: [subId] }));
 
-    // @ts-ignore
     return multicall(this.web3, this.chainId, multicallCalls);
   }
 
@@ -85,8 +68,8 @@ export default class StrategiesAutomation extends Automation {
   // TODO - [] Arg types
   //        [] Parsing strategies specific info
 
-  // @ts-ignore
-  protected getParsedSubscriptions(subscriptionEventData, strategiesSubsData): AutomatedPosition | null {
+  protected getParsedSubscriptions(subscriptionEventData: Subscribe, strategiesSubsData: PlaceholderType): AutomatedPosition | null {
+    // @ts-ignore
     const { subStruct, proxy, subId } = subscriptionEventData;
     const { isEnabled } = strategiesSubsData;
 
@@ -126,8 +109,8 @@ export default class StrategiesAutomation extends Automation {
 
     if (position.protocol.name === ProtocolIds.MakerDAO) {
       if (position.strategy.strategyId === StrategiesIds.SavingsLiqProtection) {
-        const triggerData = encodingService.makerRatioTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.makerRepayFromSavingsSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.makerRatioTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.makerRepayFromSavingsSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -141,8 +124,8 @@ export default class StrategiesAutomation extends Automation {
         };
       }
       if ([StrategiesIds.CloseOnPriceToDebt, StrategiesIds.CloseOnPriceToColl].includes(position.strategy.strategyId)) {
-        const triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.closeOnPriceTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.makerCloseSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -154,12 +137,12 @@ export default class StrategiesAutomation extends Automation {
           closeToAssetAddr: subData.closeToAssetAddr,
           repayEnabled: false,
           boostEnabled: false,
-          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss',
+          strategyName: isTakeProfit ? StrategiesIds.TakeProfit : StrategiesIds.StopLoss,
         };
       }
       if ([StrategiesIds.TrailingStopToColl, StrategiesIds.TrailingStopToDebt].includes(position.strategy.strategyId)) {
-        const triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.makerCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.trailingStopTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.makerCloseSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -168,15 +151,15 @@ export default class StrategiesAutomation extends Automation {
           triggerPercentage: +triggerData.triggerPercentage,
           roundId: +triggerData.roundId,
           closeToAssetAddr: subData.closeToAssetAddr,
-          strategyName: 'trailing-stop',
+          strategyName: StrategiesIds.TrailingStop,
         };
       }
     }
 
     if (position.protocol.name === ProtocolIds.Liquity) {
       if (position.strategy.strategyId === StrategiesIds.CloseOnPriceToColl) {
-        const triggerData = encodingService.closeOnPriceTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.closeOnPriceTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.liquityCloseSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -188,12 +171,12 @@ export default class StrategiesAutomation extends Automation {
           closeToAssetAddr: subData.closeToAssetAddr,
           repayEnabled: false,
           boostEnabled: false,
-          strategyName: isTakeProfit ? 'take-profit' : 'stop-loss',
+          strategyName: isTakeProfit ? StrategiesIds.TakeProfit : StrategiesIds.StopLoss,
         };
       }
       if (position.strategy.strategyId === StrategiesIds.TrailingStopToColl) {
-        const triggerData = encodingService.trailingStopTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.liquityCloseSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.trailingStopTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.liquityCloseSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -202,15 +185,15 @@ export default class StrategiesAutomation extends Automation {
           triggerPercentage: +triggerData.triggerPercentage,
           roundId: +triggerData.roundId,
           closeToAssetAddr: subData.closeToAssetAddr,
-          strategyName: 'trailing-stop',
+          strategyName: StrategiesIds.TrailingStop,
         };
       }
     }
 
     if (position.protocol.name === ProtocolIds.Aave) {
       if ([StrategiesIds.Repay, StrategiesIds.Boost].includes(position.strategy.strategyId)) {
-        const triggerData = encodingService.aaveRatioTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.aaveLeverageManagementSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.aaveRatioTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.aaveLeverageManagementSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -232,12 +215,12 @@ export default class StrategiesAutomation extends Automation {
           };
         }
 
-        position.specific.strategyName = 'leverage-management';
+        position.specific.strategyName = StrategiesIds.LeverageManagement;
         position.specific.mergeWithOthersOfSameName = true;
       }
       if ([StrategiesIds.CloseToDebt, StrategiesIds.CloseToCollateral].includes(position.strategy.strategyId)) {
-        const triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.aaveV3QuotePriceSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.aaveV3QuotePriceTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.aaveV3QuotePriceSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -261,14 +244,14 @@ export default class StrategiesAutomation extends Automation {
           this.chainId,
         );
 
-        position.specific.strategyName = ratioState === RatioState.OVER ? 'take-profit' : 'stop-loss';
+        position.specific.strategyName = ratioState === RatioState.OVER ? StrategiesIds.TakeProfit : StrategiesIds.StopLoss;
       }
     }
 
     if (position.protocol.name === ProtocolIds.Compound) {
       if ([StrategiesIds.Repay, StrategiesIds.Boost, StrategiesIds.EoaRepay, StrategiesIds.EoaBoost].includes(position.strategy.strategyId)) {
-        const triggerData = encodingService.compoundV3RatioTriggerData.decode(this.web3, subStruct.triggerData);
-        const subData = encodingService.compoundV3LeverageManagementSubData.decode(this.web3, subStruct.subData);
+        const triggerData = encodingService.compoundV3RatioTriggerData.decode(subStruct.triggerData);
+        const subData = encodingService.compoundV3LeverageManagementSubData.decode(subStruct.subData);
 
         position.strategyData.decoded.triggerData = triggerData;
         position.strategyData.decoded.subData = subData;
@@ -291,15 +274,15 @@ export default class StrategiesAutomation extends Automation {
         }
 
         const isEOA = position.strategy.strategyId.includes('eoa');
-        position.specific.strategyName = `leverage-management${isEOA ? '-eoa' : ''}`;
+        position.specific.strategyName = isEOA ? StrategiesIds.EoaLeverageManagement : StrategiesIds.LeverageManagement;
         position.specific.mergeWithOthersOfSameName = true;
       }
     }
 
     if (position.protocol.name === ProtocolIds.ChickenBonds) {
       if (position.strategy.strategyId === StrategiesIds.Rebond) {
-        position.strategyData.decoded.triggerData = encodingService.cBondsRebondTriggerData.decode(this.web3, subStruct.triggerData);
-        position.strategyData.decoded.subData = encodingService.cBondsRebondSubData.decode(this.web3, subStruct.subData);
+        position.strategyData.decoded.triggerData = encodingService.cBondsRebondTriggerData.decode(subStruct.triggerData);
+        position.strategyData.decoded.subData = encodingService.cBondsRebondSubData.decode(subStruct.subData);
 
         position.specific.mergeWithOthersOfSameName = true;
       }
@@ -319,8 +302,6 @@ export default class StrategiesAutomation extends Automation {
 
     let subscriptions: AutomatedPosition[] = [];
 
-    // TODO - check why some owners have empty address?
-
     if (subscriptionEvents) {
       const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e: PlaceholderType) => e.subId));
 
@@ -329,7 +310,10 @@ export default class StrategiesAutomation extends Automation {
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
           const updates = await this.getUpdateDataEventsFromSubStorage({ filter: latestUpdate.subId });
-          latestUpdate = updates?.[updates.length - 1]?.returnValues;
+          latestUpdate = {
+            ...latestUpdate, // Update is missing proxy, hence this
+            ...updates?.[updates.length - 1]?.returnValues,
+          };
         }
         return this.getParsedSubscriptions(latestUpdate, sub);
       }));
@@ -338,11 +322,11 @@ export default class StrategiesAutomation extends Automation {
     return subscriptions;
   }
 
-  public async getSubscriptions(options?: PastEventOptions): Promise<AutomatedPosition[]> { // TODO - extend type filter?
+  public async getSubscriptions(options?: SubscriptionOptions): Promise<AutomatedPosition[]> { // TODO - extend type filter?
     return this._getSubscriptions(undefined, options);
   }
 
-  public async getSubscriptionsFor(addresses: EthereumAddress[], options?: PastEventOptions): Promise<AutomatedPosition[]> {
+  public async getSubscriptionsFor(addresses: EthereumAddress[], options?: SubscriptionOptions): Promise<AutomatedPosition[]> {
     return this._getSubscriptions(addresses, options);
   }
 }
