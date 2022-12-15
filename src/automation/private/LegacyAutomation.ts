@@ -1,16 +1,14 @@
 import type Web3 from 'web3';
 import type {
   EthereumAddress, LegacyAutomatedPosition, LegacyAutomationConstructorParams, Protocol,
-  ContractJson, WrappedContract, PlaceholderType,
+  WrappedContract, PlaceholderType,
 } from '../../types';
 
 import { ChainId, ProtocolIds } from '../../constants';
 
-import { getAbiItem, makeContract } from '../../services/contractService';
+import { getAbiItem, makeAuthCheckerContract } from '../../services/contractService';
 import { multicall } from '../../services/ethereumService';
 import { isAddress, isUndefined } from '../../services/utils';
-
-import AuthCheck from '../../abis/legacy_AuthCheck.json';
 
 import Automation from './Automation';
 
@@ -21,7 +19,9 @@ export default class LegacyAutomation extends Automation {
 
   protected monitorAddress: EthereumAddress;
 
-  protected subscriptionsContract: WrappedContract;
+  protected subscriptionsContract: WrappedContract<PlaceholderType>;
+
+  protected authCheckerContract: WrappedContract<PlaceholderType>;
 
   protected protocol: Protocol;
 
@@ -29,9 +29,10 @@ export default class LegacyAutomation extends Automation {
     super();
 
     this.web3 = args.provider;
-    this.subscriptionsContract = this.getSubscriptionsContract(args.subscriptionsJson);
+    this.subscriptionsContract = args.subscriptionsJson;
     this.monitorAddress = args.monitorAddress;
     this.protocol = args.protocol;
+    this.authCheckerContract = makeAuthCheckerContract(this.web3, this.chainId);
 
     this.assertLegacy();
   }
@@ -61,23 +62,12 @@ export default class LegacyAutomation extends Automation {
     this.assert();
   }
 
-  protected getSubscriptionsContract(contractJson: ContractJson) {
-    return makeContract(this.web3, contractJson, this.chainId);
-  }
-
-  protected getAuthCheckContract() {
-    const contractJson = AuthCheck as ContractJson;
-    return makeContract(this.web3, contractJson, this.chainId);
-  }
-
   protected async isMonitorAuthorized(address: EthereumAddress, caller: EthereumAddress): Promise<boolean> {
-    const authCheckerContract = this.getAuthCheckContract();
-
-    return authCheckerContract.get().methods.canCall(caller, address, '0x1cff79cd').call();
+    return this.authCheckerContract.contract.methods.canCall(caller, address, '0x1cff79cd').call();
   }
 
-  protected async isMonitorAuthorizedMulticall(addresses: EthereumAddress[], caller: EthereumAddress): Promise<boolean> {
-    const authCheckerContract = this.getAuthCheckContract();
+  protected async isMonitorAuthorizedMulticall(addresses: EthereumAddress[], caller: EthereumAddress): Promise<boolean[]> {
+    const authCheckerContract = this.authCheckerContract;
 
     const defaultOptions = {
       target: authCheckerContract.address,
@@ -86,7 +76,6 @@ export default class LegacyAutomation extends Automation {
 
     const multicallCalls = addresses.map((addr) => ({ ...defaultOptions, params: [caller, addr, '0x1cff79cd'] }));
 
-    // @ts-ignore
     return (await multicall(this.web3, this.chainId, multicallCalls)).map(res => res[0]);
   }
 
@@ -97,7 +86,7 @@ export default class LegacyAutomation extends Automation {
   }
 
   protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<PlaceholderType> {
-    let subscriptions = await this.subscriptionsContract.get().methods.getSubscribers().call();
+    let subscriptions = await this.subscriptionsContract.contract.methods.getSubscribers().call();
 
     if (addresses) {
       const _addresses = addresses.map(a => a.toLowerCase());
