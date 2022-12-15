@@ -12,6 +12,7 @@ async function main() {
     fs.mkdirSync(abiDir);
 
     fs.readdirSync(abisFolder).forEach(file => {
+      if (file === 'index.ts') return;
       // eslint-disable-next-line import/no-dynamic-require
       const json = require(`${abisFolder}/${file}`);
       if (json.abi !== undefined) {

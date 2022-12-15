@@ -13,7 +13,8 @@
     "documentMD": "npx typedoc --plugin typedoc-plugin-markdown --out docs/md",
     "document": "npx typedoc --out docs/default",
     "lint": "node_modules/.bin/eslint ./src",
-    "prepare": "husky install"
+    "gtc": "node scripts/generateContractTypes.js",
+    "prepare": "husky install && npm run gtc"
   },
   "author": "DeFi Saver",
   "repository": "https://github.com/defisaver/automation-sdk",
@@ -32,7 +33,7 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@typechain/web3-v1": "https://gitpkg.now.sh/mihai9-lab/TypeChain/packages/target-web3-v1?temp",
-    "@types/node": "^18.11.8",
+    "@types/node": "^18.11.15",
     "@types/web3": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
