@@ -3,12 +3,12 @@ import type { EthereumAddress } from '../types';
 
 import { ChainId } from '../constants';
 
-export function isDefined(item: unknown): boolean {
-  return item !== undefined;
+export function isDefined<T>(value: T): value is NonNullable<T> {
+  return value !== undefined && value !== null;
 }
 
-export function isUndefined(item: unknown): boolean {
-  return !isDefined(item);
+export function isUndefined(value: unknown): boolean {
+  return !isDefined(value);
 }
 
 export function compareAddresses(firstAddress: EthereumAddress, secondAddress: EthereumAddress): boolean {
