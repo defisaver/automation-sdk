@@ -1,6 +1,7 @@
 import type Web3 from 'web3';
-import type { PastEventOptions } from 'web3-eth-contract';
-import type { EthereumAddress, AutomatedPosition, LegacyAutomatedPosition } from '../../types';
+import type {
+  EthereumAddress, AutomatedPosition, LegacyAutomatedPosition, SubscriptionOptions,
+} from '../../types';
 
 import { ChainId } from '../../constants';
 
@@ -31,13 +32,13 @@ export default class Automation {
     this.assertChainId();
   }
 
-  public async getSubscriptions(options?: PastEventOptions): Promise<AutomatedPosition[] | LegacyAutomatedPosition[]> {
+  public async getSubscriptions(options?: SubscriptionOptions): Promise<AutomatedPosition[] | LegacyAutomatedPosition[]> {
     throw new Error('Method \'getSubscriptions\' must be implemented.');
   }
 
   public async getSubscriptionsFor(
     addresses: EthereumAddress[],
-    options?: PastEventOptions,
+    options?: SubscriptionOptions,
   ): Promise<AutomatedPosition[] | LegacyAutomatedPosition[]> {
     throw new Error('Method \'getSubscriptionsFor\' must be implemented.');
   }
