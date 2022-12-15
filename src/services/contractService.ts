@@ -13,7 +13,11 @@ import { UniMulticallJson, SubStorageJson, AuthCheckJson } from '../abis';
 import { isDefined } from './utils';
 
 export function getAbiItem(abi: AbiItem[], itemName: string) {
-  return abi.find(abiItem => abiItem.name === itemName);
+  const abiItem = abi.find(i => i.name === itemName);
+  if (isDefined(abiItem)) {
+    return abiItem;
+  }
+  throw new Error(`Can't find abi item for itemName: ${itemName}`);
 }
 
 function makeContract<T extends BaseContract>(
