@@ -1,17 +1,26 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
-import type { BlockNumber, ContractJson, WrappedContract } from '../types';
+import type {
+  BlockNumber, ContractJson, WrappedContract,
+} from '../types';
 
-import type { ChainId } from '../constants';
+import { ChainId } from '../constants';
 import type { BaseContract } from '../types/contracts/generated/types';
+import type { Legacy_AuthCheck, SubStorage, UniMulticall } from '../types/contracts/generated';
+
+import { UniMulticallJson, SubStorageJson, AuthCheckJson } from '../abis';
 
 import { isDefined } from './utils';
 
-export function makeContract(
+export function getAbiItem(abi: AbiItem[], itemName: string) {
+  return abi.find(abiItem => abiItem.name === itemName);
+}
+
+function makeContract<T extends BaseContract>(
   web3: Web3,
   contractJson: ContractJson,
   chainId: ChainId,
-): WrappedContract {
+): WrappedContract<T> {
   const { abi } = contractJson;
 
   let _address = '';
@@ -23,7 +32,6 @@ export function makeContract(
     _address = address;
 
     if (isDefined(createdBlock)) {
-      // @ts-ignore
       _createdBlock = createdBlock;
     }
   }
@@ -32,12 +40,22 @@ export function makeContract(
     abi,
     address: _address,
     createdBlock: _createdBlock,
-    get() {
-      return new web3.eth.Contract(abi, _address) as BaseContract;
-    },
+    contract: new web3.eth.Contract(abi, _address) as any as T,
   };
 }
 
-export function getAbiItem(abi: AbiItem[], itemName: string) {
-  return abi.find(abiItem => abiItem.name === itemName);
+export function makeUniMulticallContract(web3: Web3, chainId: ChainId) {
+  return makeContract<UniMulticall>(web3, UniMulticallJson, chainId);
+}
+
+export function makeSubStorageContract(web3: Web3, chainId: ChainId) {
+  return makeContract<SubStorage>(web3, SubStorageJson, chainId);
+}
+
+export function makeAuthCheckerContract(web3: Web3, chainId: ChainId) {
+  return makeContract<Legacy_AuthCheck>(web3, AuthCheckJson, chainId);
+}
+
+export function makeLegacySubscriptionContract(web3: Web3, contractJson: ContractJson) {
+  return makeContract<UniMulticall>(web3, contractJson, ChainId.Ethereum);
 }
