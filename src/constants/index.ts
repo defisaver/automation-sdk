@@ -95,6 +95,11 @@ export const enum StrategiesIds {
   TrailingStopToColl = 'trailing-stop-to-collateral',
   TrailingStopToDebt = 'trailing-stop-to-debt',
   Rebond = 'rebond',
+  TakeProfit = 'take-profit', // TODO possibly move to another enum and fix usage of strategyId/strategyName
+  StopLoss = 'stop-loss',
+  TrailingStop = 'trailing-stop',
+  LeverageManagement = 'leverage-management',
+  EoaLeverageManagement = 'leverage-management-eoa',
 }
 
 // Strategies info
