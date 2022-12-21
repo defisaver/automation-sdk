@@ -1,139 +1,65 @@
 import type {
-  MainnetStrategiesInfo, MainnetBundleInfo, OptimismBundleInfo, ArbitrumBundleInfo,
-  StrategiesInfo, BundlesInfo, EthereumAddress,
+  ArbitrumBundleInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, StrategiesInfo,
 } from '../types';
+
+import {
+  ChainId, ProtocolIdentifiers, Strategies, Bundles, BundleProtocols,
+} from '../types/enums';
+
+import Protocol from '../automation/private/Protocol';
+import LegacyProtocol from '../automation/private/LegacyProtocol';
 
 // General
 export const ZERO_ADDRESS: EthereumAddress = '0x0000000000000000000000000000000000000000';
 
-export enum ChainId {
-  Ethereum = 1,
-  Optimism = 10,
-  Arbitrum = 42161,
-}
+export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
+  const protocolsMapping: any = {};
+  Object.entries(ProtocolIdentifiers.StrategiesAutomation).forEach(([id, value]) => {
+    protocolsMapping[id] = new Protocol({ id: value });
+  });
+  return protocolsMapping;
+})();
 
-export const enum ProtocolIds {
-  MakerDAO = 'makerdao',
-  Liquity = 'liquity',
-  ChickenBonds = 'chicken-bonds',
-  Compound = 'compound',
-  Aave = 'aave',
-  MStable = 'mstable',
-  Yearn = 'yearn',
-  Rari = 'rari',
-}
-
-export const PROTOCOLS = {
-  MakerDao: {
-    id: ProtocolIds.MakerDAO,
-    name: 'MakerDAO',
-    version: 'mcd',
-  },
-  Liquity: {
-    id: ProtocolIds.Liquity,
-    name: 'Liquity',
-    version: 'v1',
-  },
-  ChickenBonds: {
-    id: ProtocolIds.ChickenBonds,
-    name: 'Chicken Bonds',
-    version: 'v1',
-  },
-  AaveV2: {
-    id: ProtocolIds.Aave,
-    name: 'Aave',
-    version: 'v2',
-  },
-  AaveV3: {
-    id: ProtocolIds.Aave,
-    name: 'Aave',
-    version: 'v3',
-  },
-  CompoundV2: {
-    id: ProtocolIds.Compound,
-    name: 'Compound',
-    version: 'v2',
-  },
-  CompoundV3: {
-    id: ProtocolIds.Compound,
-    name: 'Compound',
-    version: 'v3',
-  },
-};
-
-export const enum RatioState {
-  OVER = 0,
-  UNDER = 1,
-}
-
-// Strategies
-export const enum MainnetStrategies {
-  MAKER_CLOSE_ON_PRICE_TO_DAI = 7,
-  MAKER_CLOSE_ON_PRICE_TO_COLL = 9,
-  LIQUITY_CLOSE_ON_PRICE_TO_COLL_DEPRECATED = 10, // replaced with 14
-  MAKER_TRAILING_STOP_LOSS_TO_COLL = 11,
-  MAKER_TRAILING_STOP_LOSS_TO_DAI = 12,
-  LIQUITY_TRAILING_STOP_LOSS_TO_COLL = 13,
-  LIQUITY_CLOSE_ON_PRICE_TO_COLL = 14,
-  CHICKEN_BONDS_REBOND = 31,
-}
-
-export const enum OptimismStrategies {}
-
-export const enum ArbitrumStrategies {}
-
-export const enum StrategiesIds {
-  SavingsLiqProtection = 'smart-savings-liquidation-protection',
-  Repay = 'repay',
-  EoaRepay = 'eoa-repay',
-  Boost = 'boost',
-  EoaBoost = 'eoa-boost',
-  CloseToDebt = 'close-to-debt',
-  CloseToCollateral = 'close-to-collateral',
-  CloseOnPriceToDebt = 'close-on-price-to-debt',
-  CloseOnPriceToColl = 'close-on-price-to-collateral',
-  TrailingStopToColl = 'trailing-stop-to-collateral',
-  TrailingStopToDebt = 'trailing-stop-to-debt',
-  Rebond = 'rebond',
-  TakeProfit = 'take-profit', // TODO possibly move to another enum and fix usage of strategyId/strategyName
-  StopLoss = 'stop-loss',
-  TrailingStop = 'trailing-stop',
-  LeverageManagement = 'leverage-management',
-  EoaLeverageManagement = 'leverage-management-eoa',
-}
+export const LEGACY_PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.LegacyAutomation, Interfaces.LegacyProtocol> = (() => {
+  const protocolsMapping: any = {};
+  Object.entries(ProtocolIdentifiers.LegacyAutomation).forEach(([id, value]) => {
+    protocolsMapping[id] = new LegacyProtocol({ id: value });
+  });
+  return protocolsMapping;
+})();
 
 // Strategies info
 export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
-  [MainnetStrategies.MAKER_CLOSE_ON_PRICE_TO_DAI]: {
-    strategyId: StrategiesIds.CloseOnPriceToDebt,
-    protocol: PROTOCOLS.MakerDao,
+  [Strategies.MainnetIds.MAKER_CLOSE_ON_PRICE_TO_DAI]: {
+    strategyId: Strategies.Identifiers.CloseOnPriceToDebt,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetStrategies.MAKER_CLOSE_ON_PRICE_TO_COLL]: {
-    strategyId: StrategiesIds.CloseOnPriceToColl,
-    protocol: PROTOCOLS.MakerDao,
+  [Strategies.MainnetIds.MAKER_CLOSE_ON_PRICE_TO_COLL]: {
+    strategyId: Strategies.Identifiers.CloseOnPriceToColl,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetStrategies.LIQUITY_CLOSE_ON_PRICE_TO_COLL_DEPRECATED]: {
-    strategyId: StrategiesIds.CloseOnPriceToColl,
+  [Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL_DEPRECATED]: {
+    strategyId: Strategies.Identifiers.CloseOnPriceToColl,
     protocol: PROTOCOLS.Liquity,
   },
-  [MainnetStrategies.LIQUITY_CLOSE_ON_PRICE_TO_COLL]: {
-    strategyId: StrategiesIds.CloseOnPriceToColl,
-    protocol: PROTOCOLS.MakerDao,
+  [Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL]: {
+    strategyId: Strategies.Identifiers.CloseOnPriceToColl,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetStrategies.MAKER_TRAILING_STOP_LOSS_TO_COLL]: {
-    strategyId: StrategiesIds.TrailingStopToColl,
-    protocol: PROTOCOLS.MakerDao,
+  [Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_COLL]: {
+    strategyId: Strategies.Identifiers.TrailingStopToColl,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetStrategies.MAKER_TRAILING_STOP_LOSS_TO_DAI]: {
-    strategyId: StrategiesIds.TrailingStopToDebt,
-    protocol: PROTOCOLS.MakerDao,
+  [Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_DAI]: {
+    strategyId: Strategies.Identifiers.TrailingStopToDebt,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetStrategies.LIQUITY_TRAILING_STOP_LOSS_TO_COLL]: {
-    strategyId: StrategiesIds.TrailingStopToColl,
+  [Strategies.MainnetIds.LIQUITY_TRAILING_STOP_LOSS_TO_COLL]: {
+    strategyId: Strategies.Identifiers.TrailingStopToColl,
     protocol: PROTOCOLS.Liquity,
   },
-  [MainnetStrategies.CHICKEN_BONDS_REBOND]: {
-    strategyId: StrategiesIds.Rebond,
+  [Strategies.MainnetIds.CHICKEN_BONDS_REBOND]: {
+    strategyId: Strategies.Identifiers.Rebond,
     protocol: PROTOCOLS.ChickenBonds,
   },
 };
@@ -148,103 +74,78 @@ export const STRATEGIES_INFO: StrategiesInfo = {
   [ChainId.Arbitrum]: ARBITRUM_STRATEGIES_INFO,
 };
 
-// Bundles
-export const enum MainnetBundles {
-  MAKER_REPAY_FROM_SMART_SAVINGS_YEARN = 0,
-  MAKER_REPAY_FROM_SMART_SAVINGS_MSTABLE = 1,
-  MAKER_REPAY_FROM_SMART_SAVINGS_RARI = 2,
-  COMP_V3_SW_REPAY_BUNDLE = 3,
-  COMP_V3_SW_BOOST_BUNDLE = 4,
-  COMP_V3_EOA_REPAY_BUNDLE = 5,
-  COMP_V3_EOA_BOOST_BUNDLE = 6,
-}
-
-export const enum OptimismBundles {
-  AAVE_V3_REPAY = 0,
-  AAVE_V3_BOOST = 1,
-  AAVE_V3_CLOSE_TO_DEBT = 2,
-  AAVE_V3_CLOSE_TO_COLLATERAL = 3,
-}
-
-export const enum ArbitrumBundles {
-  AAVE_V3_REPAY = 0,
-  AAVE_V3_BOOST = 1,
-  AAVE_V3_CLOSE_TO_DEBT = 2,
-  AAVE_V3_CLOSE_TO_COLLATERAL = 3,
-}
-
 // Bundles info
 export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
-  [MainnetBundles.MAKER_REPAY_FROM_SMART_SAVINGS_YEARN]: {
-    bundleId: ProtocolIds.Yearn,
+  [Bundles.MainnetIds.MAKER_REPAY_FROM_SMART_SAVINGS_YEARN]: {
+    bundleId: BundleProtocols.Yearn,
     bundleName: 'Yearn',
-    strategyId: StrategiesIds.SavingsLiqProtection,
-    protocol: PROTOCOLS.MakerDao,
+    strategyId: Strategies.Identifiers.SavingsLiqProtection,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetBundles.MAKER_REPAY_FROM_SMART_SAVINGS_MSTABLE]: {
-    bundleId: ProtocolIds.MStable,
+  [Bundles.MainnetIds.MAKER_REPAY_FROM_SMART_SAVINGS_MSTABLE]: {
+    bundleId: BundleProtocols.MStable,
     bundleName: 'mStable',
-    strategyId: StrategiesIds.SavingsLiqProtection,
-    protocol: PROTOCOLS.MakerDao,
+    strategyId: Strategies.Identifiers.SavingsLiqProtection,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetBundles.MAKER_REPAY_FROM_SMART_SAVINGS_RARI]: {
-    bundleId: ProtocolIds.Rari,
+  [Bundles.MainnetIds.MAKER_REPAY_FROM_SMART_SAVINGS_RARI]: {
+    bundleId: BundleProtocols.Rari,
     bundleName: 'Rari',
-    strategyId: StrategiesIds.SavingsLiqProtection,
-    protocol: PROTOCOLS.MakerDao,
+    strategyId: Strategies.Identifiers.SavingsLiqProtection,
+    protocol: PROTOCOLS.MakerDAO,
   },
-  [MainnetBundles.COMP_V3_SW_REPAY_BUNDLE]: {
-    strategyId: StrategiesIds.Repay,
+  [Bundles.MainnetIds.COMP_V3_SW_REPAY_BUNDLE]: {
+    strategyId: Strategies.Identifiers.Repay,
     protocol: PROTOCOLS.CompoundV3,
   },
-  [MainnetBundles.COMP_V3_SW_BOOST_BUNDLE]: {
-    strategyId: StrategiesIds.Boost,
+  [Bundles.MainnetIds.COMP_V3_SW_BOOST_BUNDLE]: {
+    strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.CompoundV3,
   },
-  [MainnetBundles.COMP_V3_EOA_REPAY_BUNDLE]: {
-    strategyId: StrategiesIds.EoaRepay,
+  [Bundles.MainnetIds.COMP_V3_EOA_REPAY_BUNDLE]: {
+    strategyId: Strategies.Identifiers.EoaRepay,
     protocol: PROTOCOLS.CompoundV3,
   },
-  [MainnetBundles.COMP_V3_EOA_BOOST_BUNDLE]: {
-    strategyId: StrategiesIds.EoaBoost,
+  [Bundles.MainnetIds.COMP_V3_EOA_BOOST_BUNDLE]: {
+    strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.CompoundV3,
   },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
-  [OptimismBundles.AAVE_V3_REPAY]: {
-    strategyId: StrategiesIds.Repay,
+  [Bundles.OptimismIds.AAVE_V3_REPAY]: {
+    strategyId: Strategies.Identifiers.Repay,
     protocol: PROTOCOLS.AaveV3,
   },
-  [OptimismBundles.AAVE_V3_BOOST]: {
-    strategyId: StrategiesIds.Boost,
+  [Bundles.OptimismIds.AAVE_V3_BOOST]: {
+    strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.AaveV3,
   },
-  [OptimismBundles.AAVE_V3_CLOSE_TO_DEBT]: {
-    strategyId: StrategiesIds.CloseToDebt,
+  [Bundles.OptimismIds.AAVE_V3_CLOSE_TO_DEBT]: {
+    strategyId: Strategies.Identifiers.CloseToDebt,
     protocol: PROTOCOLS.AaveV3,
   },
-  [OptimismBundles.AAVE_V3_CLOSE_TO_COLLATERAL]: {
-    strategyId: StrategiesIds.CloseToCollateral,
+  [Bundles.OptimismIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
+    strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
-  [ArbitrumBundles.AAVE_V3_REPAY]: {
-    strategyId: StrategiesIds.Repay,
+  [Bundles.ArbitrumIds.AAVE_V3_REPAY]: {
+    strategyId: Strategies.Identifiers.Repay,
     protocol: PROTOCOLS.AaveV3,
   },
-  [ArbitrumBundles.AAVE_V3_BOOST]: {
-    strategyId: StrategiesIds.Boost,
+  [Bundles.ArbitrumIds.AAVE_V3_BOOST]: {
+    strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.AaveV3,
   },
-  [ArbitrumBundles.AAVE_V3_CLOSE_TO_DEBT]: {
-    strategyId: StrategiesIds.CloseToDebt,
+  [Bundles.ArbitrumIds.AAVE_V3_CLOSE_TO_DEBT]: {
+    strategyId: Strategies.Identifiers.CloseToDebt,
     protocol: PROTOCOLS.AaveV3,
   },
-  [ArbitrumBundles.AAVE_V3_CLOSE_TO_COLLATERAL]: {
-    strategyId: StrategiesIds.CloseToCollateral,
+  [Bundles.ArbitrumIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
+    strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
 };

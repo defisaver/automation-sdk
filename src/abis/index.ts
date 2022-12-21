@@ -1,4 +1,4 @@
-import type { ContractJson } from '../types';
+import type { Contract } from '../types';
 
 import MakerSubscriptions from './legacy_MakerSubscriptions.json';
 import AaveV2Subscriptions from './legacy_AaveV2Subscriptions.json';
@@ -10,7 +10,7 @@ import SubStorage from './SubStorage.json';
 import AuthCheck from './legacy_AuthCheck.json';
 
 function castToContractJsonType(json: any) {
-  return json as ContractJson;
+  return json as Contract.Json;
 }
 
 const MakerSubscriptionsJson = castToContractJsonType(MakerSubscriptions);

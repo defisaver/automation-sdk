@@ -3,9 +3,8 @@ import type {
   EthereumAddress, AutomatedPosition, LegacyAutomatedPosition, SubscriptionOptions,
 } from '../../types';
 
-import { ChainId } from '../../constants';
-
 import { isUndefined } from '../../services/utils';
+import { ChainId } from '../../types/enums';
 
 // TODO - Improve provider assertion
 export default class Automation {
@@ -32,14 +31,14 @@ export default class Automation {
     this.assertChainId();
   }
 
-  public async getSubscriptions(options?: SubscriptionOptions): Promise<AutomatedPosition[] | LegacyAutomatedPosition[]> {
+  public async getSubscriptions(options?: SubscriptionOptions): Promise<(AutomatedPosition | null)[] | LegacyAutomatedPosition[]> {
     throw new Error('Method \'getSubscriptions\' must be implemented.');
   }
 
   public async getSubscriptionsFor(
     addresses: EthereumAddress[],
     options?: SubscriptionOptions,
-  ): Promise<AutomatedPosition[] | LegacyAutomatedPosition[]> {
+  ): Promise<(AutomatedPosition | null)[] | LegacyAutomatedPosition[]> {
     throw new Error('Method \'getSubscriptionsFor\' must be implemented.');
   }
 }

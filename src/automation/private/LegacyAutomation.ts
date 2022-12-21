@@ -1,16 +1,18 @@
 import type Web3 from 'web3';
 import type {
-  EthereumAddress, LegacyAutomatedPosition, LegacyAutomationConstructorParams, Protocol,
-  WrappedContract, PlaceholderType,
+  EthereumAddress, LegacyAutomatedPosition, Interfaces,
+  Contract, PlaceholderType,
 } from '../../types';
-
-import { ChainId, ProtocolIds } from '../../constants';
+import type {
+  Legacy_AaveV2Subscriptions, Legacy_CompoundV2Subscriptions, Legacy_MakerSubscriptions, Legacy_AuthCheck,
+} from '../../types/contracts/generated';
 
 import { getAbiItem, makeAuthCheckerContract } from '../../services/contractService';
 import { multicall } from '../../services/ethereumService';
 import { isAddress, isUndefined } from '../../services/utils';
 
 import Automation from './Automation';
+import { ChainId, ProtocolIdentifiers } from '../../types/enums';
 
 export default class LegacyAutomation extends Automation {
   protected chainId: ChainId = ChainId.Ethereum;
@@ -19,13 +21,13 @@ export default class LegacyAutomation extends Automation {
 
   protected monitorAddress: EthereumAddress;
 
-  protected subscriptionsContract: WrappedContract<PlaceholderType>;
+  protected subscriptionsContract: Contract.WithMeta<Legacy_MakerSubscriptions | Legacy_AaveV2Subscriptions | Legacy_CompoundV2Subscriptions>;
 
-  protected authCheckerContract: WrappedContract<PlaceholderType>;
+  protected authCheckerContract: Contract.WithMeta<Legacy_AuthCheck>;
 
-  protected protocol: Protocol;
+  protected protocol: Interfaces.LegacyProtocol;
 
-  constructor(args: LegacyAutomationConstructorParams) {
+  constructor(args: Interfaces.LegacyAutomation<Legacy_MakerSubscriptions | Legacy_AaveV2Subscriptions | Legacy_CompoundV2Subscriptions>) {
     super();
 
     this.web3 = args.provider;
@@ -82,10 +84,10 @@ export default class LegacyAutomation extends Automation {
 
   // Aave and Compound use 'user' for property name
   private getOwnerPropName() {
-    return this.protocol.id === ProtocolIds.MakerDAO ? 'owner' : 'user';
+    return this.protocol.id === ProtocolIdentifiers.LegacyAutomation.MakerDAO ? 'owner' : 'user';
   }
 
-  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<PlaceholderType> {
+  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<PlaceholderType> { // TODO PlaceholderType
     let subscriptions = await this.subscriptionsContract.contract.methods.getSubscribers().call();
 
     if (addresses) {
