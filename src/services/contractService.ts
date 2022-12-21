@@ -1,16 +1,16 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
 import type {
-  BlockNumber, ContractJson, WrappedContract,
+  BlockNumber, Contract,
 } from '../types';
 
-import { ChainId } from '../constants';
 import type { BaseContract } from '../types/contracts/generated/types';
 import type { Legacy_AuthCheck, SubStorage, UniMulticall } from '../types/contracts/generated';
 
 import { UniMulticallJson, SubStorageJson, AuthCheckJson } from '../abis';
 
 import { isDefined } from './utils';
+import { ChainId } from '../types/enums';
 
 export function getAbiItem(abi: AbiItem[], itemName: string) {
   const abiItem = abi.find(i => i.name === itemName);
@@ -22,9 +22,9 @@ export function getAbiItem(abi: AbiItem[], itemName: string) {
 
 function makeContract<T extends BaseContract>(
   web3: Web3,
-  contractJson: ContractJson,
+  contractJson: Contract.Json,
   chainId: ChainId,
-): WrappedContract<T> {
+): Contract.WithMeta<T> {
   const { abi } = contractJson;
 
   let _address = '';
@@ -60,6 +60,6 @@ export function makeAuthCheckerContract(web3: Web3, chainId: ChainId) {
   return makeContract<Legacy_AuthCheck>(web3, AuthCheckJson, chainId);
 }
 
-export function makeLegacySubscriptionContract(web3: Web3, contractJson: ContractJson) {
-  return makeContract<UniMulticall>(web3, contractJson, ChainId.Ethereum);
+export function makeLegacySubscriptionContract<T extends BaseContract>(web3: Web3, contractJson: Contract.Json) {
+  return makeContract<T>(web3, contractJson, ChainId.Ethereum);
 }

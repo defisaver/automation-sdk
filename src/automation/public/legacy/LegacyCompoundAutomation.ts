@@ -1,6 +1,7 @@
-import type { LegacyAutomationConstructorParams } from '../../../types';
+import type { Interfaces } from '../../../types';
+import type { Legacy_CompoundV2Subscriptions } from '../../../types/contracts/generated';
 
-import { PROTOCOLS } from '../../../constants';
+import { LEGACY_PROTOCOLS } from '../../../constants';
 import { CompoundV2SubscriptionsJson } from '../../../abis';
 
 import { makeLegacySubscriptionContract } from '../../../services/contractService';
@@ -8,12 +9,12 @@ import { makeLegacySubscriptionContract } from '../../../services/contractServic
 import LegacyAutomation from '../../private/LegacyAutomation';
 
 export default class LegacyAaveAutomation extends LegacyAutomation {
-  constructor(args: LegacyAutomationConstructorParams) {
+  constructor(args: Interfaces.LegacyAutomation<Legacy_CompoundV2Subscriptions>) {
     super({
       provider: args.provider,
       subscriptionsJson: makeLegacySubscriptionContract(args.provider, CompoundV2SubscriptionsJson),
       monitorAddress: '0xB1cF8DE8e791E4Ed1Bd86c03E2fc1f14389Cb10a',
-      protocol: PROTOCOLS.CompoundV2,
+      protocol: LEGACY_PROTOCOLS.CompoundV2,
     });
   }
 }

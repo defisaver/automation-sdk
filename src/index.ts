@@ -1,9 +1,7 @@
 // TODO
-//  [] Check other TODOs, add missing types, figure out how to use generated types from contracts
-//  [] Check @ts-ignores
-//  [] Split types to multiple files?
-//  [] Type for numbers, string, bns etc? Use uint type from sdk?
+//  [] Check @ts-ignores and PlaceholderType
 //  [] Make possible to use any provider not only web3 (This requires changes throughout the package)
+//  [] Write unit tests
 
 import './configuration';
 
@@ -15,7 +13,16 @@ import EthereumStrategies from './automation/public/EthereumStrategies';
 import OptimismStrategies from './automation/public/OptimismStrategies';
 import ArbitrumStrategies from './automation/public/ArbitrumStrategies';
 
+import * as triggerService from './services/triggerService';
+import * as subDataService from './services/subDataService';
+
+import type * as types from './types';
+import type * as enums from './types/enums';
+
 export {
   LegacyMakerAutomation, LegacyAaveAutomation, LegacyCompoundAutomation,
   EthereumStrategies, OptimismStrategies, ArbitrumStrategies,
+  triggerService, subDataService,
 };
+
+export type { types, enums };

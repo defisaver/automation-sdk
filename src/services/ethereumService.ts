@@ -1,12 +1,13 @@
 import type Web3 from 'web3';
-import type { EventData, PastEventOptions } from 'web3-eth-contract';
+import type { PastEventOptions } from 'web3-eth-contract';
 import type {
-  BlockNumber, Multicall, PlaceholderType, WrappedContract,
+  BlockNumber, Multicall, Contract,
 } from '../types';
-import type { ChainId } from '../constants';
 
 import { makeUniMulticallContract } from './contractService';
 import { addToObjectIf, isDefined } from './utils';
+import type { BaseContract } from '../types/contracts/generated/types';
+import type { ChainId } from '../types/enums';
 
 const { mockedWeb3 } = process;
 
@@ -15,7 +16,7 @@ export async function multicall(
   chainId: ChainId,
   calls: Multicall.Calls[],
   block: BlockNumber = 'latest',
-): Promise<Multicall.Payload[]> {
+): Promise<Multicall.Payload> {
   const multicallContract = makeUniMulticallContract(web3, chainId).contract;
 
   const formattedCalls: Multicall.FormattedCalls[] = calls.map((call) => ({
@@ -28,7 +29,7 @@ export async function multicall(
     formattedCalls.filter(item => item.target !== '0x0'),
   ).call({}, block);
 
-  let formattedResult: Multicall.Payload[] = [];
+  let formattedResult: Multicall.Payload = [];
 
   callResult.returnData.forEach(([success, gasUsed, result], i) => {
     const formattedRes = (result !== '0x'
@@ -40,15 +41,15 @@ export async function multicall(
   return formattedResult;
 }
 
-export function getEventsFromContract(
-  wrappedContract: WrappedContract<PlaceholderType>,
+export function getEventsFromContract<T extends BaseContract>(
+  contractWithMeta: Contract.WithMeta<T>,
   event: string, options?: PastEventOptions,
-): Promise<EventData[]> {
-  return wrappedContract.contract.getPastEvents(
+) {
+  return contractWithMeta.contract.getPastEvents(
     event,
     {
       ...addToObjectIf(isDefined(options), options),
-      fromBlock: wrappedContract.createdBlock,
+      fromBlock: contractWithMeta.createdBlock,
     },
   );
 }
