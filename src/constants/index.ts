@@ -110,6 +110,10 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.CompoundV3,
   },
+  [Bundles.MainnetIds.LIQUITY_PAYBACK_USING_CHICKEN_BOND]: {
+    strategyId: Strategies.Identifiers.BondProtection,
+    protocol: PROTOCOLS.Liquity,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
