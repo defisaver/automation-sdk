@@ -1,13 +1,15 @@
 import Dec from 'decimal.js';
 
-import type { EthereumAddress, TriggerService, TriggerData } from '../types';
+import type {
+  EthereumAddress, TriggerData,
+} from '../types';
+import type { RatioState } from '../types/enums';
 
 import { ratioPercentageToWei } from './utils';
-import type { RatioState } from '../types/enums';
 
 const { mockedWeb3 } = process;
 
-export const chainlinkPriceTrigger: TriggerService = {
+export const chainlinkPriceTrigger = {
   encode(tokenAddr: EthereumAddress, price: string, state: RatioState) {
     const _price = new Dec(price).mul(1e8).floor().toString();
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [tokenAddr, _price, state])];
@@ -18,7 +20,7 @@ export const chainlinkPriceTrigger: TriggerService = {
   },
 };
 
-export const trailingStopTrigger: TriggerService = {
+export const trailingStopTrigger = {
   encode(tokenAddr: EthereumAddress, percentage: number, roundId: number) {
     const _percentage = new Dec(percentage).mul(1e8).toString();
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint80'], [tokenAddr, _percentage, roundId])];
@@ -30,25 +32,29 @@ export const trailingStopTrigger: TriggerService = {
   },
 };
 
-export const makerRatioTrigger: TriggerService = {
+export const makerRatioTrigger = {
   encode(vaultId: number, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, ratioWei, ratioState])];
   },
-  decode(triggerData: TriggerData): { vaultId: number, ratioState: number, ratio: string } {
+  decode(triggerData: TriggerData): { vaultId: number, ratioState: number, ratio: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
-    return { vaultId: +decodedData[0], ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toString(), ratioState: +decodedData[2] };
+    return { vaultId: +decodedData[0], ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(), ratioState: +decodedData[2] };
   },
 };
 
-export const aaveV3RatioTrigger: TriggerService = {
-  decode(triggerData: TriggerData): { market: string, ratioState: RatioState, ratio: string } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
-    return { market: decodedData[1], ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toString(), ratioState: +decodedData[3] };
+export const aaveV3RatioTrigger = {
+  decode(triggerData: TriggerData) {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as string[];
+    return {
+      market: decodedData[1],
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
+      ratioState: Number(decodedData[3]),
+    };
   },
 };
 
-export const aaveV3QuotePriceTrigger: TriggerService = {
+export const aaveV3QuotePriceTrigger = {
   encode(
     baseTokenAddress: EthereumAddress,
     quoteTokenAddress: EthereumAddress,
@@ -74,7 +80,7 @@ export const aaveV3QuotePriceTrigger: TriggerService = {
   },
 };
 
-export const compoundV2RatioTrigger: TriggerService = {
+export const compoundV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
@@ -89,7 +95,7 @@ export const compoundV2RatioTrigger: TriggerService = {
   },
 };
 
-export const liquityRatioTrigger: TriggerService = {
+export const liquityRatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
@@ -104,7 +110,7 @@ export const liquityRatioTrigger: TriggerService = {
   },
 };
 
-export const liquityDebtInFrontTrigger: TriggerService = {
+export const liquityDebtInFrontTrigger = {
   encode(owner: EthereumAddress, debtInFrontMin: string) {
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
   },
@@ -117,7 +123,7 @@ export const liquityDebtInFrontTrigger: TriggerService = {
   },
 };
 
-export const aaveV2RatioTrigger: TriggerService = {
+export const aaveV2RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
@@ -133,7 +139,7 @@ export const aaveV2RatioTrigger: TriggerService = {
   },
 };
 
-export const cBondsRebondTrigger: TriggerService = {
+export const cBondsRebondTrigger = {
   encode(bondId: number | string) {
     return [mockedWeb3.eth.abi.encodeParameters(['uint256'], [bondId])];
   },
@@ -143,7 +149,7 @@ export const cBondsRebondTrigger: TriggerService = {
   },
 };
 
-export const compoundV3RatioTrigger: TriggerService = {
+export const compoundV3RatioTrigger = {
   encode(
     owner: EthereumAddress,
     market: EthereumAddress,
@@ -155,12 +161,12 @@ export const compoundV3RatioTrigger: TriggerService = {
   },
   decode(
     triggerData: TriggerData,
-  ): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: string } {
+  ): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toString(),
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
       ratioState: +decodedData[3],
     };
   },

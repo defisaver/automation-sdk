@@ -1,14 +1,16 @@
 import type Web3 from 'web3';
 import type { PastEventOptions, Filter } from 'web3-eth-contract';
 import type {
-  AutomatedPosition, Interfaces, EthereumAddress,
+  Position, Interfaces, EthereumAddress,
   SubscriptionOptions, Contract, ParseData, PlaceholderType,
 } from '../../types';
 import type {
   Subscribe, StrategyModel, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 
-import { addToObjectIf, isDefined } from '../../services/utils';
+import {
+  addToArrayIf, addToObjectIf, isDefined,
+} from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
 
@@ -66,7 +68,7 @@ export default class StrategiesAutomation extends Automation {
     return parseStrategiesAutomatedPosition(parseData);
   }
 
-  protected async _getSubscriptions(addresses?: EthereumAddress[], options?: PastEventOptions): Promise<(AutomatedPosition | null)[]> {
+  protected async _getSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     const _options = {
       ...addToObjectIf(isDefined(options), options),
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
@@ -74,7 +76,7 @@ export default class StrategiesAutomation extends Automation {
 
     const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)).map(e => e.returnValues) as PlaceholderType; // TODO PlaceholderType
 
-    let subscriptions: (AutomatedPosition | null)[] = [];
+    let subscriptions: (Position.Automated | null)[] = [];
 
     if (subscriptionEvents) {
       // @ts-ignore
@@ -96,16 +98,60 @@ export default class StrategiesAutomation extends Automation {
           strategiesSubsData: sub,
         });
       }));
+
+      if (options?.mergeWithSameId) {
+        subscriptions = subscriptions.reduce((list: (Position.Automated | null)[], current) => {
+          const copyList = [...list] as (Position.Automated | null)[];
+
+          if (isDefined(current)) {
+            if (current.specific.mergeWithSameId) {
+              const mergePairIndex = copyList.findIndex(s => (
+                s && s.specific.mergeWithSameId
+                && s.strategy.strategyId === current.strategy.strategyId
+                && s.protocol.id === current.protocol.id
+              ));
+
+              if (mergePairIndex !== -1) {
+                const mergePair = copyList[mergePairIndex];
+                if (isDefined(mergePair)) {
+                  copyList[mergePairIndex] = {
+                    ...mergePair,
+                    ...current,
+                    isEnabled: mergePair.isEnabled || current.isEnabled,
+                    subId: mergePair.subId,
+                    subIds: [...addToArrayIf(isDefined(mergePair.subIds), mergePair.subIds), current.subId],
+                    specific: {
+                      ...mergePair.specific,
+                      ...current.specific,
+                      mergeWithSameId: false,
+                    },
+                  };
+                  return copyList;
+                }
+              }
+            }
+          } else {
+            return copyList;
+          }
+
+          copyList.push({
+            ...current,
+            subIds: [current.subId],
+          });
+
+          return copyList;
+        }, []);
+      }
     }
 
     return subscriptions;
   }
 
-  public async getSubscriptions(options?: SubscriptionOptions): Promise<(AutomatedPosition | null)[]> {
+  public async getSubscriptions(options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     return this._getSubscriptions(undefined, options);
   }
 
-  public async getSubscriptionsFor(addresses: EthereumAddress[], options?: SubscriptionOptions): Promise<(AutomatedPosition | null)[]> {
+  public async getSubscriptionsFor(addresses: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     return this._getSubscriptions(addresses, options);
   }
 }

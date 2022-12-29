@@ -1,7 +1,6 @@
 import type Web3 from 'web3';
 import type {
-  EthereumAddress, LegacyAutomatedPosition, Interfaces,
-  Contract, PlaceholderType,
+  EthereumAddress, Position, Interfaces, Contract, PlaceholderType,
 } from '../../types';
 import type {
   Legacy_AaveV2Subscriptions, Legacy_CompoundV2Subscriptions, Legacy_MakerSubscriptions, Legacy_AuthCheck,
@@ -100,7 +99,7 @@ export default class LegacyAutomation extends Automation {
     return subscriptions;
   }
 
-  protected async getParsedSubscriptions(addresses?: EthereumAddress[]): Promise<LegacyAutomatedPosition[]> {
+  protected async getParsedSubscriptions(addresses?: EthereumAddress[]): Promise<Position.LegacyAutomated[]> {
     let subscriptions = await this._getSubscriptions(addresses);
 
     // @ts-ignore
@@ -115,11 +114,11 @@ export default class LegacyAutomation extends Automation {
     return subscriptions;
   }
 
-  public async getSubscriptions(): Promise<LegacyAutomatedPosition[]> {
+  public async getSubscriptions(): Promise<Position.LegacyAutomated[]> {
     return this.getParsedSubscriptions();
   }
 
-  public async getSubscriptionsFor(addresses: EthereumAddress[]): Promise<LegacyAutomatedPosition[]> {
+  public async getSubscriptionsFor(addresses: EthereumAddress[]): Promise<Position.LegacyAutomated[]> {
     return this.getParsedSubscriptions(addresses);
   }
 }

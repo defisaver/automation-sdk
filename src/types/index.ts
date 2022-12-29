@@ -4,6 +4,7 @@ import type { BaseContract, BlockType } from './contracts/generated/types';
 import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage';
 import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
+  RatioState,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -63,6 +64,7 @@ export declare namespace Multicall {
 export interface SubscriptionOptions {
   toBlock: BlockNumber,
   fromBlock: BlockNumber,
+  mergeWithSameId?: boolean,
 }
 
 export declare namespace Interfaces {
@@ -93,7 +95,7 @@ export declare namespace Interfaces {
 }
 
 export interface Strategy {
-  strategyId: Strategies.Identifiers,
+  strategyId: Strategies.Identifiers | Strategies.IdOverrides,
   protocol: Interfaces.Protocol,
   isBundle?: boolean,
 }
@@ -106,37 +108,72 @@ export interface BundleOrStrategy extends Strategy {
 export type TriggerData = StrategyModel.StrategySubStructOutputStruct['triggerData'];
 export type SubData = StrategyModel.StrategySubStructOutputStruct['subData'];
 
-export type TriggerService = {
-  encode?: (...args: any) => TriggerData,
-  decode: (triggerData: TriggerData) => any
-};
+export declare namespace Position {
+  namespace Specific {
+    interface Base {
+      subId1?: number,
+      subId2?: number,
+      mergeWithSameId?: boolean
+    }
+    interface RatioProtection extends Base {
+      minRatio?: number,
+      minOptimalRatio?: number,
+      repayEnabled?: boolean,
+      maxRatio?: number,
+      maxOptimalRatio?: number,
+      boostEnabled?: boolean,
+    }
+    interface CloseOnPrice extends Base {
+      price: string,
+      closeToAssetAddr: EthereumAddress,
+    }
+    interface CloseOnPriceAave extends Base {
+      collAsset: EthereumAddress,
+      collAssetId: number,
+      debtAsset: EthereumAddress,
+      debtAssetId: number,
+      baseToken: EthereumAddress,
+      quoteToken: EthereumAddress,
+      price: string,
+      ratioState: RatioState,
+    }
+    interface TrailingStop extends Base {
+      roundId: number,
+      triggerPercentage: number,
+      closeToAssetAddr: EthereumAddress,
+    }
+  }
 
-export interface AutomatedPosition {
-  chainId: ChainId,
-  owner: EthereumAddress,
-  isEnabled?: boolean,
-  protocol: Interfaces.Protocol,
-  strategy: BundleOrStrategy,
-  strategyData: {
-    encoded: {
-      triggerData: TriggerData,
-      subData: SubData,
+  export interface Automated {
+    chainId: ChainId,
+    owner: EthereumAddress,
+    subId: number,
+    subIds?: number[],
+    isEnabled?: boolean,
+    protocol: Interfaces.Protocol,
+    strategy: BundleOrStrategy,
+    strategyData: {
+      encoded: {
+        triggerData: TriggerData,
+        subData: SubData,
+      },
+      decoded: { // TODO type this?
+        triggerData: PlaceholderType,
+        subData: PlaceholderType,
+      },
     },
-    decoded: { // TODO type this?
-      triggerData: PlaceholderType,
-      subData: PlaceholderType,
-    },
-  },
-  specific: any, // TODO type this for every strategy specific?
+    specific: Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave,
+  }
+
+  interface LegacyAutomated {
+    chainId: ChainId,
+    owner: EthereumAddress,
+    isEnabled: boolean,
+    protocol: Interfaces.LegacyProtocol,
+    specific: any,
+  }
 }
 
-export interface LegacyAutomatedPosition {
-  chainId: ChainId,
-  owner: EthereumAddress,
-  isEnabled: boolean,
-  protocol: Interfaces.LegacyProtocol,
-  specific: any, // TODO type this for every strategy specific?
-}
 
 type StrategyInfo<T extends number> = Record<T, Strategy>;
 export type MainnetStrategiesInfo = StrategyInfo<Strategies.MainnetIds>;
@@ -171,8 +208,10 @@ export interface ParseData {
   strategiesSubsData: StrategyModel.StoredSubDataStructOutputStruct,
 }
 
-export type StrategiesToProtocolVersionMapping = {
+type MapToProtocolVersion<T> = {
   [i in ProtocolIdentifiers.StrategiesAutomation]: {
-    [key in Strategies.Identifiers as string]: (position: AutomatedPosition, parseData: ParseData) => AutomatedPosition
+    [key in Strategies.Identifiers as string]: T
   }
 };
+
+export type StrategiesToProtocolVersionMapping = MapToProtocolVersion<(position: Position.Automated, parseData: ParseData) => Position.Automated>;

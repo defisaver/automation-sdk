@@ -2,11 +2,12 @@ import Dec from 'decimal.js';
 import { getAssetInfo } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 
-import { ZERO_ADDRESS } from '../constants';
-import type { EthereumAddress } from '../types';
+import type { EthereumAddress, SubData } from '../types';
+import { ChainId } from '../types/enums';
 
-import { compareAddresses, ratioPercentageToWei } from './utils';
-import type { ChainId } from '../types/enums';
+import { ZERO_ADDRESS } from '../constants';
+
+import { compareAddresses, ratioPercentageToWei, weiToRatioPercentage } from './utils';
 
 const { mockedWeb3 } = process;
 
@@ -17,7 +18,7 @@ export const makerRepayFromSavingsSubData = {
     chainId: ChainId,
     daiAddr?: EthereumAddress,
     mcdCdpManagerAddr?: EthereumAddress,
-  ): [string, string, string, string] {
+  ): SubData {
     const _daiAddr = daiAddr || getAssetInfo('DAI', chainId).address;
     // @ts-ignore // TODO - this requires change in @defisaver/tokens
     const _mcdCdpManagerAddr = mcdCdpManagerAddr || otherAddresses(chainId).McdCdpManager;
@@ -30,10 +31,12 @@ export const makerRepayFromSavingsSubData = {
 
     return [vaultIdEncoded, targetRatioEncoded, daiAddrEncoded, mcdManagerAddrEncoded];
   },
-  decode(subData: Array<string>): { vaultId: number, daiAddr: string, mcdManagerAddr: string, targetRatio: string } {
+  decode(subData: SubData): { vaultId: number, daiAddr: string, mcdManagerAddr: string, targetRatio: number } {
     const vaultId = +mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]).toString();
-    // @ts-ignore
-    const targetRatio = new Dec(mockedWeb3.utils.fromWei(mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]))).mul(100).toString();
+
+    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
     const daiAddr = mockedWeb3.eth.abi.decodeParameter('address', subData[2]).toString();
     const mcdManagerAddr = mockedWeb3.eth.abi.decodeParameter('address', subData[3]).toString();
 
@@ -50,7 +53,7 @@ export const makerCloseSubData = {
     chainId: ChainId,
     daiAddr?: EthereumAddress,
     mcdCdpManagerAddr?: EthereumAddress,
-  ): [string, string, string] | [string, string, string, string] {
+  ): SubData {
     const _daiAddr = daiAddr || getAssetInfo('DAI', chainId).address;
     // @ts-ignore // TODO - this requires change in @defisaver/tokens
     const _mcdCdpManagerAddr = mcdCdpManagerAddr || otherAddresses(chainId).McdCdpManager;
@@ -58,6 +61,7 @@ export const makerCloseSubData = {
     const vaultIdEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', vaultId.toString());
     const daiAddrEncoded = mockedWeb3.eth.abi.encodeParameter('address', _daiAddr);
     const mcdManagerAddrEncoded = mockedWeb3.eth.abi.encodeParameter('address', _mcdCdpManagerAddr);
+
     if (compareAddresses(closeToAssetAddr, _daiAddr)) {
       // Close to DAI strategy
       return [vaultIdEncoded, daiAddrEncoded, mcdManagerAddrEncoded];
@@ -66,7 +70,7 @@ export const makerCloseSubData = {
     const collAddrEncoded = mockedWeb3.eth.abi.encodeParameter('address', closeToAssetAddr);
     return [vaultIdEncoded, collAddrEncoded, daiAddrEncoded, mcdManagerAddrEncoded];
   },
-  decode(subData: Array<string>): { vaultId: number, closeToAssetAddr: EthereumAddress } {
+  decode(subData: SubData): { vaultId: number, closeToAssetAddr: EthereumAddress } {
     const vaultId = +mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]);
     // if closing to collateral, asset addr will be 2nd param out of 4
     // if closing to DAI, will return 2nd param out of 3, which will be DAI addr
@@ -81,10 +85,10 @@ export const makerCloseSubData = {
 export const liquityCloseSubData = {
   encode(
     closeToAssetAddr: EthereumAddress,
-    chainId: ChainId,
+    chainId: ChainId = ChainId.Ethereum,
     collAddr?: EthereumAddress,
     debtAddr?: EthereumAddress,
-  ): [string, string] {
+  ): SubData {
     const _collAddr = collAddr || getAssetInfo('WETH', chainId).address;
     const _debtAddr = debtAddr || getAssetInfo('LUSD', chainId).address;
 
@@ -97,17 +101,19 @@ export const liquityCloseSubData = {
     // close to collateral strategy
     return [collAddrEncoded, debtAddrEncoded];
   },
-  decode(subData: Array<string>): { closeToAssetAddr: EthereumAddress, debtAddr: string } {
+  decode(subData: SubData): { closeToAssetAddr: EthereumAddress, debtAddr: string } {
     const closeToAssetAddr = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString().toLowerCase();
     const debtAddr = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString().toLowerCase();
+
     return { closeToAssetAddr, debtAddr };
   },
 };
 
 export const aaveLeverageManagementSubData = { // TODO encode?
-  decode(subData: Array<string>): { targetRatio: string } {
-    // @ts-ignore
-    const targetRatio = new Dec(mockedWeb3.utils.fromWei(mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]))).mul(100).toString();
+  decode(subData: SubData): { targetRatio: number } {
+    const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
+    const targetRatio = weiToRatioPercentage(ratioWei);
+
     return { targetRatio };
   },
 };
@@ -119,21 +125,21 @@ export const aaveV3QuotePriceSubData = {
     debtAsset: EthereumAddress,
     debtAssetId: number,
     nullAddress: EthereumAddress = ZERO_ADDRESS,
-  ): [string, string, string, string, string] {
+  ): SubData {
     const encodedColl = mockedWeb3.eth.abi.encodeParameter('address', collAsset);
     const encodedCollId = mockedWeb3.eth.abi.encodeParameter('uint8', collAssetId);
+
     const encodedDebt = mockedWeb3.eth.abi.encodeParameter('address', debtAsset);
     const encodedDebtId = mockedWeb3.eth.abi.encodeParameter('uint8', debtAssetId);
+
     const encodedNullAddress = mockedWeb3.eth.abi.encodeParameter('address', nullAddress);
 
     return [encodedColl, encodedCollId, encodedDebt, encodedDebtId, encodedNullAddress];
   },
-  decode(
-
-    subData: Array<string>,
-  ): { collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number } {
+  decode(subData: SubData): { collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number } {
     const collAsset = mockedWeb3.eth.abi.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collAssetId = Number(mockedWeb3.eth.abi.decodeParameter('uint8', subData[1]));
+
     const debtAsset = mockedWeb3.eth.abi.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const debtAssetId = Number(mockedWeb3.eth.abi.decodeParameter('uint8', subData[3]));
 
@@ -153,7 +159,7 @@ export const compoundV3LeverageManagementSubData = {
     repayTo: number,
     boostEnabled: boolean,
     isEOA: boolean,
-  ): [EthereumAddress, EthereumAddress, string, string, string, string, boolean, boolean] {
+  ): SubData {
     return [
       market,
       baseToken,
@@ -161,24 +167,46 @@ export const compoundV3LeverageManagementSubData = {
       new Dec(boostFrom).mul(1e16).toString(),
       new Dec(boostTo).mul(1e16).toString(),
       new Dec(repayTo).mul(1e16).toString(),
-      boostEnabled,
-      isEOA,
+      // @ts-ignore // TODO
+      boostEnabled, isEOA,
     ];
   },
-  decode(subData: Array<string>): { targetRatio: string } {
-    // @ts-ignore
-    const targetRatio = new Dec(mockedWeb3.utils.fromWei(mockedWeb3.eth.abi.decodeParameter('uint256', subData[3]))).mul(100).toString();
+  decode(subData: SubData): { targetRatio: number } {
+    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
     return { targetRatio };
   },
 };
 
 export const cBondsRebondSubData = {
-  encode(bondId: number | string): [string] {
+  encode(bondId: number | string): SubData {
     const bondIdEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', bondId);
     return [bondIdEncoded];
   },
-  decode(subData: Array<string>): { bondId: string } {
+  decode(subData: SubData): { bondId: string } {
     const bondId = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]).toString();
     return { bondId };
+  },
+};
+
+export const liquityPaybackUsingChickenBondSubData = {
+  /**
+   * @param sourceId bondId or subId
+   * @param sourceType 0 for bond, 1 for subId
+   */
+  encode: (sourceId: string, sourceType: number): SubData => {
+    const sourceIdEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', sourceId);
+    const sourceTypeEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', sourceType);
+    const lusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('LUSD').address);
+    const bLusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('bLUSD').address);
+
+    return [sourceIdEncoded, sourceTypeEncoded, lusdAddressEncoded, bLusdAddressEncoded];
+  },
+  decode: (subData: SubData) => {
+    const sourceId = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]).toString();
+    const sourceType = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]).toString();
+
+    return { sourceId, sourceType };
   },
 };

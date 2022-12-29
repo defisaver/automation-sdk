@@ -1,21 +1,16 @@
 import { cloneDeep } from 'lodash';
-import {
-  BUNDLES_INFO, STRATEGIES_INFO,
 
-
-} from '../constants';
+import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
 import type {
-  AutomatedPosition, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
+  Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
 } from '../types';
+import { ProtocolIdentifiers, Strategies } from '../types/enums';
 
-import { getRatioStateInfoForAaveCloseStrategy, wethToEthByAddress } from './utils';
+import { getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress } from './utils';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
-import {
-  ProtocolIdentifiers, RatioState, Strategies,
-} from '../types/enums';
 
-function parseMakerSavingsLiqProtection(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseMakerSavingsLiqProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -27,17 +22,16 @@ function parseMakerSavingsLiqProtection(position: AutomatedPosition, parseData: 
   _position.strategyData.decoded.subData = subData;
 
   _position.specific = {
-    minRatio: +triggerData.ratio,
-    minOptimalRatio: +subData.targetRatio,
+    minRatio: Number(triggerData.ratio),
+    minOptimalRatio: Number(subData.targetRatio),
     repayEnabled: true,
     boostEnabled: false,
-    strategyName: _position.strategy.strategyId,
   };
 
   return _position;
 }
 
-function parseMakerCloseOnPrice(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseMakerCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -48,20 +42,19 @@ function parseMakerCloseOnPrice(position: AutomatedPosition, parseData: ParseDat
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
-  const isTakeProfit = +triggerData.state === RatioState.OVER;
+  const isTakeProfit = isRatioStateOver(Number(triggerData.state));
+
+  _position.strategy.strategyId = isTakeProfit ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
 
   _position.specific = {
-    price: +triggerData.price,
+    price: triggerData.price,
     closeToAssetAddr: subData.closeToAssetAddr,
-    repayEnabled: false,
-    boostEnabled: false,
-    strategyName: isTakeProfit ? Strategies.Names.TakeProfit : Strategies.Names.StopLoss,
   };
 
   return _position;
 }
 
-function parseMakerTrailingStop(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseMakerTrailingStop(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -72,17 +65,18 @@ function parseMakerTrailingStop(position: AutomatedPosition, parseData: ParseDat
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.strategy.strategyId = Strategies.IdOverrides.TrailingStop;
+
   _position.specific = {
-    triggerPercentage: +triggerData.triggerPercentage,
-    roundId: +triggerData.roundId,
+    triggerPercentage: Number(triggerData.triggerPercentage),
+    roundId: Number(triggerData.roundId),
     closeToAssetAddr: subData.closeToAssetAddr,
-    strategyName: Strategies.Names.TrailingStop,
   };
 
   return _position;
 }
 
-function parseLiquityCloseOnPrice(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseLiquityCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -93,20 +87,19 @@ function parseLiquityCloseOnPrice(position: AutomatedPosition, parseData: ParseD
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
-  const isTakeProfit = +triggerData.state === RatioState.OVER;
+  const isTakeProfit = isRatioStateOver(Number(triggerData.state));
+
+  _position.strategy.strategyId = isTakeProfit ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
 
   _position.specific = {
-    price: +triggerData.price,
+    price: triggerData.price,
     closeToAssetAddr: subData.closeToAssetAddr,
-    repayEnabled: false,
-    boostEnabled: false,
-    strategyName: isTakeProfit ? Strategies.Names.TakeProfit : Strategies.Names.StopLoss,
   };
 
   return _position;
 }
 
-function parseLiquityTrailingStop(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseLiquityTrailingStop(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -117,17 +110,18 @@ function parseLiquityTrailingStop(position: AutomatedPosition, parseData: ParseD
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.strategy.strategyId = Strategies.IdOverrides.TrailingStop;
+
   _position.specific = {
-    triggerPercentage: +triggerData.triggerPercentage,
-    roundId: +triggerData.roundId,
+    triggerPercentage: Number(triggerData.triggerPercentage),
+    roundId: Number(triggerData.roundId),
     closeToAssetAddr: subData.closeToAssetAddr,
-    strategyName: Strategies.Names.TrailingStop,
   };
 
   return _position;
 }
 
-function parseAaveV3LeverageManagement(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseAaveV3LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct, subId } = parseData.subscriptionEventData;
@@ -145,24 +139,25 @@ function parseAaveV3LeverageManagement(position: AutomatedPosition, parseData: P
     _position.specific = {
       minRatio: triggerData.ratio,
       minOptimalRatio: subData.targetRatio,
-      subId1: subId,
+      repayEnabled: true,
+      subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
       maxOptimalRatio: subData.targetRatio,
       boostEnabled: isEnabled,
-      subId2: subId,
+      subId2: Number(subId),
     };
   }
 
-  _position.specific.strategyName = Strategies.Names.LeverageManagement;
-  _position.specific.mergeWithOthersOfSameName = true;
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
 
-function parseAaveV3CloseOnPrice(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -182,7 +177,6 @@ function parseAaveV3CloseOnPrice(position: AutomatedPosition, parseData: ParseDa
     quoteToken: triggerData.quoteTokenAddress,
     price: triggerData.price,
     ratioState: triggerData.ratioState,
-    strategyOrBundleId: +subStruct.strategyOrBundleId,
   };
 
   const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
@@ -192,12 +186,12 @@ function parseAaveV3CloseOnPrice(position: AutomatedPosition, parseData: ParseDa
     parseData.chainId,
   );
 
-  _position.specific.strategyName = ratioState === RatioState.OVER ? Strategies.Names.TakeProfit : Strategies.Names.StopLoss;
+  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
 
   return _position;
 }
 
-function parseCompoundV3LeverageManagement(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseCompoundV3LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct, subId } = parseData.subscriptionEventData;
@@ -209,31 +203,33 @@ function parseCompoundV3LeverageManagement(position: AutomatedPosition, parseDat
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
-  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId);
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
       minOptimalRatio: subData.targetRatio,
-      subId1: subId,
+      repayEnabled: true,
+      subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
       maxOptimalRatio: subData.targetRatio,
       boostEnabled: isEnabled,
-      subId2: subId,
+      subId2: Number(subId),
     };
   }
 
   const isEOA = _position.strategy.strategyId.includes('eoa');
-  _position.specific.strategyName = isEOA ? Strategies.Names.EoaLeverageManagement : Strategies.Names.LeverageManagement;
-  _position.specific.mergeWithOthersOfSameName = true;
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
+
+  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
 
-function parseChickenBondsRebond(position: AutomatedPosition, parseData: ParseData): AutomatedPosition {
+function parseChickenBondsRebond(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -241,14 +237,30 @@ function parseChickenBondsRebond(position: AutomatedPosition, parseData: ParseDa
   _position.strategyData.decoded.triggerData = triggerService.cBondsRebondTrigger.decode(subStruct.triggerData);
   _position.strategyData.decoded.subData = subDataService.cBondsRebondSubData.decode(subStruct.subData);
 
-  _position.specific.mergeWithOthersOfSameName = true;
+  return _position;
+}
 
+function parseLiquityBondProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
+  _position.strategyData.decoded.subData = subDataService.liquityPaybackUsingChickenBondSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+
+  _position.specific = {
+    minRatio: Number(triggerData.ratio),
+    minOptimalRatio: Infinity, // Unknown minOptimalRatio, uses all assets from chicken bond until trove min debt (2000LUSD)
+    repayEnabled: true,
+  };
   return _position;
 }
 
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
-    [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
+    [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection, // TODO union type by protocol
     [Strategies.Identifiers.CloseOnPriceToDebt]: parseMakerCloseOnPrice,
     [Strategies.Identifiers.CloseOnPriceToColl]: parseMakerCloseOnPrice,
     [Strategies.Identifiers.TrailingStopToColl]: parseMakerTrailingStop,
@@ -257,6 +269,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.Liquity]: {
     [Strategies.Identifiers.CloseOnPriceToColl]: parseLiquityCloseOnPrice,
     [Strategies.Identifiers.TrailingStopToColl]: parseLiquityTrailingStop,
+    [Strategies.Identifiers.BondProtection]: parseLiquityBondProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV3]: {
     [Strategies.Identifiers.Repay]: parseAaveV3LeverageManagement,
@@ -279,9 +292,9 @@ function getParsingMethod(id: ProtocolIdentifiers.StrategiesAutomation, strategy
   return parsingMethodsMapping[id][strategy.strategyId];
 }
 
-export function parseStrategiesAutomatedPosition(parseData: ParseData): AutomatedPosition | null {
+export function parseStrategiesAutomatedPosition(parseData: ParseData): Position.Automated | null {
   const { chainId, subscriptionEventData, strategiesSubsData } = parseData;
-  const { subStruct, proxy } = subscriptionEventData;
+  const { subStruct, proxy, subId } = subscriptionEventData;
   const { isEnabled } = strategiesSubsData;
 
   const id = subStruct.strategyOrBundleId as StrategyOrBundleIds;
@@ -294,9 +307,10 @@ export function parseStrategiesAutomatedPosition(parseData: ParseData): Automate
 
   if (!strategyOrBundleInfo) return null;
 
-  const position: AutomatedPosition = {
+  const position: Position.Automated = {
     isEnabled,
     chainId,
+    subId: Number(subId),
     owner: proxy,
     protocol: {
       ...strategyOrBundleInfo.protocol,
