@@ -1,10 +1,10 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "./umd/index.js",
-  "module": "./esm/src/index.js",
-  "types": "./esm/src/index.d.ts",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
   "scripts": {
     "version-bump": "git commit -am \"Version bump to $(npm version patch | cut -c 2-)\"",
     "build:esm": "rm -rf esm && tsc -b",

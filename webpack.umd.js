@@ -8,7 +8,7 @@ module.exports = {
     library: 'defisaver-sdk',
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'umd'),
-    filename: 'web3.d.ts',
+    filename: 'index.js',
     globalObject: 'this'
   },
   module: {
