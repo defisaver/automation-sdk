@@ -74,6 +74,12 @@ export const STRATEGIES_INFO: StrategiesInfo = {
   [ChainId.Arbitrum]: ARBITRUM_STRATEGIES_INFO,
 };
 
+export const STRATEGY_IDS = {
+  [ChainId.Ethereum]: Strategies.MainnetIds,
+  [ChainId.Optimism]: Strategies.OptimismIds,
+  [ChainId.Arbitrum]: Strategies.ArbitrumIds,
+};
+
 // Bundles info
 export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   [Bundles.MainnetIds.MAKER_REPAY_FROM_SMART_SAVINGS_YEARN]: {
@@ -158,4 +164,10 @@ export const BUNDLES_INFO: BundlesInfo = {
   [ChainId.Ethereum]: MAINNET_BUNDLES_INFO,
   [ChainId.Optimism]: OPTIMISM_BUNDLES_INFO,
   [ChainId.Arbitrum]: ARBITRUM_BUNDLES_INFO,
+};
+
+export const BUNDLE_IDS = {
+  [ChainId.Ethereum]: Bundles.MainnetIds,
+  [ChainId.Optimism]: Bundles.OptimismIds,
+  [ChainId.Arbitrum]: Bundles.ArbitrumIds,
 };
