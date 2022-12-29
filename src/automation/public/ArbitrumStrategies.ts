@@ -5,6 +5,6 @@ import { ChainId } from '../../types/enums';
 
 export default class ArbitrumStrategies extends StrategiesAutomation {
   constructor(args: Interfaces.Automation) {
-    super({ provider: args.provider, chainId: ChainId.Arbitrum });
+    super({ ...args, chainId: ChainId.Arbitrum });
   }
 }

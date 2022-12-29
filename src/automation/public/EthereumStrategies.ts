@@ -5,6 +5,6 @@ import { ChainId } from '../../types/enums';
 
 export default class EthereumStrategies extends StrategiesAutomation {
   constructor(args: Interfaces.Automation) {
-    super({ provider: args.provider, chainId: ChainId.Ethereum });
+    super({ ...args, chainId: ChainId.Ethereum });
   }
 }
