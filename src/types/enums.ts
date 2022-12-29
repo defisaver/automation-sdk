@@ -4,12 +4,12 @@ export enum ChainId {
   Arbitrum = 42161,
 }
 
-export const enum RatioState {
+export enum RatioState {
   OVER = 0,
   UNDER = 1,
 }
 
-export const enum BundleProtocols {
+export enum BundleProtocols {
   MStable = 'mstable',
   Yearn = 'yearn',
   Rari = 'rari',
@@ -39,7 +39,7 @@ export namespace ProtocolIdentifiers {
 }
 
 export namespace Strategies {
-  export const enum MainnetIds {
+  export enum MainnetIds {
     MAKER_CLOSE_ON_PRICE_TO_DAI = 7,
     MAKER_CLOSE_ON_PRICE_TO_COLL = 9,
     LIQUITY_CLOSE_ON_PRICE_TO_COLL_DEPRECATED = 10, // replaced with 14
@@ -50,11 +50,11 @@ export namespace Strategies {
     CHICKEN_BONDS_REBOND = 31,
   }
 
-  export const enum OptimismIds {}
+  export enum OptimismIds {}
 
-  export const enum ArbitrumIds {}
+  export enum ArbitrumIds {}
 
-  export const enum Identifiers {
+  export enum Identifiers {
     SavingsLiqProtection = 'smart-savings-liquidation-protection',
     Repay = 'repay',
     EoaRepay = 'eoa-repay',
@@ -67,8 +67,9 @@ export namespace Strategies {
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
+    BondProtection = 'bond-protection',
   }
-  export const enum Names {
+  export enum IdOverrides {
     TakeProfit = 'take-profit',
     StopLoss = 'stop-loss',
     TrailingStop = 'trailing-stop',
@@ -78,7 +79,7 @@ export namespace Strategies {
 }
 
 export namespace Bundles {
-  export const enum MainnetIds {
+  export enum MainnetIds {
     MAKER_REPAY_FROM_SMART_SAVINGS_YEARN = 0,
     MAKER_REPAY_FROM_SMART_SAVINGS_MSTABLE = 1,
     MAKER_REPAY_FROM_SMART_SAVINGS_RARI = 2,
@@ -86,16 +87,17 @@ export namespace Bundles {
     COMP_V3_SW_BOOST_BUNDLE = 4,
     COMP_V3_EOA_REPAY_BUNDLE = 5,
     COMP_V3_EOA_BOOST_BUNDLE = 6,
+    LIQUITY_PAYBACK_USING_CHICKEN_BOND = 7,
   }
 
-  export const enum OptimismIds {
+  export enum OptimismIds {
     AAVE_V3_REPAY = 0,
     AAVE_V3_BOOST = 1,
     AAVE_V3_CLOSE_TO_DEBT = 2,
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
   }
 
-  export const enum ArbitrumIds {
+  export enum ArbitrumIds {
     AAVE_V3_REPAY = 0,
     AAVE_V3_BOOST = 1,
     AAVE_V3_CLOSE_TO_DEBT = 2,
