@@ -18,13 +18,14 @@ import * as triggerService from './services/triggerService';
 import * as subDataService from './services/subDataService';
 import * as strategySubService from './services/strategySubService';
 import * as constants from './constants';
-import { getRatioStateInfoForAaveCloseStrategy, compareSubHashes } from './services/utils';
 
 import * as enums from './types/enums';
 import type * as types from './types';
 
+import { getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId } from './services/utils';
+
 const utils = {
-  getRatioStateInfoForAaveCloseStrategy, compareSubHashes,
+  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId,
 };
 
 export {
