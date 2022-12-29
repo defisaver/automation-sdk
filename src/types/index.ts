@@ -94,13 +94,14 @@ export declare namespace Interfaces {
   }
 }
 
-export interface Strategy {
+export interface Strategy<T = StrategyOrBundleIds> {
+  strategyOrBundleId: T,
   strategyId: Strategies.Identifiers | Strategies.IdOverrides,
   protocol: Interfaces.Protocol,
   isBundle?: boolean,
 }
 
-export interface BundleOrStrategy extends Strategy {
+export interface BundleOrStrategy<T = StrategyOrBundleIds> extends Strategy<T> {
   bundleId?: string,
   bundleName?: string,
 }
@@ -175,12 +176,12 @@ export declare namespace Position {
 }
 
 
-type StrategyInfo<T extends number> = Record<T, Strategy>;
+type StrategyInfo<T extends number> = Record<T, Strategy<T>>;
 export type MainnetStrategiesInfo = StrategyInfo<Strategies.MainnetIds>;
 export type OptimismStrategiesInfo = StrategyInfo<Strategies.OptimismIds>;
 export type ArbitrumStrategiesInfo = StrategyInfo<Strategies.ArbitrumIds>;
 
-type BundleInfo<T extends number> = Record<T, BundleOrStrategy>;
+type BundleInfo<T extends number> = Record<T, BundleOrStrategy<T>>;
 export type MainnetBundleInfo = BundleInfo<Bundles.MainnetIds>;
 export type OptimismBundleInfo = BundleInfo<Bundles.OptimismIds>;
 export type ArbitrumBundleInfo = BundleInfo<Bundles.ArbitrumIds>;
