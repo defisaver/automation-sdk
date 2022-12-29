@@ -55,6 +55,34 @@ export function ratioPercentageToWei(ratioPercentage: number) {
   return mockedWeb3.utils.toWei(new Dec(ratioPercentage).div(100).toString());
 }
 
+export function weiToRatioPercentage(ratioWei: string) {
+  return new Dec(mockedWeb3.utils.fromWei(new Dec(ratioWei).mul(100).toString())).toNumber();
+}
+
+export function isRatioStateOver(ratioState: RatioState): boolean {
+  return ratioState === RatioState.OVER;
+}
+
+export function isRatioStateUnder(ratioState: RatioState): boolean {
+  return ratioState === RatioState.UNDER;
+}
+
+export function isEmptyBytes(string: string) {
+  return string === '0x0000000000000000000000000000000000000000';
+}
+
+export function requireAddress(address: EthereumAddress): void | never {
+  if (typeof address !== 'string') throw new Error('Address is not a string');
+  if (address === '') throw new Error('Address is empty string');
+  if (address.length < 42) throw new Error(`Address too short (${address.length} instead of 42)`);
+  if (isEmptyBytes(address)) throw new Error('Address is empty bytes');
+  if (!(new RegExp(/0x[0-9a-fA-F]{40}/).test(address))) throw new Error('Address invalid');
+}
+
+export function requireAddresses(addresses: EthereumAddress[]) {
+  addresses.forEach((address) => requireAddress(address));
+}
+
 export function getRatioStateInfoForAaveCloseStrategy(
   currentRatioState: RatioState,
   collAsset: EthereumAddress,
@@ -65,7 +93,7 @@ export function getRatioStateInfoForAaveCloseStrategy(
   const shouldFlip = getAssetInfoByAddress(collAsset, chainId).isStable && !getAssetInfoByAddress(debtAsset, chainId).isStable;
   let ratioState = currentRatioState;
   if (shouldFlip) {
-    ratioState = currentRatioState === RatioState.OVER
+    ratioState = isRatioStateOver(currentRatioState)
       ? ratioState = RatioState.UNDER
       : ratioState = RatioState.OVER;
   }
