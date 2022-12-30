@@ -294,7 +294,9 @@ function getParsingMethod(id: ProtocolIdentifiers.StrategiesAutomation, strategy
 
 export function parseStrategiesAutomatedPosition(parseData: ParseData): Position.Automated | null {
   const { chainId, subscriptionEventData, strategiesSubsData } = parseData;
-  const { subStruct, proxy, subId } = subscriptionEventData;
+  const {
+    subStruct, proxy, subId, subHash,
+  } = subscriptionEventData;
   const { isEnabled } = strategiesSubsData;
 
   const id = subStruct.strategyOrBundleId as StrategyOrBundleIds;
@@ -310,6 +312,7 @@ export function parseStrategiesAutomatedPosition(parseData: ParseData): Position
   const position: Position.Automated = {
     isEnabled,
     chainId,
+    subHash,
     subId: Number(subId),
     owner: proxy,
     protocol: {

@@ -152,6 +152,7 @@ export declare namespace Position {
     subId: number,
     subIds?: number[],
     isEnabled?: boolean,
+    subHash: string,
     protocol: Interfaces.Protocol,
     strategy: BundleOrStrategy,
     strategyData: {
