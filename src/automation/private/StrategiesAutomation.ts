@@ -117,9 +117,9 @@ export default class StrategiesAutomation extends Automation {
                   copyList[mergePairIndex] = {
                     ...mergePair,
                     ...current,
+                    subIds: isDefined(mergePair.subIds) ? [...mergePair.subIds, current.subId] : undefined,
                     isEnabled: mergePair.isEnabled || current.isEnabled,
                     subId: mergePair.subId,
-                    subIds: [...addToArrayIf(isDefined(mergePair.subIds), mergePair.subIds), current.subId],
                     specific: {
                       ...mergePair.specific,
                       ...current.specific,
