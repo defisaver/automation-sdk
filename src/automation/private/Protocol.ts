@@ -6,6 +6,8 @@ export default class Protocol implements Interfaces.Protocol {
 
   name: string;
 
+  slug: string;
+
   version: string;
 
   fullName: string;
@@ -16,6 +18,7 @@ export default class Protocol implements Interfaces.Protocol {
     this.id = args.id;
 
     this.name = this.getName();
+    this.slug = this.getSlug();
     this.version = this.getVersion();
     this.fullName = this.getFullName();
   }
@@ -37,6 +40,10 @@ export default class Protocol implements Interfaces.Protocol {
 
   private getName() {
     return this.hasVersion() ? this.splitId()[0] : this.id;
+  }
+
+  private getSlug() {
+    return this.name.split(' ').join('-').toLowerCase();
   }
 
   private getFullName() {

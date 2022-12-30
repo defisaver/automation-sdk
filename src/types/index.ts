@@ -71,6 +71,7 @@ export declare namespace Interfaces {
   interface ProtocolBase {
     id: ProtocolIdentifiers.StrategiesAutomation | ProtocolIdentifiers.LegacyAutomation,
     name: string,
+    slug: string,
     fullName: string,
     version: string,
   }
