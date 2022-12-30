@@ -190,13 +190,13 @@ export const compoundV3Encode = {
   leverageManagement(
     market: EthereumAddress,
     baseToken: EthereumAddress,
-    repayFrom: number,
-    boostFrom: number,
-    boostTo: number,
-    repayTo: number,
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
     boostEnabled: boolean,
     isEOA: boolean,
   ) {
-    return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, repayFrom, boostFrom, boostTo, repayTo, boostEnabled, isEOA);
+    return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled, isEOA);
   },
 };

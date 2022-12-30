@@ -153,20 +153,20 @@ export const compoundV3LeverageManagementSubData = {
   encode(
     market: EthereumAddress,
     baseToken: EthereumAddress,
-    repayFrom: number,
-    boostFrom: number,
-    boostTo: number,
-    repayTo: number,
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
     boostEnabled: boolean,
     isEOA: boolean,
   ): SubData {
     return [
       market,
       baseToken,
-      new Dec(repayFrom).mul(1e16).toString(),
-      new Dec(boostFrom).mul(1e16).toString(),
-      new Dec(boostTo).mul(1e16).toString(),
-      new Dec(repayTo).mul(1e16).toString(),
+      new Dec(minRatio).mul(1e16).toString(),
+      new Dec(maxRatio).mul(1e16).toString(),
+      new Dec(maxOptimalRatio).mul(1e16).toString(),
+      new Dec(minOptimalRatio).mul(1e16).toString(),
       // @ts-ignore // TODO
       boostEnabled, isEOA,
     ];
