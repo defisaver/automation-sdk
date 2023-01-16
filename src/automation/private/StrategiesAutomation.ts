@@ -1,5 +1,5 @@
 import type Web3 from 'web3';
-import type { PastEventOptions, Filter } from 'web3-eth-contract';
+import type { PastEventOptions } from 'web3-eth-contract';
 import type {
   Position, Interfaces, EthereumAddress,
   SubscriptionOptions, Contract, ParseData, PlaceholderType,
@@ -84,7 +84,10 @@ export default class StrategiesAutomation extends Automation {
         let latestUpdate = subscriptionEvents[index];
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
-          const updates = await this.getUpdateDataEventsFromSubStorage({ ...addToObjectIf(!!_options, _options), filter: latestUpdate.subId as any as Filter });
+          const updates = await this.getUpdateDataEventsFromSubStorage({
+            ...addToObjectIf(!!_options, _options),
+            filter: { subId: latestUpdate.subId },
+          });
           latestUpdate = {
             ...latestUpdate, // Update is missing proxy, hence this
             ...updates?.[updates.length - 1]?.returnValues,
