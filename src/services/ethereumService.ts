@@ -48,8 +48,8 @@ export function getEventsFromContract<T extends BaseContract>(
   return contractWithMeta.contract.getPastEvents(
     event,
     {
-      ...addToObjectIf(isDefined(options), options),
       fromBlock: contractWithMeta.createdBlock,
+      ...addToObjectIf(isDefined(options), options),
     },
   );
 }
