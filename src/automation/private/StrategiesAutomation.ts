@@ -59,7 +59,9 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected async getUpdateDataEventsFromSubStorage(options?: PastEventOptions) {
-    return this.getEventFromSubStorage('UpdateData', options);
+    const events = await this.getEventFromSubStorage('UpdateData', options);
+    /** @dev - Some RPCs sort events differently */
+    return events.sort((a, b) => a.blockNumber - b.blockNumber);
   }
 
   protected getParsedSubscriptions(parseData: ParseData) {
