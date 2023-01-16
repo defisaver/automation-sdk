@@ -8,9 +8,7 @@ import type {
   Subscribe, StrategyModel, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 
-import {
-  addToArrayIf, addToObjectIf, isDefined,
-} from '../../services/utils';
+import { addToObjectIf, isDefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
 
@@ -86,7 +84,7 @@ export default class StrategiesAutomation extends Automation {
         let latestUpdate = subscriptionEvents[index];
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
-          const updates = await this.getUpdateDataEventsFromSubStorage({ filter: latestUpdate.subId as any as Filter });
+          const updates = await this.getUpdateDataEventsFromSubStorage({ ...addToObjectIf(!!_options, _options), filter: latestUpdate.subId as any as Filter });
           latestUpdate = {
             ...latestUpdate, // Update is missing proxy, hence this
             ...updates?.[updates.length - 1]?.returnValues,
