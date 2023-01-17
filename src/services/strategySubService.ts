@@ -64,7 +64,7 @@ export const makerEncode = {
     const subData = subDataService.makerCloseSubData.encode(vaultId, closeToAssetAddr, chainId, daiAddr, mcdCdpManagerAddr);
     const triggerData = triggerService.trailingStopTrigger.encode(chainlinkCollAddress, triggerPercentage, roundId);
 
-    const strategyOrBundleId = compareAddresses(closeToAssetAddr, getAssetInfo('DAI').address)
+    const strategyOrBundleId = compareAddresses(closeToAssetAddr, getAssetInfo('DAI', chainId).address)
       ? Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_DAI
       : Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_COLL;
 

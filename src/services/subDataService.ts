@@ -194,12 +194,13 @@ export const liquityPaybackUsingChickenBondSubData = {
   /**
    * @param sourceId bondId or subId
    * @param sourceType 0 for bond, 1 for subId
+   * @param chainId
    */
-  encode: (sourceId: string, sourceType: number): SubData => {
+  encode: (sourceId: string, sourceType: number, chainId: ChainId = ChainId.Ethereum): SubData => {
     const sourceIdEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', sourceId);
     const sourceTypeEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', sourceType);
-    const lusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('LUSD').address);
-    const bLusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('bLUSD').address);
+    const lusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('LUSD', chainId).address);
+    const bLusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', getAssetInfo('bLUSD', chainId).address);
 
     return [sourceIdEncoded, sourceTypeEncoded, lusdAddressEncoded, bLusdAddressEncoded];
   },
