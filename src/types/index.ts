@@ -173,6 +173,10 @@ export declare namespace Position {
     owner: EthereumAddress,
     isEnabled: boolean,
     protocol: Interfaces.LegacyProtocol,
+    strategy: {
+      strategyId: string,
+      protocol: Interfaces.Protocol,
+    },
     specific: any,
   }
 }

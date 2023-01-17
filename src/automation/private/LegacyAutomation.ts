@@ -109,6 +109,10 @@ export default class LegacyAutomation extends Automation {
       isEnabled: true,
       protocol: this.protocol,
       specific: { ...sub },
+      strategy: {
+        strategyId: 'legacy',
+        protocol: this.protocol,
+      },
     }));
 
     return subscriptions;
