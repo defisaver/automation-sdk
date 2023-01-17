@@ -971,6 +971,13 @@
   dependencies:
     decimal.js "^10.2.1"
 
+"@defisaver/tokens@^1.4.25":
+  version "1.4.25"
+  resolved "https://registry.yarnpkg.com/@defisaver/tokens/-/tokens-1.4.25.tgz#5d5dd03104b0cda8668fb5762fdd17b2d07d3601"
+  integrity sha512-Ek/Rs137zieBcGL6NA+OeLHE0VLsdSRwlYg0TvhDhmwVz2Z9ou87CFIkv8Na9Ppx4VvjxFPmb2mcODRC6wP6fA==
+  dependencies:
+    decimal.js "^10.2.1"
+
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
