@@ -16,8 +16,8 @@ export const makerEncode = {
     vaultId: number,
     priceOverOrUnder: RatioState,
     targetRatio: number,
-    chainId: ChainId = ChainId.Ethereum,
     isBundle: boolean = true,
+    chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
     mcdCdpManagerAddr?: EthereumAddress,
   ) {
