@@ -110,6 +110,7 @@ export default class StrategiesAutomation extends Automation {
             if (current.specific.mergeWithSameId) {
               const mergePairIndex = copyList.findIndex(s => (
                 s && s.specific.mergeWithSameId
+                && s.owner === current.owner
                 && s.strategy.strategyId === current.strategy.strategyId
                 && s.protocol.id === current.protocol.id
               ));
