@@ -153,6 +153,7 @@ export declare namespace Position {
     subIds?: number[],
     isEnabled?: boolean,
     subHash: string,
+    blockNumber: BlockNumber,
     protocol: Interfaces.Protocol,
     strategy: BundleOrStrategy,
     strategyData: {
@@ -168,7 +169,7 @@ export declare namespace Position {
     specific: Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave,
   }
 
-  interface LegacyAutomated {
+  export interface LegacyAutomated {
     chainId: ChainId,
     owner: EthereumAddress,
     isEnabled: boolean,
@@ -180,7 +181,6 @@ export declare namespace Position {
     specific: any,
   }
 }
-
 
 type StrategyInfo<T extends number> = Record<T, Strategy<T>>;
 export type MainnetStrategiesInfo = StrategyInfo<Strategies.MainnetIds>;
@@ -208,9 +208,9 @@ export type StrategyOrBundleIds =
   Strategies.MainnetIds & Strategies.OptimismIds & Strategies.ArbitrumIds
   & Bundles.MainnetIds & Bundles.OptimismIds & Bundles.ArbitrumIds;
 
-
 export interface ParseData {
   chainId: ChainId,
+  blockNumber: BlockNumber,
   subscriptionEventData: Subscribe['returnValues']
   strategiesSubsData: StrategyModel.StoredSubDataStructOutputStruct,
 }
