@@ -24,15 +24,15 @@ export enum BundleProtocols {
  */
 export namespace ProtocolIdentifiers {
   export enum StrategiesAutomation {
-    MakerDAO = 'MakerDAO__MCD',
+    MakerDAO = 'MakerDAO',
     Liquity = 'Liquity',
-    ChickenBonds = 'ChickenBonds',
+    ChickenBonds = 'Chicken Bonds',
     CompoundV3 = 'Compound__V3',
     AaveV3 = 'Aave__V3',
   }
 
   export enum LegacyAutomation {
-    MakerDAO = 'MakerDAO__MCD',
+    MakerDAO = 'MakerDAO',
     CompoundV2 = 'Compound__V2',
     AaveV2 = 'Aave__V2',
   }
