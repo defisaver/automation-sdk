@@ -1,3 +1,4 @@
+import Dec from 'decimal.js';
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
 import type {
@@ -74,16 +75,16 @@ export default class StrategiesAutomation extends Automation {
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
     };
 
-    const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)).map(e => e.returnValues) as PlaceholderType; // TODO PlaceholderType
+    const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
 
     let subscriptions: (Position.Automated | null)[] = [];
 
     if (subscriptionEvents) {
       // @ts-ignore
-      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.subId));
+      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId));
 
       subscriptions = await Promise.all(strategiesSubs.map(async (sub, index: number) => {
-        let latestUpdate = subscriptionEvents[index];
+        let latestUpdate = subscriptionEvents[index].returnValues;
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
           const updates = await this.getUpdateDataEventsFromSubStorage({
@@ -97,6 +98,7 @@ export default class StrategiesAutomation extends Automation {
         }
         return this.getParsedSubscriptions({
           chainId: this.chainId,
+          blockNumber: subscriptionEvents[index].blockNumber,
           subscriptionEventData: latestUpdate,
           strategiesSubsData: sub,
         });
@@ -121,6 +123,8 @@ export default class StrategiesAutomation extends Automation {
                   copyList[mergePairIndex] = {
                     ...mergePair,
                     ...current,
+                    // @ts-ignore
+                    blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
                     subIds: isDefined(mergePair.subIds) ? [...mergePair.subIds, current.subId] : undefined,
                     isEnabled: mergePair.isEnabled || current.isEnabled,
                     subId: mergePair.subId,

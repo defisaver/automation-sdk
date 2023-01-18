@@ -80,7 +80,6 @@ export default class LegacyAutomation extends Automation {
     return (await multicall(this.web3, this.chainId, multicallCalls)).map(res => res[0]);
   }
 
-
   // Aave and Compound use 'user' for property name
   private getOwnerPropName() {
     return this.protocol.id === ProtocolIdentifiers.LegacyAutomation.MakerDAO ? 'owner' : 'user';
@@ -100,10 +99,10 @@ export default class LegacyAutomation extends Automation {
   }
 
   protected async getParsedSubscriptions(addresses?: EthereumAddress[]): Promise<Position.LegacyAutomated[]> {
-    let subscriptions = await this._getSubscriptions(addresses);
+    const subscriptions = await this._getSubscriptions(addresses);
 
     // @ts-ignore
-    subscriptions = subscriptions.map(sub => ({
+    return subscriptions.map((sub) => ({
       chainId: this.chainId,
       owner: sub[this.getOwnerPropName()],
       isEnabled: true,
@@ -114,8 +113,6 @@ export default class LegacyAutomation extends Automation {
         protocol: this.protocol,
       },
     }));
-
-    return subscriptions;
   }
 
   public async getSubscriptions(): Promise<Position.LegacyAutomated[]> {
