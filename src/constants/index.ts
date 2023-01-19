@@ -48,7 +48,7 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
   [Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL]: {
     strategyOrBundleId: Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL,
     strategyId: Strategies.Identifiers.CloseOnPriceToColl,
-    protocol: PROTOCOLS.MakerDAO,
+    protocol: PROTOCOLS.Liquity,
   },
   [Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_COLL]: {
     strategyOrBundleId: Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_COLL,
