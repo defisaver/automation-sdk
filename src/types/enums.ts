@@ -88,6 +88,8 @@ export namespace Bundles {
     COMP_V3_EOA_REPAY_BUNDLE = 5,
     COMP_V3_EOA_BOOST_BUNDLE = 6,
     LIQUITY_PAYBACK_USING_CHICKEN_BOND = 7,
+    AAVE_V3_REPAY = 8,
+    AAVE_V3_BOOST = 9,
   }
 
   export enum OptimismIds {
