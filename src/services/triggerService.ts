@@ -44,9 +44,14 @@ export const makerRatioTrigger = {
 };
 
 export const aaveV3RatioTrigger = {
+  encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+  },
   decode(triggerData: TriggerData) {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as string[];
     return {
+      owner: decodedData[0],
       market: decodedData[1],
       ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
       ratioState: Number(decodedData[3]),
