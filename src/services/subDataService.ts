@@ -82,6 +82,22 @@ export const makerCloseSubData = {
   },
 };
 
+export const makerLeverageManagementSubData = {
+  // encode: (vaultId:number, repayFrom, boostFrom, boostTo, repayTo, boostEnabled) => [
+  //   vaultId,
+  //   new Dec(repayFrom).mul(1e16).toString(),
+  //   new Dec(boostFrom).mul(1e16).toString(),
+  //   new Dec(boostTo).mul(1e16).toString(),
+  //   new Dec(repayTo).mul(1e16).toString(),
+  //   boostEnabled,
+  // ],
+  decode: (subData:SubData) => {
+    const vaultId = +mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]).toString();
+    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+    return { vaultId, targetRatio };
+  },
+};
 export const liquityCloseSubData = {
   encode(
     closeToAssetAddr: EthereumAddress,

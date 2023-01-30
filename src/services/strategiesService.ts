@@ -75,7 +75,41 @@ function parseMakerTrailingStop(position: Position.Automated, parseData: ParseDa
 
   return _position;
 }
+function parseMakerLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
 
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.makerLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
 function parseLiquityCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -265,6 +299,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseOnPriceToColl]: parseMakerCloseOnPrice,
     [Strategies.Identifiers.TrailingStopToColl]: parseMakerTrailingStop,
     [Strategies.Identifiers.TrailingStopToDebt]: parseMakerTrailingStop,
+    [Strategies.Identifiers.Repay]: parseMakerLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseMakerLeverageManagement,
   },
   [ProtocolIdentifiers.StrategiesAutomation.Liquity]: {
     [Strategies.Identifiers.CloseOnPriceToColl]: parseLiquityCloseOnPrice,

@@ -90,6 +90,8 @@ export namespace Bundles {
     LIQUITY_PAYBACK_USING_CHICKEN_BOND = 7,
     AAVE_V3_REPAY = 8,
     AAVE_V3_BOOST = 9,
+    MAKER_REPAY = 10,
+    MAKER_BOOST = 11,
   }
 
   export enum OptimismIds {

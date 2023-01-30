@@ -146,6 +146,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.MAKER_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.MAKER_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.MakerDAO,
+  },
+  [Bundles.MainnetIds.MAKER_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.MAKER_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.MakerDAO,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

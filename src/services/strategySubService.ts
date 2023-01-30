@@ -72,6 +72,23 @@ export const makerEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagement(
+    vaultId:number,
+    minRatio:string,
+    maxRatio:string,
+    maxOptimalRatio:string,
+    minOptimalRatio:string,
+    boostEnabled:boolean,
+  ) {
+    return [
+      vaultId,
+      new Dec(minRatio).mul(1e16).toString(),
+      new Dec(maxRatio).mul(1e16).toString(),
+      new Dec(maxOptimalRatio).mul(1e16).toString(),
+      new Dec(minOptimalRatio).mul(1e16).toString(),
+      boostEnabled,
+    ];
+  },
 };
 
 export const liquityEncode = {
