@@ -70,11 +70,43 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Rebond,
     protocol: PROTOCOLS.ChickenBonds,
   },
+  [Strategies.MainnetIds.EXCHANGE_DCA]: {
+    strategyOrBundleId: Strategies.MainnetIds.EXCHANGE_DCA,
+    strategyId: Strategies.Identifiers.Dca,
+    protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.MainnetIds.EXCHANGE_LIMIT_ORDER]: {
+    strategyOrBundleId: Strategies.MainnetIds.EXCHANGE_LIMIT_ORDER,
+    strategyId: Strategies.Identifiers.LimitOrder,
+    protocol: PROTOCOLS.Exchange,
+  },
 };
 
-export const OPTIMISM_STRATEGIES_INFO = {};
+export const OPTIMISM_STRATEGIES_INFO = {
+  [Strategies.OptimismIds.EXCHANGE_DCA]: {
+    strategyOrBundleId: Strategies.OptimismIds.EXCHANGE_DCA,
+    strategyId: Strategies.Identifiers.Dca,
+    protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.OptimismIds.EXCHANGE_LIMIT_ORDER]: {
+    strategyOrBundleId: Strategies.OptimismIds.EXCHANGE_LIMIT_ORDER,
+    strategyId: Strategies.Identifiers.LimitOrder,
+    protocol: PROTOCOLS.Exchange,
+  },
+};
 
-export const ARBITRUM_STRATEGIES_INFO = {};
+export const ARBITRUM_STRATEGIES_INFO = {
+  [Strategies.ArbitrumIds.EXCHANGE_DCA]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_DCA,
+    strategyId: Strategies.Identifiers.Dca,
+    protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER,
+    strategyId: Strategies.Identifiers.LimitOrder,
+    protocol: PROTOCOLS.Exchange,
+  },
+};
 
 export const STRATEGIES_INFO: StrategiesInfo = {
   [ChainId.Ethereum]: MAINNET_STRATEGIES_INFO,

@@ -227,3 +227,42 @@ export const liquityPaybackUsingChickenBondSubData = {
     return { sourceId, sourceType };
   },
 };
+
+export const exchangeDcaSubData = {
+  encode: (fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, interval: number) : SubData => {
+    const sellTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', fromToken);
+    const buyTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', toToken);
+    const amountEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', amount);
+    const intervalEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', interval);
+
+    return [sellTokenEncoded, buyTokenEncoded, amountEncoded, intervalEncoded];
+  },
+  decode: (subData: SubData) => {
+    const fromToken = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString();
+    const toToken = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString();
+    const amount = mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString();
+    const interval = mockedWeb3.eth.abi.decodeParameter('uint256', subData[3]).toString();
+    return {
+      fromToken,
+      toToken,
+      amount,
+      interval,
+    };
+  },
+};
+
+export const exchangeLimitOrderSubData = {
+  encode: (fromToken: EthereumAddress, toToken: EthereumAddress, amount: string) : SubData => {
+    const fromTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', fromToken);
+    const toTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', toToken);
+    const amountEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', amount);
+
+    return [fromTokenEncoded, toTokenEncoded, amountEncoded];
+  },
+  decode: (subData: SubData) => {
+    const fromToken = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString();
+    const toToken = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString();
+    const amount = mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString();
+    return { fromToken, toToken, amount };
+  },
+};

@@ -217,3 +217,33 @@ export const compoundV3Encode = {
     return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled, isEOA);
   },
 };
+
+export const ExchangeEncode = {
+  dca(
+    fromToken: EthereumAddress,
+    toToken: EthereumAddress,
+    amount: string,
+    timestamp: number,
+    interval: number,
+  ) {
+    requireAddresses([fromToken, toToken]);
+    const subData = subDataService.exchangeDcaSubData.encode(fromToken, toToken, amount, interval);
+    const triggerData = triggerService.exchangeTimestampTrigger.encode(timestamp, interval);
+    const strategyId = Strategies.MainnetIds.EXCHANGE_DCA;
+
+    return [strategyId, false, triggerData, subData];
+  },
+  limitOrder(
+    fromToken: EthereumAddress,
+    toToken: EthereumAddress,
+    amount: string,
+    targetPrice: string,
+    goodUntil: number,
+  ) {
+    const strategyId = Strategies.MainnetIds.EXCHANGE_LIMIT_ORDER;
+    const subData = subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount);
+    const triggerData = triggerService.exchangeOffchainPriceTrigger.encode(targetPrice, goodUntil);
+
+    return [strategyId, false, triggerData, subData];
+  },
+};

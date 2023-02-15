@@ -292,6 +292,27 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
   return _position;
 }
 
+function parseExchangeDca(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  _position.strategyData.decoded.triggerData = triggerService.exchangeTimestampTrigger.decode(subStruct.triggerData);
+  _position.strategyData.decoded.subData = subDataService.exchangeDcaSubData.decode(subStruct.subData);
+
+  return _position;
+}
+function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData);
+  _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData);
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection, // TODO union type by protocol
@@ -321,6 +342,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   },
   [ProtocolIdentifiers.StrategiesAutomation.ChickenBonds]: {
     [Strategies.Identifiers.Rebond]: parseChickenBondsRebond,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.Exchange]: {
+    [Strategies.Identifiers.Dca]: parseExchangeDca,
+    [Strategies.Identifiers.LimitOrder]: parseExchangeLimitOrder,
   },
 };
 
