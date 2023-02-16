@@ -236,7 +236,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-
+  _position.owner = triggerData.owner;
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
