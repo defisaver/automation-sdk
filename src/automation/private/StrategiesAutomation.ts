@@ -58,8 +58,29 @@ export default class StrategiesAutomation extends Automation {
     };
 
     const multicallCalls = subIds.map((subId) => ({ ...defaultOptions, params: [subId] }));
+    const subs = await multicall(this.web3, this.chainId, multicallCalls);
 
-    return multicall(this.web3, this.chainId, multicallCalls);
+    let subsFork : any[] = [];
+
+    if (this.web3Fork && this.subStorageContractFork) {
+      const subStorageContractFork = this.subStorageContractFork;
+
+      const forkOptions = {
+        target: subStorageContractFork.address,
+        abiItem: getAbiItem(subStorageContractFork.abi, 'strategiesSubs'),
+      };
+
+      const multicallCallsFork = subIds.map((subId) => ({ ...forkOptions, params: [subId] }));
+      subsFork = await multicall(this.web3Fork, this.chainId, multicallCallsFork);
+    }
+
+
+    const subsCombined = [...subs, ...subsFork].filter((value, index, self) => index === self.findIndex((t) => (
+      t.strategySubHash === value.strategySubHash
+    )),
+    );
+
+    return subsCombined;
   }
 
   protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
@@ -81,6 +102,7 @@ export default class StrategiesAutomation extends Automation {
       ...addToObjectIf(isDefined(options), options),
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
     };
+
 
     const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
 
