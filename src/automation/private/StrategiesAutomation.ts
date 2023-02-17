@@ -19,6 +19,7 @@ import type { ChainId } from '../../types/enums';
 
 interface IStrategiesAutomation extends Interfaces.Automation {
   chainId: ChainId,
+  providerFork: Web3,
 }
 
 export default class StrategiesAutomation extends Automation {
@@ -26,20 +27,26 @@ export default class StrategiesAutomation extends Automation {
 
   protected web3: Web3;
 
+  protected web3Fork: Web3;
+
   protected subStorageContract: Contract.WithMeta<SubStorage>;
+
+  protected subStorageContractFork: Contract.WithMeta<SubStorage> | null;
 
   constructor(args: IStrategiesAutomation) {
     super();
 
     this.web3 = args.provider;
+    this.web3Fork = args.providerFork;
     this.chainId = args.chainId;
     this.subStorageContract = makeSubStorageContract(this.web3, this.chainId);
+    this.subStorageContractFork = this.web3Fork ? makeSubStorageContract(this.web3Fork, this.chainId) : null;
 
     this.assert();
   }
 
   protected async getEventFromSubStorage(event: string, options?: PastEventOptions) {
-    return getEventsFromContract<SubStorage>(this.subStorageContract, event, options);
+    return getEventsFromContract<SubStorage>(this.subStorageContract, this.subStorageContractFork, event, options);
   }
 
   protected async getStrategiesSubs(subIds: number[]): Promise<StrategyModel.StoredSubDataStructOutputStruct[]> {
