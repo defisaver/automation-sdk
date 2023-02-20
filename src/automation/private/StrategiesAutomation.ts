@@ -19,6 +19,7 @@ import type { ChainId } from '../../types/enums';
 
 interface IStrategiesAutomation extends Interfaces.Automation {
   chainId: ChainId,
+  providerFork: Web3,
 }
 
 export default class StrategiesAutomation extends Automation {
@@ -26,33 +27,48 @@ export default class StrategiesAutomation extends Automation {
 
   protected web3: Web3;
 
+  protected web3Fork: Web3;
+
   protected subStorageContract: Contract.WithMeta<SubStorage>;
+
+  protected subStorageContractFork: Contract.WithMeta<SubStorage> | null;
 
   constructor(args: IStrategiesAutomation) {
     super();
 
     this.web3 = args.provider;
+    this.web3Fork = args.providerFork;
     this.chainId = args.chainId;
     this.subStorageContract = makeSubStorageContract(this.web3, this.chainId);
+    this.subStorageContractFork = this.web3Fork ? makeSubStorageContract(this.web3Fork, this.chainId) : null;
 
     this.assert();
   }
 
   protected async getEventFromSubStorage(event: string, options?: PastEventOptions) {
-    return getEventsFromContract<SubStorage>(this.subStorageContract, event, options);
+    return getEventsFromContract<SubStorage>(this.subStorageContract, this.subStorageContractFork, event, options);
   }
 
   protected async getStrategiesSubs(subIds: number[]): Promise<StrategyModel.StoredSubDataStructOutputStruct[]> {
-    const subStorageContract = this.subStorageContract;
+    let options : any;
+    let web3: Web3;
 
-    const defaultOptions = {
-      target: subStorageContract.address,
-      abiItem: getAbiItem(subStorageContract.abi, 'strategiesSubs'),
-    };
+    if (this.web3Fork && this.subStorageContractFork) {
+      options = {
+        target: this.subStorageContractFork.address,
+        abiItem: getAbiItem(this.subStorageContractFork.abi, 'strategiesSubs'),
+      };
+      web3 = this.web3Fork;
+    } else {
+      options = {
+        target: this.subStorageContract.address,
+        abiItem: getAbiItem(this.subStorageContract.abi, 'strategiesSubs'),
+      };
+      web3 = this.web3;
+    }
 
-    const multicallCalls = subIds.map((subId) => ({ ...defaultOptions, params: [subId] }));
-
-    return multicall(this.web3, this.chainId, multicallCalls);
+    const multicallCalls = subIds.map((subId) => ({ ...options, params: [subId] }));
+    return multicall(web3, this.chainId, multicallCalls);
   }
 
   protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
@@ -74,6 +90,7 @@ export default class StrategiesAutomation extends Automation {
       ...addToObjectIf(isDefined(options), options),
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
     };
+
 
     const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
 
