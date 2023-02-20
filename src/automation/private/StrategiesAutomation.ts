@@ -50,37 +50,25 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected async getStrategiesSubs(subIds: number[]): Promise<StrategyModel.StoredSubDataStructOutputStruct[]> {
-    const subStorageContract = this.subStorageContract;
-
-    const defaultOptions = {
-      target: subStorageContract.address,
-      abiItem: getAbiItem(subStorageContract.abi, 'strategiesSubs'),
-    };
-
-    const multicallCalls = subIds.map((subId) => ({ ...defaultOptions, params: [subId] }));
-    const subs = await multicall(this.web3, this.chainId, multicallCalls);
-
-    let subsFork : any[] = [];
+    let options : any;
+    let web3: Web3;
 
     if (this.web3Fork && this.subStorageContractFork) {
-      const subStorageContractFork = this.subStorageContractFork;
-
-      const forkOptions = {
-        target: subStorageContractFork.address,
-        abiItem: getAbiItem(subStorageContractFork.abi, 'strategiesSubs'),
+      options = {
+        target: this.subStorageContractFork.address,
+        abiItem: getAbiItem(this.subStorageContractFork.abi, 'strategiesSubs'),
       };
-
-      const multicallCallsFork = subIds.map((subId) => ({ ...forkOptions, params: [subId] }));
-      subsFork = await multicall(this.web3Fork, this.chainId, multicallCallsFork);
+      web3 = this.web3Fork;
+    } else {
+      options = {
+        target: this.subStorageContract.address,
+        abiItem: getAbiItem(this.subStorageContract.abi, 'strategiesSubs'),
+      };
+      web3 = this.web3;
     }
 
-
-    const subsCombined = [...subs, ...subsFork].filter((value, index, self) => index === self.findIndex((t) => (
-      t.strategySubHash === value.strategySubHash
-    )),
-    );
-
-    return subsCombined;
+    const multicallCalls = subIds.map((subId) => ({ ...options, params: [subId] }));
+    return multicall(web3, this.chainId, multicallCalls);
   }
 
   protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
