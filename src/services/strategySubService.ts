@@ -218,7 +218,7 @@ export const compoundV3Encode = {
   },
 };
 
-export const ExchangeEncode = {
+export const exchangeEncode = {
   dca(
     fromToken: EthereumAddress,
     toToken: EthereumAddress,
