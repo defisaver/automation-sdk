@@ -147,6 +147,8 @@ export declare namespace Position {
     }
   }
 
+  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave;
+
   export interface Automated {
     chainId: ChainId,
     owner: EthereumAddress,
@@ -167,7 +169,7 @@ export declare namespace Position {
         subData: PlaceholderType,
       },
     },
-    specific: Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave,
+    specific: SpecificAny,
   }
 
   export interface LegacyAutomated {

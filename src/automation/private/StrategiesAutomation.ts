@@ -8,14 +8,14 @@ import type {
 import type {
   Subscribe, StrategyModel, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
+import type { ChainId } from '../../types/enums';
 
 import { addToObjectIf, isDefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
+import { parseStrategiesAutomatedPosition } from '../../services/strategiesService';
 
 import Automation from './Automation';
-import { parseStrategiesAutomatedPosition } from '../../services/strategiesService';
-import type { ChainId } from '../../types/enums';
 
 interface IStrategiesAutomation extends Interfaces.Automation {
   chainId: ChainId,

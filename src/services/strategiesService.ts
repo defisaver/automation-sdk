@@ -294,7 +294,7 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
 
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
-    [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection, // TODO union type by protocol
+    [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
     [Strategies.Identifiers.CloseOnPriceToDebt]: parseMakerCloseOnPrice,
     [Strategies.Identifiers.CloseOnPriceToColl]: parseMakerCloseOnPrice,
     [Strategies.Identifiers.TrailingStopToColl]: parseMakerTrailingStop,
