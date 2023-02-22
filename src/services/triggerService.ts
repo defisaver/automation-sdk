@@ -192,7 +192,7 @@ export const exchangeTimestampTrigger = {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
     return {
       timestamp: new Dec(mockedWeb3.utils.fromWei(decodedData[0])).toNumber(),
-      interval: new Dec(mockedWeb3.utils.fromWei(decodedData[0])).toNumber(),
+      interval: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).toNumber(),
     };
   },
 };
@@ -200,19 +200,21 @@ export const exchangeOffchainPriceTrigger = {
   encode(
     targetPrice: string,
     goodUntil: number,
+    fromTokenDecimals: number,
   ) {
-    const price = new Dec(targetPrice.toString()).mul(10 ** 8).floor().toString();
+    const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
     const goodUntilWei = mockedWeb3.utils.toWei(new Dec(goodUntil).toString());
     return [mockedWeb3.eth.abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei])];
   },
   decode(
     triggerData: TriggerData,
+    fromTokenDecimals: number,
   ): { targetPrice: string, goodUntil: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
-    const price = new Dec(decodedData[2]).div(10 ** 8).toDP(8).toString();
+    const price = new Dec(decodedData[0]).div(10 ** fromTokenDecimals).toDP(fromTokenDecimals).toString();
     return {
       targetPrice: price,
-      goodUntil: new Dec(mockedWeb3.utils.fromWei(decodedData[0])).toNumber(),
+      goodUntil: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).toNumber(),
     };
   },
 };

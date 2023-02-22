@@ -1,3 +1,4 @@
+import { getAssetInfoByAddress } from '@defisaver/tokens';
 import { cloneDeep } from 'lodash';
 
 import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
@@ -307,8 +308,9 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData);
   _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData);
+  const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken).decimals;
+  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals);
 
   return _position;
 }
