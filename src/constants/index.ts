@@ -158,12 +158,12 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   },
   [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT,
-    strategyId: Strategies.Identifiers.CloseOnPriceToDebt,
+    strategyId: Strategies.Identifiers.CloseToDebt,
     protocol: PROTOCOLS.AaveV3,
   },
   [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL,
-    strategyId: Strategies.Identifiers.CloseOnPriceToColl,
+    strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
 };
