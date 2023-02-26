@@ -1,7 +1,7 @@
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
 import type {
-  BlockNumber, Multicall, Contract,
+  BlockNumber, Multicall, Contract, PlaceholderType,
 } from '../types';
 
 import { makeUniMulticallContract } from './contractService';
@@ -41,15 +41,28 @@ export async function multicall(
   return formattedResult;
 }
 
-export function getEventsFromContract<T extends BaseContract>(
+export async function getEventsFromContract<T extends BaseContract>(
   contractWithMeta: Contract.WithMeta<T>,
+  contractWithMetaFork: Contract.WithMeta<T> | null,
   event: string, options?: PastEventOptions,
 ) {
-  return contractWithMeta.contract.getPastEvents(
+  const events = await contractWithMeta.contract.getPastEvents(
     event,
     {
-      fromBlock: contractWithMeta.createdBlock,
-      ...addToObjectIf(isDefined(options), options),
+      ...addToObjectIf(isDefined(options), { ...options, fromBlock: contractWithMeta.createdBlock }),
     },
   );
+
+  let eventsFork : PlaceholderType = [];
+
+  if (contractWithMetaFork) {
+    eventsFork = await contractWithMetaFork.contract.getPastEvents(
+      event,
+      {
+        ...addToObjectIf(isDefined(options), { ...options, toBlock: 'latest' }),
+      },
+    );
+  }
+
+  return [...events, ...eventsFork];
 }

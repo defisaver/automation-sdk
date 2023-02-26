@@ -103,6 +103,8 @@ export namespace Bundles {
     AAVE_V3_BOOST = 9,
     MAKER_REPAY = 10,
     MAKER_BOOST = 11,
+    AAVE_V3_CLOSE_TO_DEBT = 12,
+    AAVE_V3_CLOSE_TO_COLLATERAL = 13,
   }
 
   export enum OptimismIds {

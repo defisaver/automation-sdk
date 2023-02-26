@@ -188,6 +188,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.MakerDAO,
   },
+  [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT,
+    strategyId: Strategies.Identifiers.CloseToDebt,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL,
+    strategyId: Strategies.Identifiers.CloseToCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
