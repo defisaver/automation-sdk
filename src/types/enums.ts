@@ -29,7 +29,7 @@ export namespace ProtocolIdentifiers {
     ChickenBonds = 'Chicken Bonds',
     CompoundV3 = 'Compound__V3',
     AaveV3 = 'Aave__V3',
-    Morpho = 'Morpho',
+    MorphoAaveV2 = 'Morpho-Aave__V2',
   }
 
   export enum LegacyAutomation {

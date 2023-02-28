@@ -358,7 +358,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.ChickenBonds]: {
     [Strategies.Identifiers.Rebond]: parseChickenBondsRebond,
   },
-  [ProtocolIdentifiers.StrategiesAutomation.Morpho]: {
+  [ProtocolIdentifiers.StrategiesAutomation.MorphoAaveV2]: {
     [Strategies.Identifiers.Repay]: parseMorphoAaveV2LeverageManagement,
     [Strategies.Identifiers.Boost]: parseMorphoAaveV2LeverageManagement,
   },
