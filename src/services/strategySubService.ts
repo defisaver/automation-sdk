@@ -222,10 +222,10 @@ export const morphoAaveV2Encode = {
   leverageManagement(
     minRatio: number,
     maxRatio: number,
-    minOptimalRatio: number,
     maxOptimalRatio: number,
+    minOptimalRatio: number,
     boostEnabled: boolean,
   ) {
-    return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, minOptimalRatio, maxOptimalRatio, boostEnabled);
+    return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
   },
 };

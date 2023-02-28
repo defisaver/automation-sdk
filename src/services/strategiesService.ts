@@ -198,7 +198,7 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.morphoAaveV2RatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.morphoLeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.morphoAaveV2LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
