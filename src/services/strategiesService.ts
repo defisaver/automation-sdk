@@ -191,6 +191,42 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   return _position;
 }
 
+function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.morphoAaveV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
+
 function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -321,6 +357,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   },
   [ProtocolIdentifiers.StrategiesAutomation.ChickenBonds]: {
     [Strategies.Identifiers.Rebond]: parseChickenBondsRebond,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.Morpho]: {
+    [Strategies.Identifiers.Repay]: parseMorphoAaveV2LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseMorphoAaveV2LeverageManagement,
   },
 };
 

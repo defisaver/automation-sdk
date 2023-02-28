@@ -134,6 +134,15 @@ export const aaveLeverageManagementSubData = { // TODO encode?
   },
 };
 
+export const morphoLeverageManagementSubData = {
+  decode(subData: SubData): { targetRatio: number } {
+    const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
+    const targetRatio = weiToRatioPercentage(ratioWei);
+
+    return { targetRatio };
+  },
+};
+
 export const aaveV3QuotePriceSubData = {
   encode(
     collAsset: EthereumAddress,

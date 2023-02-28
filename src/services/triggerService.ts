@@ -59,6 +59,21 @@ export const aaveV3RatioTrigger = {
   },
 };
 
+export const morphoAaveV2RatioTrigger = {
+  encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+  },
+  decode(triggerData: TriggerData) {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]) as string[];
+    return {
+      owner: decodedData[0],
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};
+
 export const aaveV3QuotePriceTrigger = {
   encode(
     baseTokenAddress: EthereumAddress,
