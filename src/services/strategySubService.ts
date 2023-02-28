@@ -217,3 +217,15 @@ export const compoundV3Encode = {
     return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled, isEOA);
   },
 };
+
+export const morphoAaveV2Encode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    minOptimalRatio: number,
+    maxOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, minOptimalRatio, maxOptimalRatio, boostEnabled);
+  },
+};
