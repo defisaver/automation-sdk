@@ -29,6 +29,7 @@ export namespace ProtocolIdentifiers {
     ChickenBonds = 'Chicken Bonds',
     CompoundV3 = 'Compound__V3',
     AaveV3 = 'Aave__V3',
+    MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
   }
 
@@ -105,6 +106,8 @@ export namespace Bundles {
     MAKER_BOOST = 11,
     AAVE_V3_CLOSE_TO_DEBT = 12,
     AAVE_V3_CLOSE_TO_COLLATERAL = 13,
+    MORPHO_AAVE_V2_REPAY = 14,
+    MORPHO_AAVE_V2_BOOST = 15,
   }
 
   export enum OptimismIds {

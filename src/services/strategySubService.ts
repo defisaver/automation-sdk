@@ -218,6 +218,18 @@ export const compoundV3Encode = {
   },
 };
 
+export const morphoAaveV2Encode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
+  },
+};
+
 export const exchangeEncode = {
   dca(
     fromToken: EthereumAddress,
