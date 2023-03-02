@@ -203,13 +203,14 @@ export const morphoAaveV2LeverageManagementSubData = {
     minOptimalRatio: number,
     boostEnabled: boolean,
   ): SubData {
-    const encodedMinRatio = mockedWeb3.eth.abi.encodeParameter('uint128', new Dec(minRatio).mul(1e16).toString());
-    const encodedMaxRatio = mockedWeb3.eth.abi.encodeParameter('uint128', new Dec(maxRatio).mul(1e16).toString());
-    const encodedMaxOptimalRatio = mockedWeb3.eth.abi.encodeParameter('uint128', new Dec(maxOptimalRatio).mul(1e16).toString());
-    const encodedMinOptimalRatio = mockedWeb3.eth.abi.encodeParameter('uint128', new Dec(minOptimalRatio).mul(1e16).toString());
-    const encodedBoostEnabled = mockedWeb3.eth.abi.encodeParameter('bool', boostEnabled);
-
-    return [encodedMinRatio, encodedMaxRatio, encodedMaxOptimalRatio, encodedMinOptimalRatio, encodedBoostEnabled];
+    return [
+      ratioPercentageToWei(minRatio),
+      ratioPercentageToWei(maxRatio),
+      ratioPercentageToWei(maxOptimalRatio),
+      ratioPercentageToWei(minOptimalRatio),
+      // @ts-ignore
+      boostEnabled,
+    ];
   },
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint128', subData[1]) as any as string;
