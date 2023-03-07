@@ -1,5 +1,5 @@
 import Dec from 'decimal.js';
-import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
+import { getAssetInfo } from '@defisaver/tokens';
 
 import {
   Bundles, ChainId, RatioState, Strategies,
@@ -250,13 +250,8 @@ export const exchangeEncode = {
     toToken: EthereumAddress,
     amount: string,
     targetPrice: string,
-    goodUntil: number,
+    goodUntil: string,
   ) {
-    const strategyId = Strategies.MainnetIds.EXCHANGE_LIMIT_ORDER;
-    const subData = subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount);
-    const fromTokenDecimals = getAssetInfoByAddress(fromToken).decimals;
-    const triggerData = triggerService.exchangeOffchainPriceTrigger.encode(targetPrice, goodUntil, fromTokenDecimals);
-
-    return [strategyId, false, triggerData, subData];
+    return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil);
   },
 };
