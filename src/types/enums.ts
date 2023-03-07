@@ -51,7 +51,7 @@ export namespace Strategies {
     LIQUITY_CLOSE_ON_PRICE_TO_COLL = 14,
     CHICKEN_BONDS_REBOND = 31,
     EXCHANGE_DCA = 46,
-    EXCHANGE_LIMIT_ORDER = 37,
+    EXCHANGE_LIMIT_ORDER = 51,
   }
 
   export enum OptimismIds {
