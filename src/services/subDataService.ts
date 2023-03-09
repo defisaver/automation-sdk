@@ -276,13 +276,14 @@ export const exchangeDcaSubData = {
 };
 
 export const exchangeLimitOrderSubData = {
-  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string) : SubData {
+  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: number) : SubData {
     return [
       fromToken,
       toToken,
       amount,
       targetPrice,
-      goodUntil,
+      new Dec(goodUntil).toString(),
+      new Dec(orderType).toString(),
     ];
   },
   decode: (subData: SubData) => {

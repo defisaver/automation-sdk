@@ -224,12 +224,13 @@ export const exchangeOffchainPriceTrigger = {
   decode(
     triggerData: TriggerData,
     fromTokenDecimals: number,
-  ): { targetPrice: string, goodUntil: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
+  ): { orderType: number; targetPrice: string; goodUntil: any } {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
     const price = new Dec(decodedData[0]).div(new Dec(10).pow(fromTokenDecimals)).toDP(fromTokenDecimals).toString();
     return {
       targetPrice: price,
       goodUntil: decodedData[1],
+      orderType: +decodedData[2],
     };
   },
 };

@@ -251,7 +251,8 @@ export const exchangeEncode = {
     amount: string,
     targetPrice: string,
     goodUntil: string,
+    orderType: number,
   ) {
-    return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil);
+    return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil, orderType);
   },
 };
