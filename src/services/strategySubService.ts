@@ -237,11 +237,18 @@ export const exchangeEncode = {
     amount: string,
     timestamp: number,
     interval: number,
+    network: number,
   ) {
     requireAddresses([fromToken, toToken]);
     const subData = subDataService.exchangeDcaSubData.encode(fromToken, toToken, amount, interval);
     const triggerData = triggerService.exchangeTimestampTrigger.encode(timestamp, interval);
-    const strategyId = Strategies.MainnetIds.EXCHANGE_DCA;
+    const selectedNetwork = network === 1
+      ? 'MainnetIds'
+      : network === 10
+        ? 'OptimismIds'
+        : 'ArbitrumIds';
+
+    const strategyId = Strategies[selectedNetwork].EXCHANGE_DCA;
 
     return [strategyId, false, triggerData, subData];
   },
