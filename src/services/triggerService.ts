@@ -206,8 +206,8 @@ export const exchangeTimestampTrigger = {
   ): { timestamp: number, interval: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
     return {
-      timestamp: new Dec(mockedWeb3.utils.fromWei(decodedData[0])).toNumber(),
-      interval: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).toNumber(),
+      timestamp: decodedData[0].toNumber(),
+      interval: decodedData[1].toNumber(),
     };
   },
 };
