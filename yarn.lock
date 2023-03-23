@@ -949,6 +949,14 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@defisaver/eslint-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@defisaver/eslint-config/-/eslint-config-1.0.0.tgz#c620eca4a50aa776a22fed791e4546e98cc74761"
+  integrity sha512-VFliLmwflJN8qUL+9hw4itmQ2oBgbn9UhKb3hW6ucy54PMkqie94Rd09GD/Jk2HkyTzw5Xwy6Jx8ECjIYyPtMg==
+  dependencies:
+    eslint-config-airbnb "^19.0.0"
+    eslint-config-airbnb-typescript "^17.0.0"
+
 "@defisaver/sdk@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@defisaver/sdk/-/sdk-1.0.5.tgz#845c7390769a4179e9e7e20161649a301061ef87"
@@ -3063,6 +3071,15 @@ eslint-config-airbnb@^18.0.2:
     eslint-config-airbnb-base "^14.2.1"
     object.assign "^4.1.2"
     object.entries "^1.1.2"
+
+eslint-config-airbnb@^19.0.0:
+  version "19.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-config-airbnb/-/eslint-config-airbnb-19.0.4.tgz#84d4c3490ad70a0ffa571138ebcdea6ab085fdc3"
+  integrity sha512-T75QYQVQX57jiNgpF9r1KegMICE94VYwoFQyMGhrvc+lB8YF2E/M/PYDaQe1AJcWaEgqLE+ErXV1Og/+6Vyzew==
+  dependencies:
+    eslint-config-airbnb-base "^15.0.0"
+    object.assign "^4.1.2"
+    object.entries "^1.1.5"
 
 eslint-import-resolver-node@^0.3.6:
   version "0.3.6"
