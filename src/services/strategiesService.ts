@@ -1,3 +1,4 @@
+import { getAssetInfoByAddress } from '@defisaver/tokens';
 import { cloneDeep } from 'lodash';
 
 import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
@@ -328,6 +329,28 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
   return _position;
 }
 
+function parseExchangeDca(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  _position.strategyData.decoded.triggerData = triggerService.exchangeTimestampTrigger.decode(subStruct.triggerData);
+  _position.strategyData.decoded.subData = subDataService.exchangeDcaSubData.decode(subStruct.subData);
+
+  return _position;
+}
+function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData);
+  const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken).decimals;
+  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals);
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -361,6 +384,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MorphoAaveV2]: {
     [Strategies.Identifiers.Repay]: parseMorphoAaveV2LeverageManagement,
     [Strategies.Identifiers.Boost]: parseMorphoAaveV2LeverageManagement,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.Exchange]: {
+    [Strategies.Identifiers.Dca]: parseExchangeDca,
+    [Strategies.Identifiers.LimitOrder]: parseExchangeLimitOrder,
   },
 };
 
