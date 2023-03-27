@@ -30,6 +30,7 @@ export namespace ProtocolIdentifiers {
     CompoundV3 = 'Compound__V3',
     AaveV3 = 'Aave__V3',
     MorphoAaveV2 = 'Morpho-Aave__V2',
+    Exchange = 'Exchange',
   }
 
   export enum LegacyAutomation {
@@ -49,11 +50,19 @@ export namespace Strategies {
     LIQUITY_TRAILING_STOP_LOSS_TO_COLL = 13,
     LIQUITY_CLOSE_ON_PRICE_TO_COLL = 14,
     CHICKEN_BONDS_REBOND = 31,
+    EXCHANGE_DCA = 46,
+    EXCHANGE_LIMIT_ORDER = 51,
   }
 
-  export enum OptimismIds {}
+  export enum OptimismIds {
+    EXCHANGE_DCA = 8,
+    EXCHANGE_LIMIT_ORDER = 9,
+  }
 
-  export enum ArbitrumIds {}
+  export enum ArbitrumIds {
+    EXCHANGE_DCA = 8,
+    EXCHANGE_LIMIT_ORDER = 9,
+  }
 
   export enum Identifiers {
     SavingsLiqProtection = 'smart-savings-liquidation-protection',
@@ -69,6 +78,8 @@ export namespace Strategies {
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
     BondProtection = 'bond-protection',
+    Dca = 'dca',
+    LimitOrder = 'limit-order',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',

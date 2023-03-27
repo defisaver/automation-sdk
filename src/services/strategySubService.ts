@@ -229,3 +229,37 @@ export const morphoAaveV2Encode = {
     return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
   },
 };
+
+export const exchangeEncode = {
+  dca(
+    fromToken: EthereumAddress,
+    toToken: EthereumAddress,
+    amount: string,
+    timestamp: number,
+    interval: number,
+    network: number,
+  ) {
+    requireAddresses([fromToken, toToken]);
+    const subData = subDataService.exchangeDcaSubData.encode(fromToken, toToken, amount, interval);
+    const triggerData = triggerService.exchangeTimestampTrigger.encode(timestamp, interval);
+    const selectedNetwork = network === 1
+      ? 'MainnetIds'
+      : network === 10
+        ? 'OptimismIds'
+        : 'ArbitrumIds';
+
+    const strategyId = Strategies[selectedNetwork].EXCHANGE_DCA;
+
+    return [strategyId, false, triggerData, subData];
+  },
+  limitOrder(
+    fromToken: EthereumAddress,
+    toToken: EthereumAddress,
+    amount: string,
+    targetPrice: string,
+    goodUntil: string,
+    orderType: number,
+  ) {
+    return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil, orderType);
+  },
+};

@@ -1,5 +1,5 @@
 import Dec from 'decimal.js';
-import { getAssetInfo } from '@defisaver/tokens';
+import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 
 import type { EthereumAddress, SubData } from '../types';
@@ -250,5 +250,47 @@ export const liquityPaybackUsingChickenBondSubData = {
     const sourceType = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]).toString();
 
     return { sourceId, sourceType };
+  },
+};
+
+export const exchangeDcaSubData = {
+  encode: (fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, interval: number) : SubData => {
+    const sellTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', fromToken);
+    const buyTokenEncoded = mockedWeb3.eth.abi.encodeParameter('address', toToken);
+    const amountEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', amount);
+    const intervalEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', interval);
+
+    return [sellTokenEncoded, buyTokenEncoded, amountEncoded, intervalEncoded];
+  },
+  decode: (subData: SubData) => {
+    const fromToken = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString();
+    const toToken = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString();
+    const amount = assetAmountInEth(mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString(), getAssetInfoByAddress(fromToken).symbol);
+    const interval = mockedWeb3.eth.abi.decodeParameter('uint256', subData[3]).toString();
+    return {
+      fromToken,
+      toToken,
+      amount,
+      interval,
+    };
+  },
+};
+
+export const exchangeLimitOrderSubData = {
+  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: number) : SubData {
+    return [
+      fromToken,
+      toToken,
+      amount,
+      targetPrice,
+      new Dec(goodUntil).toString(),
+      new Dec(orderType).toString(),
+    ];
+  },
+  decode: (subData: SubData) => {
+    const fromToken = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString();
+    const toToken = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString();
+    const amount = assetAmountInEth(mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString(), getAssetInfoByAddress(fromToken).symbol);
+    return { fromToken, toToken, amount };
   },
 };
