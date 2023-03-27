@@ -20,6 +20,7 @@
   "repository": "https://github.com/defisaver/automation-sdk",
   "license": "ISC",
   "dependencies": {
+    "@defisaver/eslint-config": "^1.0.0",
     "@defisaver/sdk": "^1.0.5",
     "@defisaver/tokens": "^1.4.25",
     "@ethersproject/address": "^5.0.10",
