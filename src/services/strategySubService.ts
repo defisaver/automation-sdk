@@ -14,15 +14,15 @@ export const makerEncode = {
   repayFromSavings(
     bundleId: StrategyOrBundleIds,
     vaultId: number,
-    priceOverOrUnder: RatioState,
-    targetRatio: number,
+    minRatio: number,
+    minOptimalRatio: number,
     isBundle: boolean = true,
     chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
     mcdCdpManagerAddr?: EthereumAddress,
   ) {
-    const subData = subDataService.makerRepayFromSavingsSubData.encode(vaultId, targetRatio, chainId, daiAddr, mcdCdpManagerAddr);
-    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, priceOverOrUnder, RatioState.UNDER);
+    const subData = subDataService.makerRepayFromSavingsSubData.encode(vaultId, minOptimalRatio, chainId, daiAddr, mcdCdpManagerAddr);
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, minRatio, RatioState.UNDER);
 
     return [bundleId, isBundle, triggerData, subData];
   },
