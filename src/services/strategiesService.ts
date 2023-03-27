@@ -330,13 +330,13 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
   return _position;
 }
 
-function parseExchangeDca(position: Position.Automated, parseData: ParseData): Position.Automated {
+function parseExchangeDca(position: Position.Automated, parseData: ParseData, chainId: ChainId): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
 
   _position.strategyData.decoded.triggerData = triggerService.exchangeTimestampTrigger.decode(subStruct.triggerData);
-  _position.strategyData.decoded.subData = subDataService.exchangeDcaSubData.decode(subStruct.subData);
+  _position.strategyData.decoded.subData = subDataService.exchangeDcaSubData.decode(subStruct.subData, chainId);
 
   return _position;
 }
