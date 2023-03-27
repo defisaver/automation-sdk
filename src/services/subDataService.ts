@@ -287,10 +287,10 @@ export const exchangeLimitOrderSubData = {
       new Dec(orderType).toString(),
     ];
   },
-  decode: (subData: SubData) => {
+  decode: (subData: SubData, chainId: ChainId) => {
     const fromToken = mockedWeb3.eth.abi.decodeParameter('address', subData[0]).toString();
     const toToken = mockedWeb3.eth.abi.decodeParameter('address', subData[1]).toString();
-    const amount = assetAmountInEth(mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString(), getAssetInfoByAddress(fromToken).symbol);
+    const amount = assetAmountInEth(mockedWeb3.eth.abi.decodeParameter('uint256', subData[2]).toString(), getAssetInfoByAddress(fromToken, chainId).symbol);
     return { fromToken, toToken, amount };
   },
 };

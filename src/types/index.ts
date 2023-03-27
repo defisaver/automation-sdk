@@ -224,4 +224,4 @@ type MapToProtocolVersion<T> = {
   }
 };
 
-export type StrategiesToProtocolVersionMapping = MapToProtocolVersion<(position: Position.Automated, parseData: ParseData) => Position.Automated>;
+export type StrategiesToProtocolVersionMapping = MapToProtocolVersion<(position: Position.Automated, parseData: ParseData, chainId: ChainId) => Position.Automated>;

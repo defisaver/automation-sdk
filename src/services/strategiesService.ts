@@ -5,6 +5,7 @@ import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
 import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
 } from '../types';
+import type { ChainId } from '../types/enums';
 import { ProtocolIdentifiers, Strategies } from '../types/enums';
 
 import { getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress } from './utils';
@@ -339,13 +340,13 @@ function parseExchangeDca(position: Position.Automated, parseData: ParseData): P
 
   return _position;
 }
-function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseData): Position.Automated {
+function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseData, chainId: ChainId): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData);
-  const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken).decimals;
+  _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData, chainId);
+  const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken, chainId).decimals;
   _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals);
 
   return _position;
@@ -441,5 +442,5 @@ export function parseStrategiesAutomatedPosition(parseData: ParseData): Position
     specific: {},
   };
 
-  return getParsingMethod(position.protocol.id, position.strategy)(position, parseData);
+  return getParsingMethod(position.protocol.id, position.strategy)(position, parseData, chainId);
 }
