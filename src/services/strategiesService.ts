@@ -347,7 +347,8 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 
   _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData, chainId);
   const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken, chainId).decimals;
-  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals);
+  const toTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.toToken, chainId).decimals;
+  _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals, toTokenDecimals);
 
   return _position;
 }
