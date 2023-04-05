@@ -352,6 +352,41 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 
   return _position;
 }
+function parseLiquityLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
 
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
@@ -367,6 +402,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseOnPriceToColl]: parseLiquityCloseOnPrice,
     [Strategies.Identifiers.TrailingStopToColl]: parseLiquityTrailingStop,
     [Strategies.Identifiers.BondProtection]: parseLiquityBondProtection,
+    [Strategies.Identifiers.Repay]: parseLiquityLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV3]: {
     [Strategies.Identifiers.Repay]: parseAaveV3LeverageManagement,

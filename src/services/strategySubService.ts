@@ -149,6 +149,21 @@ export const liquityEncode = {
 
     return [strategyId, isBundle, triggerData, subData];
   },
+  leverageManagement(
+    minRatio:string,
+    maxRatio:string,
+    maxOptimalRatio:string,
+    minOptimalRatio:string,
+    boostEnabled:boolean,
+  ) {
+    return [
+      new Dec(minRatio).mul(1e16).toString(),
+      new Dec(maxRatio).mul(1e16).toString(),
+      new Dec(maxOptimalRatio).mul(1e16).toString(),
+      new Dec(minOptimalRatio).mul(1e16).toString(),
+      boostEnabled,
+    ];
+  },
 };
 
 export const chickenBondsEncode = {

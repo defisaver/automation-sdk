@@ -108,6 +108,8 @@ export namespace Bundles {
     AAVE_V3_CLOSE_TO_COLLATERAL = 13,
     MORPHO_AAVE_V2_REPAY = 14,
     MORPHO_AAVE_V2_BOOST = 15,
+    LIQUITY_REPAY = 16,
+    LIQUITY_BOOST = 17,
   }
 
   export enum OptimismIds {
