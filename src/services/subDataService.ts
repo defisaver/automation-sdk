@@ -98,6 +98,13 @@ export const makerLeverageManagementSubData = {
     return { vaultId, targetRatio };
   },
 };
+export const liquityLeverageManagementSubData = {
+  decode: (subData:SubData) => {
+    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+    return { targetRatio };
+  },
+};
 export const liquityCloseSubData = {
   encode(
     closeToAssetAddr: EthereumAddress,

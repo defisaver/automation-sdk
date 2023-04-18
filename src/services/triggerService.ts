@@ -120,11 +120,11 @@ export const liquityRatioTrigger = {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
-  decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: string } {
+  decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toString(),
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(),
       ratioState: +decodedData[2],
     };
   },

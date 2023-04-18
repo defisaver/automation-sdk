@@ -208,6 +208,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.MorphoAaveV2,
   },
+  [Bundles.MainnetIds.LIQUITY_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.Liquity,
+  },
+  [Bundles.MainnetIds.LIQUITY_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.Liquity,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
