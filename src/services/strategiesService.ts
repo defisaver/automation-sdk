@@ -253,8 +253,8 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
 
   const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
     _position.specific.ratioState,
-    wethToEthByAddress(_position.specific.collAsset),
-    wethToEthByAddress(_position.specific.debtAsset),
+    wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
+    wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
     parseData.chainId,
   );
 
