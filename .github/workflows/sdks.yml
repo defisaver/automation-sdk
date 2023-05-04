@@ -9,10 +9,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Setup SSH Key
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-          ssh-private-key: ${{ secrets.ORM_READ_KEY }}
     - name: Update sdks
       run: npm update @defisaver/sdk @defisaver/tokens @defisaver/eslint-config --no-audit
     - name: Add credentials
