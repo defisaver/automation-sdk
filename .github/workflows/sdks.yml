@@ -8,9 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+    - name: Set Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
     - name: Update sdks
-      run: npm update @defisaver/sdk @defisaver/tokens @defisaver/eslint-config --no-audit
+      uses: borales/actions-yarn@v4
+      with:
+        cmd: upgrade @defisaver/sdk @defisaver/tokens @defisaver/eslint-config
     - name: Add credentials
       uses: oleksiyrudenko/gha-git-credentials@v2-latest
       with:
