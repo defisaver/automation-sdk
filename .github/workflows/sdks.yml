@@ -1,0 +1,27 @@
+name: Update sdks
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 12 * * *
+jobs:
+  update-sdk:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Setup SSH Key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+          ssh-private-key: ${{ secrets.ORM_READ_KEY }}
+    - name: Update sdks
+      run: npm update @defisaver/sdk @defisaver/tokens @defisaver/eslint-config --no-audit
+    - name: Add credentials
+      uses: oleksiyrudenko/gha-git-credentials@v2-latest
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: "Update sdks (automated)"
+        title: "Update sdks"
+        delete-branch: true
