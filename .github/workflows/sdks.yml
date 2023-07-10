@@ -1,0 +1,29 @@
+name: Update sdks
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 12 * * *
+jobs:
+  update-sdk:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Set Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    - name: Update sdks
+      uses: borales/actions-yarn@v4
+      with:
+        cmd: upgrade @defisaver/sdk @defisaver/tokens @defisaver/eslint-config
+    - name: Add credentials
+      uses: oleksiyrudenko/gha-git-credentials@v2-latest
+      with:
+        token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: "Update sdks (automated)"
+        title: "Update sdks"
+        delete-branch: true
