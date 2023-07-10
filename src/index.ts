@@ -17,6 +17,7 @@ import ArbitrumStrategies from './automation/public/ArbitrumStrategies';
 import * as triggerService from './services/triggerService';
 import * as subDataService from './services/subDataService';
 import * as strategySubService from './services/strategySubService';
+import * as strategiesService from './services/strategiesService';
 import * as constants from './constants';
 
 import * as enums from './types/enums';
@@ -32,7 +33,7 @@ export {
   LegacyMakerAutomation, LegacyAaveAutomation, LegacyCompoundAutomation,
   EthereumStrategies, OptimismStrategies, ArbitrumStrategies,
   triggerService, subDataService, strategySubService, utils,
-  enums, constants,
+  enums, constants, strategiesService,
 };
 
 export type { types };
