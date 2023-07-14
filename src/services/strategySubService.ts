@@ -278,3 +278,49 @@ export const exchangeEncode = {
     return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil, orderType);
   },
 };
+
+export const sparkEncode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    let subInput = '0x';
+
+    subInput = subInput.concat(new Dec(minRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(maxRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(maxOptimalRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(minOptimalRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(boostEnabled ? '01' : '00');
+
+    return subInput;
+  },
+  closeToAsset(
+    strategyOrBundleId: number,
+    isBundle: boolean = true,
+    triggerData: {
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState
+    },
+    subData: {
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
+    },
+  ) {
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId,
+    } = subData;
+    const subDataEncoded = subDataService.sparkQuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
+
+    const {
+      baseTokenAddress, quoteTokenAddress, price, ratioState,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+};
