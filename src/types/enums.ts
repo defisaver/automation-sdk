@@ -31,6 +31,7 @@ export namespace ProtocolIdentifiers {
     AaveV3 = 'Aave__V3',
     MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
+    Spark = 'Spark',
   }
 
   export enum LegacyAutomation {
@@ -110,6 +111,10 @@ export namespace Bundles {
     MORPHO_AAVE_V2_BOOST = 15,
     LIQUITY_REPAY = 16,
     LIQUITY_BOOST = 17,
+    SPARK_REPAY = 18,
+    SPARK_BOOST = 19,
+    SPARK_CLOSE_TO_DEBT = 20,
+    SPARK_CLOSE_TO_COLLATERAL = 21,
   }
 
   export enum OptimismIds {

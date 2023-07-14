@@ -236,3 +236,45 @@ export const exchangeOffchainPriceTrigger = {
     };
   },
 };
+
+export const sparkRatioTrigger = {
+  encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+  },
+  decode(triggerData: TriggerData) {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as string[];
+    return {
+      owner: decodedData[0],
+      market: decodedData[1],
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};
+
+export const sparkQuotePriceTrigger = {
+  encode(
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    // Price is always in 8 decimals
+    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    // Price is always in 8 decimals
+    const price = new Dec(decodedData[2]).div(10 ** 8).toDP(8).toString();
+    return {
+      price,
+      baseTokenAddress: decodedData[0],
+      quoteTokenAddress: decodedData[1],
+      ratioState: +decodedData[3],
+    };
+  },
+};

@@ -388,6 +388,76 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
   return _position;
 }
 
+function parseSparkLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
+
+function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkQuotePriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.specific = {
+    collAsset: subData.collAsset,
+    collAssetId: subData.collAssetId,
+    debtAsset: subData.debtAsset,
+    debtAssetId: subData.debtAssetId,
+    baseToken: triggerData.baseTokenAddress,
+    quoteToken: triggerData.quoteTokenAddress,
+    price: triggerData.price,
+    ratioState: triggerData.ratioState,
+  };
+
+  const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
+    _position.specific.ratioState,
+    wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
+    wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
+    parseData.chainId,
+  );
+
+  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -427,6 +497,12 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.Exchange]: {
     [Strategies.Identifiers.Dca]: parseExchangeDca,
     [Strategies.Identifiers.LimitOrder]: parseExchangeLimitOrder,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.Spark]: {
+    [Strategies.Identifiers.Repay]: parseSparkLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseSparkLeverageManagement,
+    [Strategies.Identifiers.CloseToDebt]: parseSparkCloseOnPrice,
+    [Strategies.Identifiers.CloseToCollateral]: parseSparkCloseOnPrice,
   },
 };
 

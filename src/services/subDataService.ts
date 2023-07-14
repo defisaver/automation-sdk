@@ -301,3 +301,43 @@ export const exchangeLimitOrderSubData = {
     return { fromToken, toToken, amount };
   },
 };
+
+export const sparkLeverageManagementSubData = { // TODO encode?
+  decode(subData: SubData): { targetRatio: number } {
+    const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
+    const targetRatio = weiToRatioPercentage(ratioWei);
+
+    return { targetRatio };
+  },
+};
+
+export const sparkQuotePriceSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    nullAddress: EthereumAddress = ZERO_ADDRESS,
+  ): SubData {
+    const encodedColl = mockedWeb3.eth.abi.encodeParameter('address', collAsset);
+    const encodedCollId = mockedWeb3.eth.abi.encodeParameter('uint8', collAssetId);
+
+    const encodedDebt = mockedWeb3.eth.abi.encodeParameter('address', debtAsset);
+    const encodedDebtId = mockedWeb3.eth.abi.encodeParameter('uint8', debtAssetId);
+
+    const encodedNullAddress = mockedWeb3.eth.abi.encodeParameter('address', nullAddress);
+
+    return [encodedColl, encodedCollId, encodedDebt, encodedDebtId, encodedNullAddress];
+  },
+  decode(subData: SubData): { collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number } {
+    const collAsset = mockedWeb3.eth.abi.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collAssetId = Number(mockedWeb3.eth.abi.decodeParameter('uint8', subData[1]));
+
+    const debtAsset = mockedWeb3.eth.abi.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const debtAssetId = Number(mockedWeb3.eth.abi.decodeParameter('uint8', subData[3]));
+
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId,
+    };
+  },
+};
