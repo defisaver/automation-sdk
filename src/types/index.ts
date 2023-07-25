@@ -120,10 +120,10 @@ export declare namespace Position {
     }
     interface RatioProtection extends Base {
       minRatio?: number,
-      minOptimalRatio?: number,
+      targetRepayRatio?: number,
       repayEnabled?: boolean,
       maxRatio?: number,
-      maxOptimalRatio?: number,
+      targetBoostRatio?: number,
       boostEnabled?: boolean,
     }
     interface CloseOnPrice extends Base {

@@ -25,7 +25,7 @@ function parseMakerSavingsLiqProtection(position: Position.Automated, parseData:
 
   _position.specific = {
     minRatio: Number(triggerData.ratio),
-    minOptimalRatio: Number(subData.targetRatio),
+    targetRepayRatio: Number(subData.targetRatio),
     repayEnabled: true,
     boostEnabled: false,
   };
@@ -94,14 +94,14 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -174,14 +174,14 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -210,14 +210,14 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -280,14 +280,14 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -324,7 +324,7 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
 
   _position.specific = {
     minRatio: Number(triggerData.ratio),
-    minOptimalRatio: Infinity, // Unknown minOptimalRatio, uses all assets from chicken bond until trove min debt (2000LUSD)
+    targetRepayRatio: Infinity, // Unknown targetRepayRatio, uses all assets from chicken bond until trove min debt (2000LUSD)
     repayEnabled: true,
   };
   return _position;
@@ -369,14 +369,14 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -405,14 +405,14 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   if (isRepay) {
     _position.specific = {
       minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
       maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
