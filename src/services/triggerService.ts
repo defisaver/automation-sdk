@@ -289,7 +289,7 @@ export const curveUsdBorrowRateTrigger = {
     // we reverse engineer that so we can calculate rate = ln(y/100 + 1) / 365*86400 where y is input in %
     const rate = new Dec(new Dec(new Dec(targetRate).div(100)).plus(1)).ln().div(365).div(86400)
       .toString();
-    const rateWei = mockedWeb3.utils.toWei(rate); // 18 decimals
+    const rateWei = new Dec(rate).mul(10 ** 18).floor().toString(); // 18 decimals
 
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
   },
@@ -318,7 +318,7 @@ export const curveUsdSoftLiquidationTrigger = {
     percentage: string,
   ) {
     // 100% = 1e18 => 0.01 = 1e16
-    const _percentage = mockedWeb3.utils.toWei(percentage);
+    const _percentage = new Dec(percentage).mul(10 ** 18).floor().toString();
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
   },
   decode(
