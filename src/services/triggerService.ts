@@ -317,8 +317,8 @@ export const curveUsdSoftLiquidationTrigger = {
     owner: EthereumAddress,
     percentage: string,
   ) {
-    // 100% = 1e18 => 0.01 = 1e16
-    const _percentage = new Dec(percentage).mul(10 ** 18).floor().toString();
+    // 100% = 1e18 => 1% = 1e16
+    const _percentage = new Dec(percentage).mul(10 ** 16).floor().toString();
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
   },
   decode(
@@ -329,7 +329,7 @@ export const curveUsdSoftLiquidationTrigger = {
     return {
       market: decodedData[0],
       owner: decodedData[1],
-      percentage: mockedWeb3.utils.fromWei(decodedData[2]),
+      percentage: new Dec(decodedData[2]).div(10 ** 16).toString(),
     };
   },
 };
