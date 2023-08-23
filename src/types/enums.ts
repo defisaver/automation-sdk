@@ -28,6 +28,7 @@ export namespace ProtocolIdentifiers {
     Liquity = 'Liquity',
     ChickenBonds = 'Chicken Bonds',
     CompoundV3 = 'Compound__V3',
+    AaveV2 = 'Aave__V2',
     AaveV3 = 'Aave__V3',
     MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
@@ -115,6 +116,8 @@ export namespace Bundles {
     SPARK_BOOST = 19,
     SPARK_CLOSE_TO_DEBT = 20,
     SPARK_CLOSE_TO_COLLATERAL = 21,
+    AAVE_V2_REPAY = 22,
+    AAVE_V2_BOOST = 23,
   }
 
   export enum OptimismIds {

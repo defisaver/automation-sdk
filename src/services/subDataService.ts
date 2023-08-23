@@ -132,7 +132,16 @@ export const liquityCloseSubData = {
   },
 };
 
-export const aaveLeverageManagementSubData = { // TODO encode?
+export const aaveV2LeverageManagementSubData = { // TODO encode?
+  decode(subData: SubData): { targetRatio: number } {
+    const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const targetRatio = weiToRatioPercentage(ratioWei);
+
+    return { targetRatio };
+  },
+};
+
+export const aaveV3LeverageManagementSubData = { // TODO encode?
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);

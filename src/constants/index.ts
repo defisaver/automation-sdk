@@ -238,6 +238,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.Spark,
   },
+  [Bundles.MainnetIds.AAVE_V2_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V2_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.AaveV2,
+  },
+  [Bundles.MainnetIds.AAVE_V2_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V2_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.AaveV2,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

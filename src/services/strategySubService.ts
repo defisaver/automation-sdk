@@ -172,6 +172,30 @@ export const chickenBondsEncode = {
   },
 };
 
+export const aaveV2Encode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    let subInput = '0x';
+
+    subInput = subInput.concat(new Dec(minRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(maxRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(maxOptimalRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(minOptimalRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(boostEnabled ? '01' : '00');
+
+    return subInput;
+  },
+};
+
 export const aaveV3Encode = {
   leverageManagement(
     minRatio: number,
