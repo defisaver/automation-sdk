@@ -164,6 +164,36 @@ export const liquityEncode = {
       boostEnabled,
     ];
   },
+  dsrPayback(
+    proxyAddress: EthereumAddress,
+    triggerRatio: number,
+    targetRatio: number,
+  ) {
+    requireAddress(proxyAddress);
+    const subData = subDataService.liquityDsrPaybackSubData.encode(targetRatio);
+    const triggerData = triggerService.liquityRatioTrigger.encode(proxyAddress, triggerRatio, RatioState.UNDER);
+
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DSR_PAYBACK;
+
+    const isBundle = false;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  dsrSupply(
+    proxyAddress: EthereumAddress,
+    triggerRatio: number,
+    targetRatio: number,
+  ) {
+    requireAddress(proxyAddress);
+    const subData = subDataService.liquityDsrSupplySubData.encode(targetRatio);
+    const triggerData = triggerService.liquityRatioTrigger.encode(proxyAddress, triggerRatio, RatioState.UNDER);
+
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DSR_SUPPLY;
+
+    const isBundle = false;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
 };
 
 export const chickenBondsEncode = {

@@ -530,6 +530,28 @@ function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseDa
   return _position;
 }
 
+function parseLiquitySavingsLiqProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.makerRepayFromSavingsSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.specific = {
+    minRatio: Number(triggerData.ratio),
+    minOptimalRatio: Number(subData.targetRatio),
+    repayEnabled: true,
+    boostEnabled: false,
+  };
+
+  return _position;
+}
+
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -546,6 +568,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.BondProtection]: parseLiquityBondProtection,
     [Strategies.Identifiers.Repay]: parseLiquityLeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
+    [Strategies.Identifiers.SavingsLiqProtection]: parseLiquitySavingsLiqProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

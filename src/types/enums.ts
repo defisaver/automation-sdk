@@ -55,6 +55,8 @@ export namespace Strategies {
     CHICKEN_BONDS_REBOND = 31,
     EXCHANGE_DCA = 46,
     EXCHANGE_LIMIT_ORDER = 51,
+    LIQUITY_DSR_PAYBACK = 69,
+    LIQUITY_DSR_SUPPLY = 70,
   }
 
   export enum OptimismIds {
