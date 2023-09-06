@@ -14,15 +14,15 @@ export const makerEncode = {
   repayFromSavings(
     bundleId: StrategyOrBundleIds,
     vaultId: number,
-    minRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    targetRepayRatio: number,
     isBundle: boolean = true,
     chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
     mcdCdpManagerAddr?: EthereumAddress,
   ) {
-    const subData = subDataService.makerRepayFromSavingsSubData.encode(vaultId, minOptimalRatio, chainId, daiAddr, mcdCdpManagerAddr);
-    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, minRatio, RatioState.UNDER);
+    const subData = subDataService.makerRepayFromSavingsSubData.encode(vaultId, targetRepayRatio, chainId, daiAddr, mcdCdpManagerAddr);
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRepayRatio, RatioState.UNDER);
 
     return [bundleId, isBundle, triggerData, subData];
   },
@@ -74,18 +74,18 @@ export const makerEncode = {
   },
   leverageManagement(
     vaultId:number,
-    minRatio:string,
-    maxRatio:string,
-    maxOptimalRatio:string,
-    minOptimalRatio:string,
+    triggerRepayRatio:string,
+    triggerBoostRatio:string,
+    targetBoostRatio:string,
+    targetRepayRatio:string,
     boostEnabled:boolean,
   ) {
     return [
       vaultId,
-      new Dec(minRatio).mul(1e16).toString(),
-      new Dec(maxRatio).mul(1e16).toString(),
-      new Dec(maxOptimalRatio).mul(1e16).toString(),
-      new Dec(minOptimalRatio).mul(1e16).toString(),
+      new Dec(triggerRepayRatio).mul(1e16).toString(),
+      new Dec(triggerBoostRatio).mul(1e16).toString(),
+      new Dec(targetBoostRatio).mul(1e16).toString(),
+      new Dec(targetRepayRatio).mul(1e16).toString(),
       boostEnabled,
     ];
   },
@@ -150,17 +150,17 @@ export const liquityEncode = {
     return [strategyId, isBundle, triggerData, subData];
   },
   leverageManagement(
-    minRatio:string,
-    maxRatio:string,
-    maxOptimalRatio:string,
-    minOptimalRatio:string,
+    triggerRepayRatio:string,
+    triggerBoostRatio:string,
+    targetBoostRatio:string,
+    targetRepayRatio:string,
     boostEnabled:boolean,
   ) {
     return [
-      new Dec(minRatio).mul(1e16).toString(),
-      new Dec(maxRatio).mul(1e16).toString(),
-      new Dec(maxOptimalRatio).mul(1e16).toString(),
-      new Dec(minOptimalRatio).mul(1e16).toString(),
+      new Dec(triggerRepayRatio).mul(1e16).toString(),
+      new Dec(triggerBoostRatio).mul(1e16).toString(),
+      new Dec(targetBoostRatio).mul(1e16).toString(),
+      new Dec(targetRepayRatio).mul(1e16).toString(),
       boostEnabled,
     ];
   },
@@ -174,33 +174,33 @@ export const chickenBondsEncode = {
 
 export const aaveV2Encode = {
   leverageManagement(
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
   ) {
-    return subDataService.aaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
+    return subDataService.aaveV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
   },
 };
 
 export const aaveV3Encode = {
   leverageManagement(
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
   ) {
     let subInput = '0x';
 
-    subInput = subInput.concat(new Dec(minRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(maxRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(triggerBoostRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(maxOptimalRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(targetBoostRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(minOptimalRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(targetRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(boostEnabled ? '01' : '00');
 
@@ -232,13 +232,13 @@ export const aaveV3Encode = {
 
 export const compoundV2Encode = {
   leverageManagement(
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
   ) {
-    return subDataService.compoundV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
+    return subDataService.compoundV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
   },
 };
 
@@ -246,26 +246,26 @@ export const compoundV3Encode = {
   leverageManagement(
     market: EthereumAddress,
     baseToken: EthereumAddress,
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
     isEOA: boolean,
   ) {
-    return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled, isEOA);
+    return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
   },
 };
 
 export const morphoAaveV2Encode = {
   leverageManagement(
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
   ) {
-    return subDataService.morphoAaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
+    return subDataService.morphoAaveV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
   },
 };
 
@@ -305,21 +305,21 @@ export const exchangeEncode = {
 
 export const sparkEncode = {
   leverageManagement(
-    minRatio: number,
-    maxRatio: number,
-    maxOptimalRatio: number,
-    minOptimalRatio: number,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
     boostEnabled: boolean,
   ) {
     let subInput = '0x';
 
-    subInput = subInput.concat(new Dec(minRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(maxRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(triggerBoostRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(maxOptimalRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(targetBoostRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(minOptimalRatio).mul(1e16).toHex().slice(2)
+    subInput = subInput.concat(new Dec(targetRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(boostEnabled ? '01' : '00');
 
