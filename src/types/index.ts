@@ -119,11 +119,11 @@ export declare namespace Position {
       mergeWithSameId?: boolean
     }
     interface RatioProtection extends Base {
-      minRatio?: number,
-      minOptimalRatio?: number,
+      triggerRepayRatio?: number,
+      targetRepayRatio?: number,
       repayEnabled?: boolean,
-      maxRatio?: number,
-      maxOptimalRatio?: number,
+      triggerBoostRatio?: number,
+      targetBoostRatio?: number,
       boostEnabled?: boolean,
     }
     interface CloseOnPrice extends Base {
