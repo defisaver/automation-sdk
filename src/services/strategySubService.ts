@@ -258,6 +258,28 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+  closeToAssetWithMaximumGasPrice(
+    strategyOrBundleId: number,
+    isBundle: boolean = true,
+    triggerData: {
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, maximumGasPrice: number, ratioState: RatioState
+    },
+    subData: {
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
+    },
+  ) {
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId,
+    } = subData;
+    const subDataEncoded = subDataService.aaveV3QuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
+
+    const {
+      baseTokenAddress, quoteTokenAddress, price, maximumGasPrice, ratioState,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, maximumGasPrice, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV2Encode = {
