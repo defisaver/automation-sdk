@@ -119,10 +119,10 @@ export declare namespace Position {
       mergeWithSameId?: boolean
     }
     interface RatioProtection extends Base {
-      minRatio?: number,
+      triggerRepayRatio?: number,
       targetRepayRatio?: number,
       repayEnabled?: boolean,
-      maxRatio?: number,
+      triggerBoostRatio?: number,
       targetBoostRatio?: number,
       boostEnabled?: boolean,
     }

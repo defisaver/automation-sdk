@@ -24,7 +24,7 @@ function parseMakerSavingsLiqProtection(position: Position.Automated, parseData:
   _position.strategyData.decoded.subData = subData;
 
   _position.specific = {
-    minRatio: Number(triggerData.ratio),
+    triggerRepayRatio: Number(triggerData.ratio),
     targetRepayRatio: Number(subData.targetRatio),
     repayEnabled: true,
     boostEnabled: false,
@@ -93,14 +93,14 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
@@ -173,15 +173,15 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -209,14 +209,14 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
@@ -245,14 +245,14 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
@@ -315,15 +315,15 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
-      minOptimalRatio: subData.targetRatio,
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
-      maxOptimalRatio: subData.targetRatio,
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
     };
@@ -351,14 +351,14 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
@@ -395,7 +395,7 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
   _position.strategyData.decoded.triggerData = triggerData;
 
   _position.specific = {
-    minRatio: Number(triggerData.ratio),
+    triggerRepayRatio: Number(triggerData.ratio),
     targetRepayRatio: Infinity, // Unknown targetRepayRatio, uses all assets from chicken bond until trove min debt (2000LUSD)
     repayEnabled: true,
   };
@@ -440,14 +440,14 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
@@ -476,14 +476,14 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
 
   if (isRepay) {
     _position.specific = {
-      minRatio: triggerData.ratio,
+      triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
     };
   } else {
     _position.specific = {
-      maxRatio: triggerData.ratio,
+      triggerBoostRatio: triggerData.ratio,
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
