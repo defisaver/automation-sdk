@@ -85,6 +85,7 @@ export namespace Strategies {
     CloseToDebt = 'close-to-debt',
     CloseToDebtWithGasPrice = 'close-to-debt-with-gas-price',
     CloseToCollateral = 'close-to-collateral',
+    CloseToCollateralWithGasPrice = 'close-to-collateral-with-gas-price',
     CloseOnPriceToDebt = 'close-on-price-to-debt',
     CloseOnPriceToColl = 'close-on-price-to-collateral',
     TrailingStopToColl = 'trailing-stop-to-collateral',
@@ -120,6 +121,7 @@ export namespace Bundles {
     AAVE_V3_CLOSE_TO_DEBT = 12,
     AAVE_V3_CLOSE_TO_DEBT_WITH_GAS_PRICE = Number.MIN_SAFE_INTEGER, // TODO update after strategy deployment
     AAVE_V3_CLOSE_TO_COLLATERAL = 13,
+    AAVE_V3_CLOSE_TO_COLLATERAL_WITH_GAS_PRICE = Number.MIN_SAFE_INTEGER, // TODO update after strategy deployment
     MORPHO_AAVE_V2_REPAY = 14,
     MORPHO_AAVE_V2_BOOST = 15,
     LIQUITY_REPAY = 16,
