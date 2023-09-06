@@ -132,32 +132,7 @@ export const liquityCloseSubData = {
   },
 };
 
-export const aaveV2LeverageManagementSubData = {
-  encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-  ): SubData {
-    return [
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled,
-    ];
-  },
-  decode(subData: SubData): { targetRatio: number } {
-    const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
-    const targetRatio = weiToRatioPercentage(ratioWei);
-
-    return { targetRatio };
-  },
-};
-
-export const aaveV3LeverageManagementSubData = { // TODO encode?
+export const aaveLeverageManagementSubData = { // TODO encode?
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -197,49 +172,24 @@ export const aaveV3QuotePriceSubData = {
   },
 };
 
-export const compoundV2LeverageManagementSubData = {
-  encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-  ): SubData {
-    return [
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled,
-    ];
-  },
-  decode(subData: SubData): { targetRatio: number } {
-    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[0]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-
-    return { targetRatio };
-  },
-};
-
 export const compoundV3LeverageManagementSubData = {
   encode(
     market: EthereumAddress,
     baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
     boostEnabled: boolean,
     isEOA: boolean,
   ): SubData {
     return [
       market,
       baseToken,
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
+      new Dec(minRatio).mul(1e16).toString(),
+      new Dec(maxRatio).mul(1e16).toString(),
+      new Dec(maxOptimalRatio).mul(1e16).toString(),
+      new Dec(minOptimalRatio).mul(1e16).toString(),
       // @ts-ignore // TODO
       boostEnabled, isEOA,
     ];
@@ -254,17 +204,17 @@ export const compoundV3LeverageManagementSubData = {
 
 export const morphoAaveV2LeverageManagementSubData = {
   encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
     boostEnabled: boolean,
   ): SubData {
     return [
-      ratioPercentageToWei(triggerRepayRatio),
-      ratioPercentageToWei(triggerBoostRatio),
-      ratioPercentageToWei(targetBoostRatio),
-      ratioPercentageToWei(targetRepayRatio),
+      ratioPercentageToWei(minRatio),
+      ratioPercentageToWei(maxRatio),
+      ratioPercentageToWei(maxOptimalRatio),
+      ratioPercentageToWei(minOptimalRatio),
       // @ts-ignore
       boostEnabled,
     ];

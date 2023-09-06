@@ -27,9 +27,7 @@ export namespace ProtocolIdentifiers {
     MakerDAO = 'MakerDAO',
     Liquity = 'Liquity',
     ChickenBonds = 'Chicken Bonds',
-    CompoundV2 = 'Compound__V2',
     CompoundV3 = 'Compound__V3',
-    AaveV2 = 'Aave__V2',
     AaveV3 = 'Aave__V3',
     MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
@@ -115,12 +113,8 @@ export namespace Bundles {
     LIQUITY_BOOST = 17,
     SPARK_REPAY = 18,
     SPARK_BOOST = 19,
-    SPARK_CLOSE_TO_DEBT = -21231230, // @dev This was never deployed
-    SPARK_CLOSE_TO_COLLATERAL = -21231231, // @dev This was never deployed
-    AAVE_V2_REPAY = 22,
-    AAVE_V2_BOOST = 23,
-    COMP_V2_REPAY = 20,
-    COMP_V2_BOOST = 21,
+    SPARK_CLOSE_TO_DEBT = 20,
+    SPARK_CLOSE_TO_COLLATERAL = 21,
   }
 
   export enum OptimismIds {
