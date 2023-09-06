@@ -83,6 +83,7 @@ export namespace Strategies {
     Boost = 'boost',
     EoaBoost = 'eoa-boost',
     CloseToDebt = 'close-to-debt',
+    CloseToDebtWithGasPrice = 'close-to-debt-with-gas-price',
     CloseToCollateral = 'close-to-collateral',
     CloseOnPriceToDebt = 'close-on-price-to-debt',
     CloseOnPriceToColl = 'close-on-price-to-collateral',
@@ -117,6 +118,7 @@ export namespace Bundles {
     MAKER_REPAY = 10,
     MAKER_BOOST = 11,
     AAVE_V3_CLOSE_TO_DEBT = 12,
+    AAVE_V3_CLOSE_TO_DEBT_WITH_GAS_PRICE = Number.MIN_SAFE_INTEGER, // TODO update after strategy deployment
     AAVE_V3_CLOSE_TO_COLLATERAL = 13,
     MORPHO_AAVE_V2_REPAY = 14,
     MORPHO_AAVE_V2_BOOST = 15,
