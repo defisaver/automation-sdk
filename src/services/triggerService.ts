@@ -105,11 +105,11 @@ export const compoundV2RatioTrigger = {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
-  decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: string } {
+  decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toString(),
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(),
       ratioState: +decodedData[2],
     };
   },
@@ -148,12 +148,12 @@ export const aaveV2RatioTrigger = {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
     return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
-  decode(triggerData: TriggerData): { owner: EthereumAddress, market:EthereumAddress, ratioState: RatioState, ratio: string } {
+  decode(triggerData: TriggerData): { owner: EthereumAddress, market:EthereumAddress, ratioState: RatioState, ratio: number } {
     const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toString(),
+      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
       ratioState: +decodedData[3],
     };
   },
@@ -275,6 +275,61 @@ export const sparkQuotePriceTrigger = {
       baseTokenAddress: decodedData[0],
       quoteTokenAddress: decodedData[1],
       ratioState: +decodedData[3],
+    };
+  },
+};
+
+export const curveUsdBorrowRateTrigger = {
+  encode(
+    market: EthereumAddress,
+    targetRate: string,
+    rateState: RatioState,
+  ) {
+    // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
+    // we reverse engineer that so we can calculate rate = ln(y/100 + 1) / 365*86400 where y is input in %
+    const rate = new Dec(new Dec(new Dec(targetRate).div(100)).plus(1)).ln().div(365).div(86400)
+      .toString();
+    const rateWei = new Dec(rate).mul(10 ** 18).floor().toString(); // 18 decimals
+
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ): { market: EthereumAddress, targetRate: string, rateState: RatioState } {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    const rateEth = mockedWeb3.utils.fromWei(decodedData[1]);
+
+    // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
+    const exponentRate = new Dec(rateEth).mul(365).mul(86400);
+    const targetRate = new Dec(new Dec(2.718281828459).pow(exponentRate).minus(1)).mul(100)
+      .toString();
+    return {
+      market: decodedData[0],
+      targetRate,
+      rateState: +decodedData[2],
+    };
+  },
+};
+
+export const curveUsdSoftLiquidationTrigger = {
+  encode(
+    market: EthereumAddress,
+    owner: EthereumAddress,
+    percentage: string,
+  ) {
+    // 100% = 1e18 => 1% = 1e16
+    const _percentage = new Dec(percentage).mul(10 ** 16).floor().toString();
+    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ): { market: EthereumAddress, owner: EthereumAddress, percentage: string } {
+    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256'], triggerData[0]) as Array<string>;
+
+    return {
+      market: decodedData[0],
+      owner: decodedData[1],
+      percentage: new Dec(decodedData[2]).div(10 ** 16).toString(),
     };
   },
 };

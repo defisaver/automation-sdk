@@ -172,6 +172,18 @@ export const chickenBondsEncode = {
   },
 };
 
+export const aaveV2Encode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    return subDataService.aaveV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
+  },
+};
+
 export const aaveV3Encode = {
   leverageManagement(
     minRatio: number,
@@ -215,6 +227,18 @@ export const aaveV3Encode = {
     const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+};
+
+export const compoundV2Encode = {
+  leverageManagement(
+    minRatio: number,
+    maxRatio: number,
+    maxOptimalRatio: number,
+    minOptimalRatio: number,
+    boostEnabled: boolean,
+  ) {
+    return subDataService.compoundV2LeverageManagementSubData.encode(minRatio, maxRatio, maxOptimalRatio, minOptimalRatio, boostEnabled);
   },
 };
 

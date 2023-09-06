@@ -157,6 +157,42 @@ function parseLiquityTrailingStop(position: Position.Automated, parseData: Parse
   return _position;
 }
 
+function parseAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.aaveV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV2LeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
+
 function parseAaveV3LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -164,7 +200,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveLeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.aaveV3LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -259,6 +295,42 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
   );
 
   _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
+
+  return _position;
+}
+
+function parseCompoundV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.compoundV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.compoundV2LeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.owner = triggerData.owner;
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
+
+  if (isRepay) {
+    _position.specific = {
+      minRatio: triggerData.ratio,
+      minOptimalRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+    };
+  } else {
+    _position.specific = {
+      maxRatio: triggerData.ratio,
+      maxOptimalRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -475,11 +547,19 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Repay]: parseLiquityLeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
   },
+  [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
+    [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseAaveV2LeverageManagement,
+  },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV3]: {
     [Strategies.Identifiers.Repay]: parseAaveV3LeverageManagement,
     [Strategies.Identifiers.Boost]: parseAaveV3LeverageManagement,
     [Strategies.Identifiers.CloseToDebt]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CloseToCollateral]: parseAaveV3CloseOnPrice,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
+    [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseCompoundV2LeverageManagement,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV3]: {
     [Strategies.Identifiers.Repay]: parseCompoundV3LeverageManagement,
