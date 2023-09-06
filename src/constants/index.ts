@@ -203,9 +203,19 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.CloseToDebt,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT_WITH_GAS_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_DEBT_WITH_GAS_PRICE,
+    strategyId: Strategies.Identifiers.CloseToDebtWithGasPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
   [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL,
     strategyId: Strategies.Identifiers.CloseToCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL_WITH_GAS_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_CLOSE_TO_COLLATERAL_WITH_GAS_PRICE,
+    strategyId: Strategies.Identifiers.CloseToCollateralWithGasPrice,
     protocol: PROTOCOLS.AaveV3,
   },
   [Bundles.MainnetIds.MORPHO_AAVE_V2_REPAY]: {
