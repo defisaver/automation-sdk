@@ -2,7 +2,6 @@
 //  [] Check @ts-ignores and PlaceholderType
 //  [] Improve typing for subData, trigger and strategySub services
 //  [] Make possible to use any provider not only web3 (This requires changes throughout the package)
-//  [] Write unit tests
 
 import './configuration';
 

@@ -1,4 +1,6 @@
 import Dec from 'decimal.js';
+import web3Abi from 'web3-eth-abi';
+import web3Utils from 'web3-utils';
 
 import type {
   EthereumAddress, TriggerData,
@@ -7,53 +9,51 @@ import type { RatioState } from '../types/enums';
 
 import { ratioPercentageToWei } from './utils';
 
-const { mockedWeb3 } = process;
-
 export const chainlinkPriceTrigger = {
   encode(tokenAddr: EthereumAddress, price: string, state: RatioState) {
     const _price = new Dec(price).mul(1e8).floor().toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [tokenAddr, _price, state])];
+    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [tokenAddr, _price, state])];
   },
   decode(triggerData: TriggerData): { price: string, state: RatioState, tokenAddr: EthereumAddress } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
-    return { tokenAddr: decodedData[0], price: new Dec(decodedData[1]).div(1e8).toString(), state: +decodedData[2] };
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    return { tokenAddr: decodedData[0] as EthereumAddress, price: new Dec(decodedData[1] as string).div(1e8).toString(), state: +decodedData[2]! };
   },
 };
 
 export const trailingStopTrigger = {
   encode(tokenAddr: EthereumAddress, percentage: number, roundId: number) {
     const _percentage = new Dec(percentage).mul(1e8).toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint80'], [tokenAddr, _percentage, roundId])];
+    return [web3Abi.encodeParameters(['address', 'uint256', 'uint80'], [tokenAddr, _percentage, roundId])];
   },
   decode(triggerData: TriggerData):{ triggerPercentage: number, tokenAddr: EthereumAddress, roundId: string } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint80'], triggerData[0]);
-    const triggerPercentage = new Dec(decodedData[1]).div(1e8).toNumber();
-    return { tokenAddr: decodedData[0], triggerPercentage, roundId: decodedData[2] };
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint80'], triggerData[0]);
+    const triggerPercentage = new Dec(decodedData[1] as string).div(1e8).toNumber();
+    return { tokenAddr: decodedData[0] as EthereumAddress, triggerPercentage, roundId: decodedData[2] as string };
   },
 };
 
 export const makerRatioTrigger = {
   encode(vaultId: number, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { vaultId: number, ratioState: number, ratio: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
-    return { vaultId: +decodedData[0], ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(), ratioState: +decodedData[2] };
+    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
+    return { vaultId: +decodedData[0]!, ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'ether')).mul(100).toNumber(), ratioState: +decodedData[2]! };
   },
 };
 
 export const aaveV3RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as string[];
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
+      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
       ratioState: Number(decodedData[3]),
     };
   },
@@ -62,13 +62,13 @@ export const aaveV3RatioTrigger = {
 export const morphoAaveV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = new Dec(ratioPercentage).mul(1e16).toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint128', 'uint8'], [owner, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'uint128', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint128', 'uint8'], triggerData[0]) as string[];
+    const decodedData = web3Abi.decodeParameters(['address', 'uint128', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
-      ratio: new Dec(decodedData[1]).div(1e16).toNumber(),
+      ratio: new Dec(decodedData[1] as string).div(1e16).toNumber(),
       ratioState: Number(decodedData[2]),
     };
   },
@@ -83,19 +83,19 @@ export const aaveV3QuotePriceTrigger = {
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     // Price is always in 8 decimals
-    const price = new Dec(decodedData[2]).div(10 ** 8).toDP(8).toString();
+    const price = new Dec(decodedData[2] as string).div(10 ** 8).toDP(8).toString();
     return {
       price,
-      baseTokenAddress: decodedData[0],
-      quoteTokenAddress: decodedData[1],
-      ratioState: +decodedData[3],
+      baseTokenAddress: decodedData[0] as EthereumAddress,
+      quoteTokenAddress: decodedData[1] as EthereumAddress,
+      ratioState: +decodedData[3]!,
     };
   },
 };
@@ -103,14 +103,14 @@ export const aaveV3QuotePriceTrigger = {
 export const compoundV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
-      owner: decodedData[0],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(),
-      ratioState: +decodedData[2],
+      owner: decodedData[0] as EthereumAddress,
+      ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'wei')).mul(100).toNumber(),
+      ratioState: +decodedData[2]!,
     };
   },
 };
@@ -118,27 +118,27 @@ export const compoundV2RatioTrigger = {
 export const liquityRatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
-      owner: decodedData[0],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[1])).mul(100).toNumber(),
-      ratioState: +decodedData[2],
+      owner: decodedData[0] as EthereumAddress,
+      ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'wei')).mul(100).toNumber(),
+      ratioState: +decodedData[2]!,
     };
   },
 };
 
 export const liquityDebtInFrontTrigger = {
   encode(owner: EthereumAddress, debtInFrontMin: string) {
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
+    return [web3Abi.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, debtInFrontMin: string } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256'], triggerData[0]);
     return {
-      owner: decodedData[0],
-      debtInFrontMin: decodedData[1],
+      owner: decodedData[0] as EthereumAddress,
+      debtInFrontMin: decodedData[1] as string,
     };
   },
 };
@@ -146,26 +146,26 @@ export const liquityDebtInFrontTrigger = {
 export const aaveV2RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
-  decode(triggerData: TriggerData): { owner: EthereumAddress, market:EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+  decode(triggerData: TriggerData): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: number } {
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
-      owner: decodedData[0],
-      market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
-      ratioState: +decodedData[3],
+      owner: decodedData[0] as EthereumAddress,
+      market: decodedData[1] as EthereumAddress,
+      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratioState: +decodedData[3]!,
     };
   },
 };
 
 export const cBondsRebondTrigger = {
   encode(bondId: number | string) {
-    return [mockedWeb3.eth.abi.encodeParameters(['uint256'], [bondId])];
+    return [web3Abi.encodeParameters(['uint256'], [bondId])];
   },
   decode(triggerData: TriggerData): { bondId: string } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256'], triggerData[0]);
-    return { bondId: decodedData[0] };
+    const decodedData = web3Abi.decodeParameters(['uint256'], triggerData[0]);
+    return { bondId: decodedData[0] as string };
   },
 };
 
@@ -177,17 +177,17 @@ export const compoundV3RatioTrigger = {
     ratioState: RatioState,
   ) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
-      owner: decodedData[0],
-      market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
-      ratioState: +decodedData[3],
+      owner: decodedData[0] as EthereumAddress,
+      market: decodedData[1] as EthereumAddress,
+      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratioState: +decodedData[3]!,
     };
   },
 };
@@ -199,15 +199,15 @@ export const exchangeTimestampTrigger = {
   ) {
     const timestampWei = new Dec(timestamp).toString();
     const intervalWei = new Dec(interval).toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['uint256', 'uint256'], [timestampWei, intervalWei])];
+    return [web3Abi.encodeParameters(['uint256', 'uint256'], [timestampWei, intervalWei])];
   },
   decode(
     triggerData: TriggerData,
   ): { timestamp: number, interval: number } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
     return {
-      timestamp: decodedData[0],
-      interval: decodedData[1],
+      timestamp: decodedData[0] as number,
+      interval: decodedData[1] as number,
     };
   },
 };
@@ -218,21 +218,21 @@ export const exchangeOffchainPriceTrigger = {
     fromTokenDecimals: number,
   ) {
     const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
-    const goodUntilWei = mockedWeb3.utils.toWei(new Dec(goodUntil).toString());
-    return [mockedWeb3.eth.abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei])];
+    const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'wei');
+    return [web3Abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei])];
   },
   decode(
     triggerData: TriggerData,
     fromTokenDecimals: number,
     toTokenDecimals: number,
   ): { orderType: number; targetPrice: string; goodUntil: any } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
     const decimals = new Dec(toTokenDecimals).plus(18).minus(fromTokenDecimals).toString();
-    const price = new Dec(decodedData[0]).div(new Dec(10).pow(decimals)).toDP(fromTokenDecimals).toString();
+    const price = new Dec(decodedData[0] as string).div(new Dec(10).pow(decimals)).toDP(fromTokenDecimals).toString();
     return {
       targetPrice: price,
       goodUntil: decodedData[1],
-      orderType: +decodedData[2],
+      orderType: +decodedData[2]!,
     };
   },
 };
@@ -240,14 +240,14 @@ export const exchangeOffchainPriceTrigger = {
 export const sparkRatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as string[];
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(mockedWeb3.utils.fromWei(decodedData[2])).mul(100).toNumber(),
+      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
       ratioState: Number(decodedData[3]),
     };
   },
@@ -262,19 +262,19 @@ export const sparkQuotePriceTrigger = {
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     // Price is always in 8 decimals
-    const price = new Dec(decodedData[2]).div(10 ** 8).toDP(8).toString();
+    const price = new Dec(decodedData[2] as string).div(10 ** 8).toDP(8).toString();
     return {
       price,
-      baseTokenAddress: decodedData[0],
-      quoteTokenAddress: decodedData[1],
-      ratioState: +decodedData[3],
+      baseTokenAddress: decodedData[0] as EthereumAddress,
+      quoteTokenAddress: decodedData[1] as EthereumAddress,
+      ratioState: +decodedData[3]!,
     };
   },
 };
@@ -291,22 +291,22 @@ export const curveUsdBorrowRateTrigger = {
       .toString();
     const rateWei = new Dec(rate).mul(10 ** 18).floor().toString(); // 18 decimals
 
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
+    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
   },
   decode(
     triggerData: TriggerData,
   ): { market: EthereumAddress, targetRate: string, rateState: RatioState } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
-    const rateEth = mockedWeb3.utils.fromWei(decodedData[1]);
+    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const rateEth = web3Utils.fromWei(decodedData[1] as string, 'wei');
 
     // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
     const exponentRate = new Dec(rateEth).mul(365).mul(86400);
     const targetRate = new Dec(new Dec(2.718281828459).pow(exponentRate).minus(1)).mul(100)
       .toString();
     return {
-      market: decodedData[0],
+      market: decodedData[0] as EthereumAddress,
       targetRate,
-      rateState: +decodedData[2],
+      rateState: +decodedData[2]!,
     };
   },
 };
@@ -319,17 +319,17 @@ export const curveUsdSoftLiquidationTrigger = {
   ) {
     // 100% = 1e18 => 1% = 1e16
     const _percentage = new Dec(percentage).mul(10 ** 16).floor().toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
+    return [web3Abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
   },
   decode(
     triggerData: TriggerData,
   ): { market: EthereumAddress, owner: EthereumAddress, percentage: string } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256'], triggerData[0]) as Array<string>;
+    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256'], triggerData[0]);
 
     return {
-      market: decodedData[0],
-      owner: decodedData[1],
-      percentage: new Dec(decodedData[2]).div(10 ** 16).toString(),
+      market: decodedData[0] as EthereumAddress,
+      owner: decodedData[1] as EthereumAddress,
+      percentage: new Dec(decodedData[2] as string).div(10 ** 16).toString(),
     };
   },
 };
