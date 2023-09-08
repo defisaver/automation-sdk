@@ -6,6 +6,7 @@ module.exports = {
     es6: true,
     browser: true,
   },
+  ignorePatterns: ['*.test.ts'],
   overrides: [{
     // these are overrides for .ts files, meaning these are only applied to .ts files
     files: ['*.ts'],
