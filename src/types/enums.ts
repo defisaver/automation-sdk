@@ -9,6 +9,11 @@ export enum RatioState {
   UNDER = 1,
 }
 
+export enum OrderType {
+  TAKE_PROFIT = 0,
+  STOP_LOSS = 0,
+}
+
 export enum BundleProtocols {
   MStable = 'mstable',
   Yearn = 'yearn',
