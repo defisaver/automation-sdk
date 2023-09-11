@@ -27,7 +27,7 @@ describe('When testing utils.isDefined()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return given ${actual} should return expected value: ${expected};`, () => {
       expect(isDefined(actual)).to.equal(expected);
     });
   });
@@ -43,7 +43,7 @@ describe('When testing utils.isUndefined()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return given ${actual} should return expected value: ${expected};`, () => {
       expect(isUndefined(actual)).to.equal(expected);
     });
   });
@@ -58,7 +58,7 @@ describe('When testing utils.compareAddresses()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(compareAddresses(...actual)).to.equal(expected);
     });
   });
@@ -75,7 +75,7 @@ describe('When testing utils.isAddress()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(isAddress(actual)).to.equal(expected);
     });
   });
@@ -84,15 +84,17 @@ describe('When testing utils.isAddress()', () => {
 describe('When testing utils.addToArrayIf()', () => {
 
   const exampleOne = [1, ...addToArrayIf(true, 2)];
+  const actualOne = [1, 2];
 
-  it(`Expected value: [${exampleOne.join(', ')}]`, () => {
-    expect([1, 2]).to.eql(exampleOne)
+  it(`given ${actualOne.join(', ')} should return expected value: [${exampleOne.join(', ')}]`, () => {
+    expect(actualOne).to.eql(exampleOne)
   });
 
   const exampleTwo = [1, ...addToArrayIf(false, 2)];
+  const actualTwo = [1];
 
-  it(`Expected value: [${exampleTwo.join(', ')}]`, () => {
-    expect([1]).to.eql(exampleTwo)
+  it(`given ${actualTwo.join(', ')} should return expected value: [${exampleTwo.join(', ')}]`, () => {
+    expect(actualTwo).to.eql(exampleTwo)
   });
 });
 
@@ -101,17 +103,19 @@ describe('When testing utils.addToObjectIf()', () => {
   const exampleOne = {
     a: 1, ...addToObjectIf(true, { b: 2 })
   };
+  const actualOne = { a: 1, b: 2 };
 
-  it(`Expected value: ${JSON.stringify(exampleOne)}`, () => {
-    expect({ a: 1, b: 2 }).to.eql(exampleOne)
+  it(`given ${JSON.stringify(actualOne)} should return expected value: ${JSON.stringify(exampleOne)}`, () => {
+    expect(actualOne).to.eql(exampleOne)
   });
 
   const exampleTwo = {
     a: 1, ...addToObjectIf(false, { b: 2 })
   };
+  const actualTwo = { a: 1 };
 
-  it(`Expected value: ${JSON.stringify(exampleTwo)}`, () => {
-    expect({ a: 1 }).to.eql(exampleTwo)
+  it(`given ${JSON.stringify(actualTwo)} should return expected value: ${JSON.stringify(exampleTwo)}`, () => {
+    expect(actualTwo).to.eql(exampleTwo)
   });
 });
 
@@ -127,7 +131,7 @@ describe('When testing utils.ethToWeth()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(ethToWeth(actual)).to.equal(expected);
     });
   });
@@ -145,7 +149,7 @@ describe('When testing utils.wethToEth()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(wethToEth(actual)).to.equal(expected);
     });
   });
@@ -173,7 +177,7 @@ describe('When testing utils.wethToEthByAddress()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(wethToEthByAddress(...actual)).to.equal(expected);
     });
   });
@@ -227,7 +231,7 @@ describe('When testing utils.compareSubHashes()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`Expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(compareSubHashes(...actual)).to.equal(expected);
     });
   });
