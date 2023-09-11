@@ -542,8 +542,8 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
   _position.strategyData.decoded.subData = subData;
 
   _position.specific = {
-    minRatio: Number(triggerData.ratio),
-    minOptimalRatio: Number(subData.targetRatio),
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
     repayEnabled: true,
     boostEnabled: false,
   };
