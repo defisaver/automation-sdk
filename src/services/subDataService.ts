@@ -1,5 +1,5 @@
 import Dec from 'decimal.js';
-import web3Abi from 'web3-eth-abi';
+import * as web3Abi from 'web3-eth-abi';
 import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 

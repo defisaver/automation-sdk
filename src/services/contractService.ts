@@ -1,5 +1,5 @@
 import type Web3 from 'web3';
-import type { AbiItem } from 'web3-utils';
+import type { AbiItem } from 'web3-utils'; // TODO
 import type {
   BlockNumber, Contract,
 } from '../types';

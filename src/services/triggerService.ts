@@ -1,6 +1,6 @@
 import Dec from 'decimal.js';
-import web3Abi from 'web3-eth-abi';
-import web3Utils from 'web3-utils';
+import * as web3Abi from 'web3-eth-abi';
+import * as web3Utils from 'web3-utils';
 
 import type {
   EthereumAddress, TriggerData,

@@ -1,6 +1,6 @@
 import Dec from 'decimal.js';
-import web3Utils from 'web3-utils';
-import web3Abi from 'web3-eth-abi';
+import * as web3Utils from 'web3-utils';
+import * as web3Abi from 'web3-eth-abi';
 import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';

@@ -1,4 +1,4 @@
-import web3Abi from 'web3-eth-abi';
+import * as web3Abi from 'web3-eth-abi';
 
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
