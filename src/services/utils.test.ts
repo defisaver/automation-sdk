@@ -27,7 +27,7 @@ describe('When testing utils.isDefined()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`given ${actual} should return given ${actual} should return expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(isDefined(actual)).to.equal(expected);
     });
   });
@@ -43,7 +43,7 @@ describe('When testing utils.isUndefined()', () => {
   ];
 
   examples.forEach(([expected, actual]) => {
-    it(`given ${actual} should return given ${actual} should return expected value: ${expected};`, () => {
+    it(`given ${actual} should return expected value: ${expected};`, () => {
       expect(isUndefined(actual)).to.equal(expected);
     });
   });
