@@ -76,6 +76,8 @@ export namespace Strategies {
 
   export enum Identifiers {
     SavingsLiqProtection = 'smart-savings-liquidation-protection',
+    SavingsDsrPayback = 'smart-savings-dsr-payback',
+    SavingsDsrSupply = 'smart-savings-dsr-supply',
     Repay = 'repay',
     EoaRepay = 'eoa-repay',
     Boost = 'boost',
