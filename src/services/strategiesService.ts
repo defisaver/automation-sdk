@@ -568,7 +568,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.BondProtection]: parseLiquityBondProtection,
     [Strategies.Identifiers.Repay]: parseLiquityLeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
-    [Strategies.Identifiers.SavingsLiqProtection]: parseLiquitySavingsLiqProtection,
+    [Strategies.Identifiers.SavingsDsrPayback]: parseLiquitySavingsLiqProtection,
+    [Strategies.Identifiers.SavingsDsrSupply]: parseLiquitySavingsLiqProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,
