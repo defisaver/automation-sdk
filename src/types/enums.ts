@@ -11,7 +11,7 @@ export enum RatioState {
 
 export enum OrderType {
   TAKE_PROFIT = 0,
-  STOP_LOSS = 0,
+  STOP_LOSS = 1,
 }
 
 export enum BundleProtocols {
