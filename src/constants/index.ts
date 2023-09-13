@@ -82,12 +82,12 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
   },
   [Strategies.MainnetIds.LIQUITY_DSR_PAYBACK]: {
     strategyOrBundleId: Strategies.MainnetIds.LIQUITY_DSR_PAYBACK,
-    strategyId: Strategies.Identifiers.SavingsLiqProtection,
+    strategyId: Strategies.Identifiers.SavingsDsrPayback,
     protocol: PROTOCOLS.Liquity,
   },
   [Strategies.MainnetIds.LIQUITY_DSR_SUPPLY]: {
     strategyOrBundleId: Strategies.MainnetIds.LIQUITY_DSR_SUPPLY,
-    strategyId: Strategies.Identifiers.SavingsLiqProtection,
+    strategyId: Strategies.Identifiers.SavingsDsrSupply,
     protocol: PROTOCOLS.Liquity,
   },
 };
