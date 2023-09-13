@@ -55,7 +55,7 @@ export function ratioPercentageToWei(ratioPercentage: number) {
 }
 
 export function weiToRatioPercentage(ratioWei: string) {
-  return new Dec(web3Utils.fromWei(new Dec(ratioWei).mul(100).toString(), 'wei')).toNumber();
+  return new Dec(web3Utils.fromWei(new Dec(ratioWei).mul(100).toString(), 'ether')).toNumber();
 }
 
 export function isRatioStateOver(ratioState: RatioState): boolean {
