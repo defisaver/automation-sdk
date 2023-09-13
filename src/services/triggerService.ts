@@ -7,7 +7,7 @@ import type {
 } from '../types';
 import type { RatioState } from '../types/enums';
 
-import { ratioPercentageToWei } from './utils';
+import { ratioPercentageToWei, weiToRatioPercentage } from './utils';
 
 export const chainlinkPriceTrigger = {
   encode(tokenAddr: EthereumAddress, price: string, state: RatioState) {
@@ -39,7 +39,7 @@ export const makerRatioTrigger = {
   },
   decode(triggerData: TriggerData): { vaultId: number, ratioState: number, ratio: number } {
     const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
-    return { vaultId: +decodedData[0]!, ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'ether')).mul(100).toNumber(), ratioState: +decodedData[2]! };
+    return { vaultId: +decodedData[0]!, ratio: weiToRatioPercentage(decodedData[1] as string), ratioState: +decodedData[2]! };
   },
 };
 
@@ -53,7 +53,7 @@ export const aaveV3RatioTrigger = {
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[2] as string),
       ratioState: Number(decodedData[3]),
     };
   },
@@ -109,7 +109,7 @@ export const compoundV2RatioTrigger = {
     const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
-      ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[1] as string),
       ratioState: +decodedData[2]!,
     };
   },
@@ -124,7 +124,7 @@ export const liquityRatioTrigger = {
     const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
-      ratio: new Dec(web3Utils.fromWei(decodedData[1] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[1] as string),
       ratioState: +decodedData[2]!,
     };
   },
@@ -153,7 +153,7 @@ export const aaveV2RatioTrigger = {
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
-      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[1] as string),
       ratioState: +decodedData[3]!,
     };
   },
@@ -186,7 +186,7 @@ export const compoundV3RatioTrigger = {
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
-      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[1] as string),
       ratioState: +decodedData[3]!,
     };
   },
@@ -218,7 +218,7 @@ export const exchangeOffchainPriceTrigger = {
     fromTokenDecimals: number,
   ) {
     const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
-    const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'wei');
+    const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'ether');
     return [web3Abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei])];
   },
   decode(
@@ -247,7 +247,7 @@ export const sparkRatioTrigger = {
     return {
       owner: decodedData[0],
       market: decodedData[1],
-      ratio: new Dec(web3Utils.fromWei(decodedData[2] as string, 'wei')).mul(100).toNumber(),
+      ratio: weiToRatioPercentage(decodedData[2] as string),
       ratioState: Number(decodedData[3]),
     };
   },
@@ -297,7 +297,7 @@ export const curveUsdBorrowRateTrigger = {
     triggerData: TriggerData,
   ): { market: EthereumAddress, targetRate: string, rateState: RatioState } {
     const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
-    const rateEth = web3Utils.fromWei(decodedData[1] as string, 'wei');
+    const rateEth = weiToRatioPercentage(decodedData[1] as string);
 
     // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
     const exponentRate = new Dec(rateEth).mul(365).mul(86400);
