@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as web3Utils from 'web3-utils';
 import * as web3Abi from 'web3-eth-abi';
 import { getAssetInfo } from '@defisaver/tokens';

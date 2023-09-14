@@ -1,5 +1,5 @@
 import type Web3 from 'web3';
-import type { AbiItem } from 'web3-utils';
+import type { JsonFunctionInterface } from 'web3-types';
 import type {
   BlockNumber, Contract,
 } from '../types';
@@ -12,7 +12,7 @@ import { UniMulticallJson, SubStorageJson, AuthCheckJson } from '../abis';
 import { isDefined } from './utils';
 import { ChainId } from '../types/enums';
 
-export function getAbiItem(abi: AbiItem[], itemName: string) {
+export function getAbiItem(abi: JsonFunctionInterface[], itemName: string) {
   const abiItem = abi.find(i => i.name === itemName);
   if (isDefined(abiItem)) {
     return abiItem;
