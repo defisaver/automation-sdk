@@ -396,15 +396,15 @@ export const liquityDsrPaybackSubData = {
     const daiAddress = getAssetInfo('DAI').address;
     const lusdAddress = getAssetInfo('LUSD').address;
 
-    const ratioStateEncoded = mockedWeb3.eth.abi.encodeParameter('uint8', RatioState.UNDER);
-    const targetRatioEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const daiAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', daiAddress);
-    const lusdAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', lusdAddress);
+    const ratioStateEncoded = web3Abi.encodeParameter('uint8', RatioState.UNDER);
+    const targetRatioEncoded = web3Abi.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const daiAddressEncoded = web3Abi.encodeParameter('address', daiAddress);
+    const lusdAddressEncoded = web3Abi.encodeParameter('address', lusdAddress);
 
     return [ratioStateEncoded, targetRatioEncoded, daiAddressEncoded, lusdAddressEncoded];
   },
   decode: (subData: SubData) => {
-    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const weiRatio = web3Abi.decodeParameter('uint256', subData[1]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
     return { targetRatio };
   },
@@ -415,15 +415,15 @@ export const liquityDsrSupplySubData = {
     const daiAddress = getAssetInfo('DAI').address;
     const wethAddress = getAssetInfo('WETH').address;
 
-    const ratioStateEncoded = mockedWeb3.eth.abi.encodeParameter('uint8', RatioState.UNDER);
-    const targetRatioEncoded = mockedWeb3.eth.abi.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const daiAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', daiAddress);
-    const wethAddressEncoded = mockedWeb3.eth.abi.encodeParameter('address', wethAddress);
+    const ratioStateEncoded = web3Abi.encodeParameter('uint8', RatioState.UNDER);
+    const targetRatioEncoded = web3Abi.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const daiAddressEncoded = web3Abi.encodeParameter('address', daiAddress);
+    const wethAddressEncoded = web3Abi.encodeParameter('address', wethAddress);
 
     return [ratioStateEncoded, targetRatioEncoded, daiAddressEncoded, wethAddressEncoded];
   },
   decode: (subData: SubData) => {
-    const weiRatio = mockedWeb3.eth.abi.decodeParameter('uint256', subData[1]) as any as string;
+    const weiRatio = web3Abi.decodeParameter('uint256', subData[1]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
     return { targetRatio };
   },
