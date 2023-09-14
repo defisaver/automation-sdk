@@ -1,11 +1,10 @@
-import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import Dec from 'decimal.js';
+import * as web3Utils from 'web3-utils';
+import AbiCoder from 'web3-eth-abi';
+import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
-
 import { ChainId, RatioState } from '../types/enums';
-
-const { mockedWeb3 } = process;
 
 export function isDefined<T>(value: T): value is NonNullable<T> {
   return value !== undefined && value !== null;
@@ -44,7 +43,7 @@ export function wethToEthByAddress(maybeWethAddr: EthereumAddress, chainId: Chai
 }
 
 export function compareSubHashes(currentSubHash: string, newSubStructDecoded: object): boolean {
-  return currentSubHash === mockedWeb3.utils.keccak256(mockedWeb3.eth.abi.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
+  return currentSubHash === web3Utils.keccak256(AbiCoder.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
 }
 
 export function encodeSubId(subIdDec: string = '0') {
@@ -52,11 +51,11 @@ export function encodeSubId(subIdDec: string = '0') {
 }
 
 export function ratioPercentageToWei(ratioPercentage: number) {
-  return mockedWeb3.utils.toWei(new Dec(ratioPercentage).div(100).toString());
+  return web3Utils.toWei(new Dec(ratioPercentage).div(100).toString(), 'ether');
 }
 
 export function weiToRatioPercentage(ratioWei: string) {
-  return new Dec(mockedWeb3.utils.fromWei(new Dec(ratioWei).mul(100).toString())).toNumber();
+  return new Dec(web3Utils.fromWei(new Dec(ratioWei).mul(100).toString(), 'ether')).toNumber();
 }
 
 export function isRatioStateOver(ratioState: RatioState): boolean {
