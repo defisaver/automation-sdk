@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import * as web3Utils from 'web3-utils';
-import * as web3Abi from 'web3-eth-abi';
+import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo } from '@defisaver/tokens';
 
 import { EthereumAddress } from '../types';
@@ -237,7 +237,7 @@ describe('Feature: utils.ts', () => {
     const encodedSubDataOne = sparkEncode.closeToAsset(...subDataToEncodeOne);
     // @ts-ignore
     const encodedSubDataTwo = sparkEncode.closeToAsset(...subDataToEncodeTwo);
-    const encodedParams = web3Utils.keccak256(web3Abi.encodeParameter('(uint64,bool,bytes[],bytes32[])', encodedSubDataOne));
+    const encodedParams = web3Utils.keccak256(AbiCoder.encodeParameter('(uint64,bool,bytes[],bytes32[])', encodedSubDataOne));
 
     const examples: Array<[boolean, [string, any[]]]> = [
       [true, [encodedParams, encodedSubDataOne]],

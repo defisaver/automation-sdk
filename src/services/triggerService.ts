@@ -1,5 +1,5 @@
 import Dec from 'decimal.js';
-import * as web3Abi from 'web3-eth-abi';
+import AbiCoder from 'web3-eth-abi';
 import * as web3Utils from 'web3-utils';
 
 import type {
@@ -12,10 +12,10 @@ import { ratioPercentageToWei, weiToRatioPercentage } from './utils';
 export const chainlinkPriceTrigger = {
   encode(tokenAddr: EthereumAddress, price: string, state: RatioState) {
     const _price = new Dec(price).mul(1e8).floor().toString();
-    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [tokenAddr, _price, state])];
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [tokenAddr, _price, state])];
   },
   decode(triggerData: TriggerData): { price: string, state: RatioState, tokenAddr: EthereumAddress } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return { tokenAddr: decodedData[0] as EthereumAddress, price: new Dec(decodedData[1] as string).div(1e8).toString(), state: +decodedData[2]! };
   },
 };
@@ -23,10 +23,10 @@ export const chainlinkPriceTrigger = {
 export const trailingStopTrigger = {
   encode(tokenAddr: EthereumAddress, percentage: number, roundId: number) {
     const _percentage = new Dec(percentage).mul(1e8).toString();
-    return [web3Abi.encodeParameters(['address', 'uint256', 'uint80'], [tokenAddr, _percentage, roundId])];
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint80'], [tokenAddr, _percentage, roundId])];
   },
   decode(triggerData: TriggerData):{ triggerPercentage: number, tokenAddr: EthereumAddress, roundId: string } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint80'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint80'], triggerData[0]);
     const triggerPercentage = new Dec(decodedData[1] as string).div(1e8).toNumber();
     return { tokenAddr: decodedData[0] as EthereumAddress, triggerPercentage, roundId: decodedData[2] as string };
   },
@@ -35,10 +35,10 @@ export const trailingStopTrigger = {
 export const makerRatioTrigger = {
   encode(vaultId: number, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['uint256', 'uint256', 'uint8'], [vaultId, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { vaultId: number, ratioState: number, ratio: number } {
-    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
     return { vaultId: +decodedData[0]!, ratio: weiToRatioPercentage(decodedData[1] as string), ratioState: +decodedData[2]! };
   },
 };
@@ -46,10 +46,10 @@ export const makerRatioTrigger = {
 export const aaveV3RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
@@ -62,10 +62,10 @@ export const aaveV3RatioTrigger = {
 export const morphoAaveV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = new Dec(ratioPercentage).mul(1e16).toString();
-    return [web3Abi.encodeParameters(['address', 'uint128', 'uint8'], [owner, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'uint128', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint128', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint128', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       ratio: new Dec(decodedData[1] as string).div(1e16).toNumber(),
@@ -83,12 +83,12 @@ export const aaveV3QuotePriceTrigger = {
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     // Price is always in 8 decimals
     const price = new Dec(decodedData[2] as string).div(10 ** 8).toDP(8).toString();
     return {
@@ -103,10 +103,10 @@ export const aaveV3QuotePriceTrigger = {
 export const compoundV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
       ratio: weiToRatioPercentage(decodedData[1] as string),
@@ -118,10 +118,10 @@ export const compoundV2RatioTrigger = {
 export const liquityRatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
       ratio: weiToRatioPercentage(decodedData[1] as string),
@@ -132,10 +132,10 @@ export const liquityRatioTrigger = {
 
 export const liquityDebtInFrontTrigger = {
   encode(owner: EthereumAddress, debtInFrontMin: string) {
-    return [web3Abi.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
+    return [AbiCoder.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, debtInFrontMin: string } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
       debtInFrontMin: decodedData[1] as string,
@@ -146,10 +146,10 @@ export const liquityDebtInFrontTrigger = {
 export const aaveV2RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
@@ -161,10 +161,10 @@ export const aaveV2RatioTrigger = {
 
 export const cBondsRebondTrigger = {
   encode(bondId: number | string) {
-    return [web3Abi.encodeParameters(['uint256'], [bondId])];
+    return [AbiCoder.encodeParameters(['uint256'], [bondId])];
   },
   decode(triggerData: TriggerData): { bondId: string } {
-    const decodedData = web3Abi.decodeParameters(['uint256'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['uint256'], triggerData[0]);
     return { bondId: decodedData[0] as string };
   },
 };
@@ -177,12 +177,12 @@ export const compoundV3RatioTrigger = {
     ratioState: RatioState,
   ) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { owner: EthereumAddress, market: EthereumAddress, ratioState: RatioState, ratio: number } {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
@@ -199,12 +199,12 @@ export const exchangeTimestampTrigger = {
   ) {
     const timestampWei = new Dec(timestamp).toString();
     const intervalWei = new Dec(interval).toString();
-    return [web3Abi.encodeParameters(['uint256', 'uint256'], [timestampWei, intervalWei])];
+    return [AbiCoder.encodeParameters(['uint256', 'uint256'], [timestampWei, intervalWei])];
   },
   decode(
     triggerData: TriggerData,
   ): { timestamp: number, interval: number } {
-    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['uint256', 'uint256'], triggerData[0]);
     return {
       timestamp: decodedData[0] as number,
       interval: decodedData[1] as number,
@@ -220,14 +220,14 @@ export const exchangeOffchainPriceTrigger = {
   ) {
     const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
     const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'ether');
-    return [web3Abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei, orderType])];
+    return [AbiCoder.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei, orderType])];
   },
   decode(
     triggerData: TriggerData,
     fromTokenDecimals: number,
     toTokenDecimals: number,
   ): { orderType: OrderType; targetPrice: string; goodUntil: any } {
-    const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
     const decimals = new Dec(toTokenDecimals).plus(18).minus(fromTokenDecimals).toString();
     const price = new Dec(decodedData[0] as string).div(new Dec(10).pow(decimals)).toDP(fromTokenDecimals).toString();
     return {
@@ -241,10 +241,10 @@ export const exchangeOffchainPriceTrigger = {
 export const sparkRatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, market, ratioWei, ratioState])];
   },
   decode(triggerData: TriggerData) {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       owner: decodedData[0],
       market: decodedData[1],
@@ -263,12 +263,12 @@ export const sparkQuotePriceTrigger = {
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
     // Price is always in 8 decimals
     const price = new Dec(decodedData[2] as string).div(10 ** 8).toDP(8).toString();
     return {
@@ -292,12 +292,12 @@ export const curveUsdBorrowRateTrigger = {
       .toString();
     const rateWei = new Dec(rate).mul(10 ** 18).floor().toString(); // 18 decimals
 
-    return [web3Abi.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [market, rateWei, rateState])];
   },
   decode(
     triggerData: TriggerData,
   ): { market: EthereumAddress, targetRate: string, rateState: RatioState } {
-    const decodedData = web3Abi.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
     const rateEth = weiToRatioPercentage(decodedData[1] as string);
 
     // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
@@ -320,12 +320,12 @@ export const curveUsdSoftLiquidationTrigger = {
   ) {
     // 100% = 1e18 => 1% = 1e16
     const _percentage = new Dec(percentage).mul(10 ** 16).floor().toString();
-    return [web3Abi.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256'], [market, owner, _percentage])];
   },
   decode(
     triggerData: TriggerData,
   ): { market: EthereumAddress, owner: EthereumAddress, percentage: string } {
-    const decodedData = web3Abi.decodeParameters(['address', 'address', 'uint256'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256'], triggerData[0]);
 
     return {
       market: decodedData[0] as EthereumAddress,

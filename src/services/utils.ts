@@ -1,6 +1,6 @@
 import Dec from 'decimal.js';
 import * as web3Utils from 'web3-utils';
-import * as web3Abi from 'web3-eth-abi';
+import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
@@ -43,7 +43,7 @@ export function wethToEthByAddress(maybeWethAddr: EthereumAddress, chainId: Chai
 }
 
 export function compareSubHashes(currentSubHash: string, newSubStructDecoded: object): boolean {
-  return currentSubHash === web3Utils.keccak256(web3Abi.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
+  return currentSubHash === web3Utils.keccak256(AbiCoder.encodeParameter('(uint64,bool,bytes[],bytes32[])', newSubStructDecoded));
 }
 
 export function encodeSubId(subIdDec: string = '0') {

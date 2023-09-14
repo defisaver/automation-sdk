@@ -1,8 +1,7 @@
-import * as web3Abi from 'web3-eth-abi';
+import AbiCoder from 'web3-eth-abi';
 
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
-import type { AbiFunctionFragment } from 'web3-types';
 import type {
   BlockNumber, Multicall, Contract, PlaceholderType,
 } from '../types';
@@ -21,7 +20,7 @@ export async function multicall(
   const multicallContract = makeUniMulticallContract(web3, chainId).contract;
 
   const formattedCalls: Multicall.FormattedCalls[] = calls.map((call) => ({
-    callData: web3Abi.encodeFunctionCall(call.abiItem as AbiFunctionFragment, call.params),
+    callData: AbiCoder.encodeFunctionCall(call.abiItem, call.params),
     target: call.target || '0x0',
     gasLimit: call.gasLimit || 1e6,
   }));
@@ -34,7 +33,7 @@ export async function multicall(
 
   callResult.returnData.forEach(([success, gasUsed, result], i) => {
     const formattedRes = (result !== '0x'
-      ? web3Abi.decodeParameters(calls[i].abiItem.outputs!, result)
+      ? AbiCoder.decodeParameters(calls[i].abiItem.outputs!, result)
       : undefined);
     formattedResult = [...formattedResult, formattedRes];
   });

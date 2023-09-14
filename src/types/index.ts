@@ -1,5 +1,5 @@
 import type Web3 from 'web3';
-import type { JsonFunctionInterface } from 'web3-types';
+import type { AbiItem } from 'web3-utils';
 import type { BaseContract, BlockType } from './contracts/generated/types';
 import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage';
 import type {
@@ -27,7 +27,7 @@ export declare namespace Utils {
 
 export declare namespace Contract {
   interface Json {
-    abi: JsonFunctionInterface[],
+    abi: AbiItem[],
     networks?: {
       [key in ChainId as string]: {
         createdBlock?: number,
@@ -37,7 +37,7 @@ export declare namespace Contract {
   }
 
   interface WithMeta<T> {
-    abi: JsonFunctionInterface[],
+    abi: AbiItem[],
     address: EthereumAddress,
     createdBlock: BlockNumber,
     contract: T,
@@ -46,7 +46,7 @@ export declare namespace Contract {
 
 export declare namespace Multicall {
   interface Calls {
-    abiItem: JsonFunctionInterface,
+    abiItem: AbiItem,
     target: EthereumAddress,
     gasLimit?: number,
     params: any[],
