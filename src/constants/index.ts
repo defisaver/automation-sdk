@@ -80,6 +80,16 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
   },
+  [Strategies.MainnetIds.LIQUITY_DSR_PAYBACK]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_DSR_PAYBACK,
+    strategyId: Strategies.Identifiers.SavingsDsrPayback,
+    protocol: PROTOCOLS.Liquity,
+  },
+  [Strategies.MainnetIds.LIQUITY_DSR_SUPPLY]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_DSR_SUPPLY,
+    strategyId: Strategies.Identifiers.SavingsDsrSupply,
+    protocol: PROTOCOLS.Liquity,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO = {

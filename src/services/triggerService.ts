@@ -5,7 +5,7 @@ import * as web3Utils from 'web3-utils';
 import type {
   EthereumAddress, TriggerData,
 } from '../types';
-import type { RatioState } from '../types/enums';
+import type { RatioState, OrderType } from '../types/enums';
 
 import { ratioPercentageToWei, weiToRatioPercentage } from './utils';
 
@@ -215,17 +215,18 @@ export const exchangeOffchainPriceTrigger = {
   encode(
     targetPrice: string,
     goodUntil: number,
+    orderType: OrderType,
     fromTokenDecimals: number,
   ) {
     const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
     const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'ether');
-    return [web3Abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei])];
+    return [web3Abi.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei, orderType])];
   },
   decode(
     triggerData: TriggerData,
     fromTokenDecimals: number,
     toTokenDecimals: number,
-  ): { orderType: number; targetPrice: string; goodUntil: any } {
+  ): { orderType: OrderType; targetPrice: string; goodUntil: any } {
     const decodedData = web3Abi.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
     const decimals = new Dec(toTokenDecimals).plus(18).minus(fromTokenDecimals).toString();
     const price = new Dec(decodedData[0] as string).div(new Dec(10).pow(decimals)).toDP(fromTokenDecimals).toString();

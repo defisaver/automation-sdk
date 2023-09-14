@@ -9,6 +9,11 @@ export enum RatioState {
   UNDER = 1,
 }
 
+export enum OrderType {
+  TAKE_PROFIT = 0,
+  STOP_LOSS = 1,
+}
+
 export enum BundleProtocols {
   MStable = 'mstable',
   Yearn = 'yearn',
@@ -55,6 +60,8 @@ export namespace Strategies {
     CHICKEN_BONDS_REBOND = 31,
     EXCHANGE_DCA = 46,
     EXCHANGE_LIMIT_ORDER = 51,
+    LIQUITY_DSR_PAYBACK = 69,
+    LIQUITY_DSR_SUPPLY = 70,
   }
 
   export enum OptimismIds {
@@ -69,6 +76,8 @@ export namespace Strategies {
 
   export enum Identifiers {
     SavingsLiqProtection = 'smart-savings-liquidation-protection',
+    SavingsDsrPayback = 'smart-savings-dsr-payback',
+    SavingsDsrSupply = 'smart-savings-dsr-supply',
     Repay = 'repay',
     EoaRepay = 'eoa-repay',
     Boost = 'boost',
