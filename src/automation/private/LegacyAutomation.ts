@@ -1,6 +1,6 @@
 import type Web3 from 'web3';
 import type {
-  EthereumAddress, Position, Interfaces, Contract, PlaceholderType,
+  EthereumAddress, Position, Interfaces, Contract, PlaceholderType, SubscriptionOptions,
 } from '../../types';
 import type {
   Legacy_AaveV2Subscriptions, Legacy_CompoundV2Subscriptions, Legacy_MakerSubscriptions, Legacy_AuthCheck,
@@ -85,8 +85,8 @@ export default class LegacyAutomation extends Automation {
     return this.protocol.id === ProtocolIdentifiers.LegacyAutomation.MakerDAO ? 'owner' : 'user';
   }
 
-  protected async _getSubscriptions(addresses?: EthereumAddress[]): Promise<PlaceholderType> { // TODO PlaceholderType
-    let subscriptions = await this.subscriptionsContract.contract.methods.getSubscribers().call();
+  protected async _getSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<PlaceholderType> { // TODO PlaceholderType
+    let subscriptions = await this.subscriptionsContract.contract.methods.getSubscribers().call({}, options?.fromBlock || 'latest');
 
     if (addresses) {
       const _addresses = addresses.map(a => a.toLowerCase());
@@ -98,8 +98,8 @@ export default class LegacyAutomation extends Automation {
     return subscriptions;
   }
 
-  protected async getParsedSubscriptions(addresses?: EthereumAddress[]): Promise<Position.LegacyAutomated[]> {
-    const subscriptions = await this._getSubscriptions(addresses);
+  protected async getParsedSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<Position.LegacyAutomated[]> {
+    const subscriptions = await this._getSubscriptions(addresses, options);
 
     // @ts-ignore
     return subscriptions.map((sub) => ({
@@ -115,11 +115,11 @@ export default class LegacyAutomation extends Automation {
     }));
   }
 
-  public async getSubscriptions(): Promise<Position.LegacyAutomated[]> {
-    return this.getParsedSubscriptions();
+  public async getSubscriptions(options?: SubscriptionOptions): Promise<Position.LegacyAutomated[]> {
+    return this.getParsedSubscriptions(undefined, options);
   }
 
-  public async getSubscriptionsFor(addresses: EthereumAddress[]): Promise<Position.LegacyAutomated[]> {
-    return this.getParsedSubscriptions(addresses);
+  public async getSubscriptionsFor(addresses: EthereumAddress[], options?: SubscriptionOptions): Promise<Position.LegacyAutomated[]> {
+    return this.getParsedSubscriptions(addresses, options);
   }
 }
