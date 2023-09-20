@@ -2,11 +2,10 @@ import Dec from 'decimal.js';
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
 import type {
-  Position, Interfaces, EthereumAddress,
-  SubscriptionOptions, Contract, ParseData, PlaceholderType,
+  Position, Interfaces, EthereumAddress, SubscriptionOptions, Contract, ParseData, PlaceholderType, BlockNumber,
 } from '../../types';
 import type {
-  Subscribe, StrategyModel, SubStorage, UpdateData,
+  StrategyModel, SubStorage,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
 
@@ -49,7 +48,7 @@ export default class StrategiesAutomation extends Automation {
     return getEventsFromContract<SubStorage>(this.subStorageContract, this.subStorageContractFork, event, options);
   }
 
-  protected async getStrategiesSubs(subIds: number[]): Promise<StrategyModel.StoredSubDataStructOutputStruct[]> {
+  protected async getStrategiesSubs(subIds: number[], fromBlock: BlockNumber = 'latest'): Promise<StrategyModel.StoredSubDataStructOutputStruct[]> {
     let options : any;
     let web3: Web3;
 
@@ -68,7 +67,7 @@ export default class StrategiesAutomation extends Automation {
     }
 
     const multicallCalls = subIds.map((subId) => ({ ...options, params: [subId] }));
-    return multicall(web3, this.chainId, multicallCalls);
+    return multicall(web3, this.chainId, multicallCalls, fromBlock);
   }
 
   protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
@@ -98,7 +97,7 @@ export default class StrategiesAutomation extends Automation {
 
     if (subscriptionEvents) {
       // @ts-ignore
-      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId));
+      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId), _options.fromBlock);
 
       subscriptions = await Promise.all(strategiesSubs.map(async (sub, index: number) => {
         let latestUpdate = subscriptionEvents[index].returnValues;
