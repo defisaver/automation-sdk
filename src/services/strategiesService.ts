@@ -329,7 +329,6 @@ function parseAaveV3CloseOnPriceWithMaximumGasPrice(position: Position.Automated
     parseData.chainId,
   );
 
-  // TODO check with @Cussone could this have an impact because it's a different strategy
   _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
 
   return _position;
