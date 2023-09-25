@@ -149,7 +149,7 @@ export declare namespace Position {
       baseToken: EthereumAddress,
       quoteToken: EthereumAddress,
       price: string,
-      maximumGasPrice: number,
+      maximumGasPrice: string,
       ratioState: RatioState,
     }
 
