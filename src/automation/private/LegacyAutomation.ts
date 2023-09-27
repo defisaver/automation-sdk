@@ -105,7 +105,8 @@ export default class LegacyAutomation extends Automation {
     return subscriptions.map((sub) => ({
       chainId: this.chainId,
       owner: sub[this.getOwnerPropName()],
-      isEnabled: true,
+      isEnabled: (options?.fromBlock && options?.fromBlock !== 'latest')
+        ? options?.fromBlock > 18213086 : false, // Legacy automation was disabled on block 18213086
       protocol: this.protocol,
       specific: { ...sub },
       strategy: {
