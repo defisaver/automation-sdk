@@ -535,8 +535,8 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.makerRepayFromSavingsSubData.decode(subStruct.subData);
+  const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityRepayFromSavingsSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
