@@ -153,7 +153,7 @@ export const aaveV2RatioTrigger = {
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
-      ratio: weiToRatioPercentage(decodedData[1] as string),
+      ratio: weiToRatioPercentage(decodedData[2] as string),
       ratioState: +decodedData[3]!,
     };
   },
@@ -186,7 +186,7 @@ export const compoundV3RatioTrigger = {
     return {
       owner: decodedData[0] as EthereumAddress,
       market: decodedData[1] as EthereumAddress,
-      ratio: weiToRatioPercentage(decodedData[1] as string),
+      ratio: weiToRatioPercentage(decodedData[2] as string),
       ratioState: +decodedData[3]!,
     };
   },
