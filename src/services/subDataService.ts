@@ -45,6 +45,15 @@ export const makerRepayFromSavingsSubData = {
   },
 };
 
+export const liquityRepayFromSavingsSubData = {
+  decode(subData: SubData): { targetRatio: number } {
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return { targetRatio };
+  },
+};
+
 export const makerCloseSubData = {
   encode(
     vaultId: number,
