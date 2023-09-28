@@ -105,28 +105,34 @@ export const aaveV3QuotePriceWithMaximumGasPriceTrigger = {
     baseTokenAddress: EthereumAddress,
     quoteTokenAddress: EthereumAddress,
     price: number,
-    maximumGasPriceInGwei: number,
     ratioState: RatioState,
+    maximumGasPriceInGwei: number,
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
     // We convert it to WEI
     const _maximumGasPrice = new Dec(maximumGasPriceInGwei.toString()).mul(10 ** 9).floor().toString();
-    return [mockedWeb3.eth.abi.encodeParameters(['address', 'address', 'uint256', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, _maximumGasPrice, ratioState])];
+    return [
+      AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState]),
+      AbiCoder.encodeParameters(['uint256'], [_maximumGasPrice]),
+    ];
   },
   decode(
     triggerData: TriggerData,
-  ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, maximumGasPrice: string, ratioState: RatioState } {
-    const decodedData = mockedWeb3.eth.abi.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+  ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState, maximumGasPrice: string } {
+    const decodedPriceTrigger = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    const decodedMaximumGasPriceTrigger = AbiCoder.decodeParameters(['uint256'], triggerData[1]) as Array<string>;
     // Price is always in 8 decimals
-    const price = new Dec(decodedData[2]).div(10 ** 8).toDP(8).toString();
-    const maximumGasPrice = new Dec(decodedData[3]).div(10 ** 9).toDP(9).toString();
+    const price = new Dec(decodedPriceTrigger[2]).div(10 ** 8).toDP(8).toString();
+
+    const maximumGasPrice = new Dec(decodedMaximumGasPriceTrigger[0]).div(10 ** 9).toDP(9).toString();
+
     return {
-      baseTokenAddress: decodedData[0],
-      quoteTokenAddress: decodedData[1],
+      baseTokenAddress: decodedPriceTrigger[0],
+      quoteTokenAddress: decodedPriceTrigger[1],
       price,
+      ratioState: +decodedPriceTrigger[3],
       maximumGasPrice,
-      ratioState: +decodedData[4],
     };
   },
 };

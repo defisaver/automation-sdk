@@ -262,7 +262,7 @@ export const aaveV3Encode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, maximumGasPrice: number, ratioState: RatioState
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState, maximumGasPrice: number
     },
     subData: {
       collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
@@ -276,7 +276,7 @@ export const aaveV3Encode = {
     const {
       baseTokenAddress, quoteTokenAddress, price, maximumGasPrice, ratioState,
     } = triggerData;
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, maximumGasPrice, ratioState);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState, maximumGasPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
