@@ -206,21 +206,23 @@ export const exchangeTimestampTrigger = {
   ): { timestamp: number, interval: number } {
     const decodedData = AbiCoder.decodeParameters(['uint256', 'uint256'], triggerData[0]);
     return {
-      timestamp: decodedData[0] as number,
-      interval: decodedData[1] as number,
+      timestamp: Number(decodedData[0]) as number,
+      interval: Number(decodedData[1]) as number,
     };
   },
 };
+
 export const exchangeOffchainPriceTrigger = {
   encode(
     targetPrice: string,
     goodUntil: number,
     orderType: OrderType,
     fromTokenDecimals: number,
+    toTokenDecimals: number,
   ) {
-    const price = new Dec(targetPrice.toString()).mul(10 ** fromTokenDecimals).floor().toString();
-    const goodUntilWei = web3Utils.toWei(new Dec(goodUntil).toString(), 'ether');
-    return [AbiCoder.encodeParameters(['uint256', 'uint256'], [price, goodUntilWei, orderType])];
+    const decimals = new Dec(toTokenDecimals).plus(18).minus(fromTokenDecimals).toNumber();
+    const price = new Dec(targetPrice.toString()).mul(10 ** decimals).floor().toString();
+    return [AbiCoder.encodeParameters(['uint256', 'uint256', 'uint8'], [price, goodUntil, orderType])];
   },
   decode(
     triggerData: TriggerData,
@@ -232,7 +234,7 @@ export const exchangeOffchainPriceTrigger = {
     const price = new Dec(decodedData[0] as string).div(new Dec(10).pow(decimals)).toDP(fromTokenDecimals).toString();
     return {
       targetPrice: price,
-      goodUntil: decodedData[1],
+      goodUntil: +decodedData[1],
       orderType: +decodedData[2]!,
     };
   },
@@ -298,7 +300,7 @@ export const curveUsdBorrowRateTrigger = {
     triggerData: TriggerData,
   ): { market: EthereumAddress, targetRate: string, rateState: RatioState } {
     const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
-    const rateEth = weiToRatioPercentage(decodedData[1] as string);
+    const rateEth = web3Utils.fromWei(decodedData[1] as string, 'ether');
 
     // the form is x = (e**(rate*365*86400))-1 where x*100 is number in %
     const exponentRate = new Dec(rateEth).mul(365).mul(86400);
