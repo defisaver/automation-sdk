@@ -59,7 +59,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(chainlinkPriceTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -99,7 +99,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(trailingStopTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -139,7 +139,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(makerRatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -179,7 +179,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(aaveV3RatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -219,7 +219,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(morphoAaveV2RatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -269,7 +269,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(aaveV3QuotePriceTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -317,7 +317,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(compoundV2RatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -363,7 +363,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(liquityDebtInFrontTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -400,7 +400,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(aaveV2RatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -440,7 +440,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(cBondsRebondTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -490,7 +490,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(compoundV3RatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -534,7 +534,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(exchangeTimestampTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -586,7 +586,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(exchangeOffchainPriceTrigger.decode(...actual)).to.eql(expected);
         });
       });
@@ -626,7 +626,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(sparkRatioTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -676,7 +676,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(sparkQuotePriceTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -726,7 +726,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(curveUsdBorrowRateTrigger.decode(actual)).to.eql(expected);
         });
       });
@@ -774,7 +774,7 @@ describe('Feature: triggerService.ts', () => {
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(curveUsdSoftLiquidationTrigger.decode(actual)).to.eql(expected);
         });
       });
