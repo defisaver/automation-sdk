@@ -22,7 +22,7 @@ jobs:
           node-version: 18.x
 
       - name: Prep dependencies
-        run: npm ci
+        run: yarn
 
       - name: Run tests
         run: npm run test
