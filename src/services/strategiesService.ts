@@ -299,6 +299,41 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
   return _position;
 }
 
+function parseAaveV3CloseOnPriceWithMaximumGasPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV3QuotePriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.specific = {
+    collAsset: subData.collAsset,
+    collAssetId: subData.collAssetId,
+    debtAsset: subData.debtAsset,
+    debtAssetId: subData.debtAssetId,
+    baseToken: triggerData.baseTokenAddress,
+    quoteToken: triggerData.quoteTokenAddress,
+    price: triggerData.price,
+    maximumGasPrice: triggerData.maximumGasPrice,
+    ratioState: triggerData.ratioState,
+  };
+
+  const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
+    _position.specific.ratioState,
+    wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
+    wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
+    parseData.chainId,
+  );
+
+  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
+
+  return _position;
+}
+
 function parseCompoundV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -579,7 +614,9 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Repay]: parseAaveV3LeverageManagement,
     [Strategies.Identifiers.Boost]: parseAaveV3LeverageManagement,
     [Strategies.Identifiers.CloseToDebt]: parseAaveV3CloseOnPrice,
+    [Strategies.Identifiers.CloseToDebtWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
     [Strategies.Identifiers.CloseToCollateral]: parseAaveV3CloseOnPrice,
+    [Strategies.Identifiers.CloseToCollateralWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,

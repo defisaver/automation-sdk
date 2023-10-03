@@ -100,6 +100,43 @@ export const aaveV3QuotePriceTrigger = {
   },
 };
 
+export const aaveV3QuotePriceWithMaximumGasPriceTrigger = {
+  encode(
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    ratioState: RatioState,
+    maximumGasPriceInGwei: number,
+  ) {
+    // Price is always in 8 decimals
+    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
+    // We convert it to WEI
+    const _maximumGasPrice = new Dec(maximumGasPriceInGwei.toString()).mul(10 ** 9).floor().toString();
+    return [
+      AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState]),
+      AbiCoder.encodeParameters(['uint256'], [_maximumGasPrice]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState, maximumGasPrice: string } {
+    const decodedPriceTrigger = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]) as Array<string>;
+    const decodedMaximumGasPriceTrigger = AbiCoder.decodeParameters(['uint256'], triggerData[1]) as Array<string>;
+    // Price is always in 8 decimals
+    const price = new Dec(decodedPriceTrigger[2]).div(10 ** 8).toDP(8).toString();
+
+    const maximumGasPrice = new Dec(decodedMaximumGasPriceTrigger[0]).div(10 ** 9).toDP(9).toString();
+
+    return {
+      baseTokenAddress: decodedPriceTrigger[0],
+      quoteTokenAddress: decodedPriceTrigger[1],
+      price,
+      ratioState: +decodedPriceTrigger[3],
+      maximumGasPrice,
+    };
+  },
+};
+
 export const compoundV2RatioTrigger = {
   encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);

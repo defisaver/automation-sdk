@@ -1,0 +1,28 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+
+jobs:
+  test:
+    # We don't trigger CI on PRs that are in draft
+    if: github.event.pull_request.draft == false
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Prep dependencies
+        run: yarn
+
+      - name: Run tests
+        run: npm run test
