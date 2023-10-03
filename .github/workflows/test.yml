@@ -21,8 +21,8 @@ jobs:
         with:
           node-version: 18.x
 
-      - id: Prep dependencies
+      - name: Prep dependencies
         run: npm ci
 
-      - id: Run tests
+      - name: Run tests
         run: npm run test
