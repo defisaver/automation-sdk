@@ -44,7 +44,8 @@ export async function multicall(
 export async function getEventsFromContract<T extends BaseContract>(
   contractWithMeta: Contract.WithMeta<T>,
   contractWithMetaFork: Contract.WithMeta<T> | null,
-  event: string, options?: PastEventOptions,
+  event: string,
+  options?: PastEventOptions,
 ) {
   const events = await contractWithMeta.contract.getPastEvents(
     event,

@@ -4,6 +4,7 @@ import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisave
 import { otherAddresses } from '@defisaver/sdk';
 
 import type { EthereumAddress, SubData } from '../types';
+import type { OrderType } from '../types/enums';
 import { ChainId, RatioState } from '../types/enums';
 
 import { ZERO_ADDRESS } from '../constants';
@@ -82,7 +83,7 @@ export const makerCloseSubData = {
     const vaultId = +AbiCoder.decodeParameter('uint256', subData[0])!;
     // if closing to collateral, asset addr will be 2nd param out of 4
     // if closing to DAI, will return 2nd param out of 3, which will be DAI addr
-    const closeToAssetAddr = AbiCoder.decodeParameter('address', subData[1])!.toString().toLowerCase();
+    const closeToAssetAddr = AbiCoder.decodeParameter('address', subData[1])!.toString();
 
     return {
       vaultId, closeToAssetAddr,
@@ -91,14 +92,6 @@ export const makerCloseSubData = {
 };
 
 export const makerLeverageManagementSubData = {
-  // encode: (vaultId:number, repayFrom, boostFrom, boostTo, repayTo, boostEnabled) => [
-  //   vaultId,
-  //   new Dec(repayFrom).mul(1e16).toString(),
-  //   new Dec(boostFrom).mul(1e16).toString(),
-  //   new Dec(boostTo).mul(1e16).toString(),
-  //   new Dec(repayTo).mul(1e16).toString(),
-  //   boostEnabled,
-  // ],
   decode: (subData:SubData) => {
     const vaultId = +AbiCoder.decodeParameter('uint256', subData[0])!.toString();
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
@@ -106,6 +99,7 @@ export const makerLeverageManagementSubData = {
     return { vaultId, targetRatio };
   },
 };
+
 export const liquityLeverageManagementSubData = {
   decode: (subData:SubData) => {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
@@ -113,6 +107,7 @@ export const liquityLeverageManagementSubData = {
     return { targetRatio };
   },
 };
+
 export const liquityCloseSubData = {
   encode(
     closeToAssetAddr: EthereumAddress,
@@ -125,16 +120,16 @@ export const liquityCloseSubData = {
 
     const collAddrEncoded = AbiCoder.encodeParameter('address', _collAddr);
     const debtAddrEncoded = AbiCoder.encodeParameter('address', _debtAddr);
-    // if (compareAddresses(closeToAssetAddr, daiAddr)) { // TODO - Uhm, wth?
+    // if (compareAddresses(closeToAssetAddr, _debtAddr)) { // Closing to debt strategy was not implemented, but it should be in the future
     //   // close to LUSD strategy
-    //   return [daiAddrEncoded, mcdManagerAddrEncoded];
+    //   return [debtAddrEncoded, collAddrEncoded];
     // }
     // close to collateral strategy
     return [collAddrEncoded, debtAddrEncoded];
   },
   decode(subData: SubData): { closeToAssetAddr: EthereumAddress, debtAddr: string } {
-    const closeToAssetAddr = AbiCoder.decodeParameter('address', subData[0])!.toString().toLowerCase();
-    const debtAddr = AbiCoder.decodeParameter('address', subData[1])!.toString().toLowerCase();
+    const closeToAssetAddr = AbiCoder.decodeParameter('address', subData[0])!.toString();
+    const debtAddr = AbiCoder.decodeParameter('address', subData[1])!.toString();
 
     return { closeToAssetAddr, debtAddr };
   },
@@ -342,7 +337,7 @@ export const exchangeDcaSubData = {
 };
 
 export const exchangeLimitOrderSubData = {
-  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: number) : SubData {
+  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: OrderType) : SubData {
     return [
       fromToken,
       toToken,
