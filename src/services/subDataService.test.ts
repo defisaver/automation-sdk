@@ -1,3 +1,4 @@
+import Dec from 'decimal.js';
 import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
@@ -22,7 +23,6 @@ import {
   makerRepayFromSavingsSubData,
   morphoAaveV2LeverageManagementSubData, sparkLeverageManagementSubData, sparkQuotePriceSubData,
 } from './subDataService';
-import Dec from 'decimal.js';
 
 describe('Feature: subDataService.ts', () => {
 
