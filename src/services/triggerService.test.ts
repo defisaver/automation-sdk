@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getAssetInfo } from '@defisaver/tokens';
+import { getAssetInfo, MAXUINT } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
 import { ChainId, OrderType, RatioState } from '../types/enums';
@@ -8,6 +8,7 @@ import { EthereumAddress, TriggerData } from '../types';
 import {
   aaveV2RatioTrigger,
   aaveV3QuotePriceTrigger,
+  aaveV3QuotePriceWithMaximumGasPriceTrigger,
   aaveV3RatioTrigger,
   cBondsRebondTrigger,
   chainlinkPriceTrigger,
@@ -272,6 +273,70 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
           expect(aaveV3QuotePriceTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[TriggerData, [baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState, maximumGasPriceInGwei?: number]]> = [
+        [
+          [
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000001',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          ],
+          [getAssetInfo('DAI', ChainId.Ethereum).address, getAssetInfo('WETH', ChainId.Ethereum).address, 0.0004, RatioState.UNDER]
+        ],
+        [
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec700000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000000000000000000000000000000000002cb417800',
+          ],
+          [getAssetInfo('WBTC', ChainId.Ethereum).address, getAssetInfo('USDT', ChainId.Ethereum).address, 0.00000023, RatioState.OVER, 12]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState, maximumGasPrice: string }, TriggerData]> = [
+        [
+          {
+            baseTokenAddress: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            quoteTokenAddress: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            price: '0.0004',
+            ratioState: RatioState.UNDER,
+            maximumGasPrice: web3Utils.fromWei(MAXUINT, 'gwei')
+          },
+          [
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000001',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          ],
+        ],
+        [
+          {
+            baseTokenAddress: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            quoteTokenAddress: web3Utils.toChecksumAddress(getAssetInfo('USDT', ChainId.Ethereum).address),
+            price: '0.00000023',
+            ratioState: RatioState.OVER,
+            maximumGasPrice: '12',
+          },
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec700000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000000000000000000000000000000000002cb417800',
+          ],
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3QuotePriceWithMaximumGasPriceTrigger.decode(actual)).to.eql(expected);
         });
       });
     });
