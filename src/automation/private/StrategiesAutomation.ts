@@ -97,7 +97,7 @@ export default class StrategiesAutomation extends Automation {
 
     if (subscriptionEvents) {
       // @ts-ignore
-      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId), _options.fromBlock);
+      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId), _options.toBlock);
 
       subscriptions = await Promise.all(strategiesSubs.map(async (sub, index: number) => {
         let latestUpdate = subscriptionEvents[index].returnValues;

@@ -329,7 +329,9 @@ function parseAaveV3CloseOnPriceWithMaximumGasPrice(position: Position.Automated
     parseData.chainId,
   );
 
-  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
+  _position.strategy.strategyId = isRatioStateOver(ratioState)
+    ? Strategies.IdOverrides.TakeProfitWithGasPrice
+    : Strategies.IdOverrides.StopLossWithGasPrice;
 
   return _position;
 }

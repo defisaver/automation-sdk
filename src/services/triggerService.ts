@@ -1,4 +1,5 @@
 import Dec from 'decimal.js';
+import { MAXUINT } from '@defisaver/tokens';
 import AbiCoder from 'web3-eth-abi';
 import * as web3Utils from 'web3-utils';
 
@@ -106,12 +107,15 @@ export const aaveV3QuotePriceWithMaximumGasPriceTrigger = {
     quoteTokenAddress: EthereumAddress,
     price: number,
     ratioState: RatioState,
-    maximumGasPriceInGwei: number,
+    maximumGasPriceInGwei?: number,
   ) {
     // Price is always in 8 decimals
     const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    // We convert it to WEI
-    const _maximumGasPrice = new Dec(maximumGasPriceInGwei.toString()).mul(10 ** 9).floor().toString();
+
+    const _maximumGasPrice = maximumGasPriceInGwei
+      ? new Dec(maximumGasPriceInGwei.toString()).mul(10 ** 9).floor().toString() // We convert it to WEI
+      : MAXUINT; // If undefined than set to MAXUINT
+
     return [
       AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState]),
       AbiCoder.encodeParameters(['uint256'], [_maximumGasPrice]),

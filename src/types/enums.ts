@@ -98,6 +98,8 @@ export namespace Strategies {
   export enum IdOverrides {
     TakeProfit = 'take-profit',
     StopLoss = 'stop-loss',
+    TakeProfitWithGasPrice = 'take-profit-with-gas-price',
+    StopLossWithGasPrice = 'stop-loss-with-gas-price',
     TrailingStop = 'trailing-stop',
     LeverageManagement = 'leverage-management',
     EoaLeverageManagement = 'leverage-management-eoa',
