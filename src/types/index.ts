@@ -202,11 +202,13 @@ type StrategyInfo<T extends number> = Record<T, Strategy<T>>;
 export type MainnetStrategiesInfo = StrategyInfo<Strategies.MainnetIds>;
 export type OptimismStrategiesInfo = StrategyInfo<Strategies.OptimismIds>;
 export type ArbitrumStrategiesInfo = StrategyInfo<Strategies.ArbitrumIds>;
+export type StrategyInfoUnion = MainnetStrategiesInfo | OptimismStrategiesInfo | ArbitrumStrategiesInfo;
 
 type BundleInfo<T extends number> = Record<T, BundleOrStrategy<T>>;
 export type MainnetBundleInfo = BundleInfo<Bundles.MainnetIds>;
 export type OptimismBundleInfo = BundleInfo<Bundles.OptimismIds>;
 export type ArbitrumBundleInfo = BundleInfo<Bundles.ArbitrumIds>;
+export type BundleInfoUnion = MainnetBundleInfo | OptimismBundleInfo | ArbitrumBundleInfo;
 
 export interface StrategiesInfo {
   [ChainId.Ethereum]: MainnetStrategiesInfo,
