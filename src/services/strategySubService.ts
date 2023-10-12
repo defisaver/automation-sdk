@@ -1,10 +1,13 @@
 import Dec from 'decimal.js';
 import { getAssetInfo } from '@defisaver/tokens';
 
+import type { OrderType } from '../types/enums';
 import {
   Bundles, ChainId, RatioState, Strategies,
 } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds } from '../types';
+
+import { STRATEGY_IDS } from '../constants';
 
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
@@ -328,18 +331,13 @@ export const exchangeEncode = {
     amount: string,
     timestamp: number,
     interval: number,
-    network: number,
+    network: ChainId,
   ) {
     requireAddresses([fromToken, toToken]);
     const subData = subDataService.exchangeDcaSubData.encode(fromToken, toToken, amount, interval);
     const triggerData = triggerService.exchangeTimestampTrigger.encode(timestamp, interval);
-    const selectedNetwork = network === 1
-      ? 'MainnetIds'
-      : network === 10
-        ? 'OptimismIds'
-        : 'ArbitrumIds';
 
-    const strategyId = Strategies[selectedNetwork].EXCHANGE_DCA;
+    const strategyId = STRATEGY_IDS[network].EXCHANGE_DCA;
 
     return [strategyId, false, triggerData, subData];
   },
@@ -348,8 +346,8 @@ export const exchangeEncode = {
     toToken: EthereumAddress,
     amount: string,
     targetPrice: string,
-    goodUntil: string,
-    orderType: number,
+    goodUntil: string | number,
+    orderType: OrderType,
   ) {
     return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil, orderType);
   },
