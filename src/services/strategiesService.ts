@@ -78,6 +78,7 @@ function parseMakerTrailingStop(position: Position.Automated, parseData: ParseDa
 
   return _position;
 }
+
 function parseMakerLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -113,6 +114,7 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
 
   return _position;
 }
+
 function parseLiquityCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -450,6 +452,7 @@ function parseExchangeDca(position: Position.Automated, parseData: ParseData, ch
 
   return _position;
 }
+
 function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseData, chainId: ChainId): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -462,6 +465,7 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 
   return _position;
 }
+
 function parseLiquityLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -588,7 +592,6 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
 
   return _position;
 }
-
 
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
