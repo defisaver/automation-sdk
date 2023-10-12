@@ -3,7 +3,7 @@ import * as web3Utils from 'web3-utils';
 import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo } from '@defisaver/tokens';
 
-import { EthereumAddress } from '../types';
+import type { EthereumAddress } from '../types';
 import { ChainId, RatioState } from '../types/enums';
 
 import { sparkEncode } from './strategySubService';

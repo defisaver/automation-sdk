@@ -4,7 +4,7 @@ import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
 import { ChainId, OrderType } from '../types/enums';
-import { EthereumAddress, SubData } from '../types';
+import type { EthereumAddress, SubData } from '../types';
 
 import {
   aaveV2LeverageManagementSubData,

@@ -3,7 +3,7 @@ import { getAssetInfo, MAXUINT } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
 import { ChainId, OrderType, RatioState } from '../types/enums';
-import { EthereumAddress, TriggerData } from '../types';
+import type { EthereumAddress, TriggerData } from '../types';
 
 import {
   aaveV2RatioTrigger,
