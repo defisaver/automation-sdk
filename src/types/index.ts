@@ -223,8 +223,12 @@ export interface BundlesInfo {
 }
 
 export type StrategyOrBundleIds =
-  Strategies.MainnetIds & Strategies.OptimismIds & Strategies.ArbitrumIds
-  & Bundles.MainnetIds & Bundles.OptimismIds & Bundles.ArbitrumIds;
+  typeof Strategies.MainnetIds[keyof typeof Strategies.MainnetIds]
+  | typeof Strategies.OptimismIds[keyof typeof Strategies.OptimismIds]
+  | typeof Strategies.ArbitrumIds[keyof typeof Strategies.ArbitrumIds]
+  | typeof Bundles.MainnetIds[keyof typeof Bundles.MainnetIds]
+  | typeof Bundles.OptimismIds[keyof typeof Bundles.OptimismIds]
+  | typeof Bundles.ArbitrumIds[keyof typeof Bundles.ArbitrumIds];
 
 export interface ParseData {
   chainId: ChainId,
