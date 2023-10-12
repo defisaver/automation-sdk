@@ -26,3 +26,8 @@ jobs:
 
       - name: Run tests
         run: npm run test
+        env:
+          RPC_1: ${{ secrets.RPC_1 }}
+          RPC_10: ${{ secrets.RPC_10 }}
+          RPC_8453: ${{ secrets.RPC_8453 }}
+          RPC_42161: ${{ secrets.RPC_42161 }}
