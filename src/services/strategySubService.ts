@@ -73,12 +73,12 @@ export const makerEncode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
   leverageManagement(
-    vaultId:number,
-    triggerRepayRatio:string,
-    triggerBoostRatio:string,
-    targetBoostRatio:string,
-    targetRepayRatio:string,
-    boostEnabled:boolean,
+    vaultId: number,
+    triggerRepayRatio: string,
+    triggerBoostRatio: string,
+    targetBoostRatio: string,
+    targetRepayRatio: string,
+    boostEnabled: boolean,
   ) {
     return [
       vaultId,
