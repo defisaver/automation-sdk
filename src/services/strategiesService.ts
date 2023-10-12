@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash';
 import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
 import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
+  BundleInfoUnion, StrategyInfoUnion,
 } from '../types';
 import type { ChainId } from '../types/enums';
 import { ProtocolIdentifiers, Strategies } from '../types/enums';
@@ -662,12 +663,12 @@ export function parseStrategiesAutomatedPosition(parseData: ParseData): Position
   } = subscriptionEventData;
   const { isEnabled } = strategiesSubsData;
 
-  const id = subStruct.strategyOrBundleId as StrategyOrBundleIds;
+  const id = subStruct.strategyOrBundleId as unknown as StrategyOrBundleIds;
 
   const strategyOrBundleInfo = (
     subStruct.isBundle
-      ? BUNDLES_INFO[chainId][id]
-      : STRATEGIES_INFO[chainId][id]
+      ? BUNDLES_INFO[chainId][id as keyof BundleInfoUnion]
+      : STRATEGIES_INFO[chainId][id as keyof StrategyInfoUnion]
   ) as BundleOrStrategy;
 
   if (!strategyOrBundleInfo) return null;
