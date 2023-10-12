@@ -1,13 +1,17 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
+
 import type {
-  BlockNumber, Contract,
+  BlockNumber, Contract, EthereumAddress,
 } from '../types';
-
 import type { BaseContract } from '../types/contracts/generated/types';
-import type { Legacy_AuthCheck, SubStorage, UniMulticall } from '../types/contracts/generated';
+import type {
+  Legacy_AuthCheck, SubStorage, UniMulticall, Erc20,
+} from '../types/contracts/generated';
 
-import { UniMulticallJson, SubStorageJson, AuthCheckJson } from '../abis';
+import {
+  UniMulticallJson, SubStorageJson, AuthCheckJson, Erc20Json,
+} from '../abis';
 
 import { isDefined } from './utils';
 import { ChainId } from '../types/enums';
@@ -62,4 +66,13 @@ export function makeAuthCheckerContract(web3: Web3, chainId: ChainId) {
 
 export function makeLegacySubscriptionContract<T extends BaseContract>(web3: Web3, contractJson: Contract.Json) {
   return makeContract<T>(web3, contractJson, ChainId.Ethereum);
+}
+
+export function makeErc20Contract(web3: Web3, tokenAddress: EthereumAddress, chainId: ChainId) {
+  return makeContract<Erc20>(web3, {
+    ...Erc20Json,
+    networks: {
+      [chainId]: { address: tokenAddress },
+    },
+  }, chainId);
 }
