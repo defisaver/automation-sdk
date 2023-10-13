@@ -33,4 +33,6 @@ const subscriptions = await ethereumStrategies.getSubscriptionsFor(
   - `./src/services/subDataService.ts`
   - `./src/services/triggerService.ts`
 - Write parsing for the strategy in `./src/services/strategeiesService.ts` and add assign it to `const parsingMethodsMapping`
-- Test it out!
+- Write tests for each method
+- Run tests with `yarn test`
+- Congrats! 🥳
