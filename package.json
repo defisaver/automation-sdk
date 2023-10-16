@@ -15,7 +15,7 @@
     "lint": "node_modules/.bin/eslint ./src",
     "gtc": "node scripts/generateContractTypes.js",
     "prepare": "husky install && npm run gtc",
-    "test": "mocha \"./src/**/*.test.ts\" --require ts-node/register --extension ts"
+    "test": "./.tests.sh"
   },
   "author": "DeFi Saver",
   "repository": "https://github.com/defisaver/automation-sdk",
