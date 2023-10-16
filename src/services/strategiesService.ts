@@ -593,6 +593,25 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
   return _position;
 }
 
+function parseDebtInFrontRepay(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.liquityDebtInFrontWithLimitTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityDebtInFrontRepaySubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.specific = {
+    debtInFrontMin: triggerData.debtInFrontMin,
+    targetRepayRatioIncrease: subData.targetRatioIncrease,
+  };
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -611,6 +630,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
     [Strategies.Identifiers.SavingsDsrPayback]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.SavingsDsrSupply]: parseLiquitySavingsLiqProtection,
+    [Strategies.Identifiers.DebtInFrontRepay]: parseDebtInFrontRepay,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

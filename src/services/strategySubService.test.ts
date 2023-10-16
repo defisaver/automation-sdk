@@ -327,6 +327,33 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+
+    describe('debtInFrontRepay()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [proxyAddress: EthereumAddress, debtInFrontMin: string, targetRatioIncrease: number],
+      ]> = [
+        [
+          [
+            Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY,
+            false,
+            ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a0000000000000000000000000000000000000000019d971e4fe8401e74000000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x0000000000000000000000005f98805a4e8be255a32880fdec7f6728c6568ba0',
+              '0x000000000000000000000000000000000000000000000000063eb89da4ed0000', '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000'
+            ],
+          ],
+          [web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'), '500000000', 45]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(liquityEncode.debtInFrontRepay(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
 
   describe('When testing strategySubService.chickenBondsEncode', () => {

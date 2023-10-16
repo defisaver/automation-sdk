@@ -197,6 +197,21 @@ export const liquityEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  debtInFrontRepay(
+    proxyAddress: EthereumAddress,
+    debtInFrontMin: string,
+    targetRatioIncrease: number,
+  ) {
+    requireAddress(proxyAddress);
+    const subData = subDataService.liquityDebtInFrontRepaySubData.encode(targetRatioIncrease);
+    const triggerData = triggerService.liquityDebtInFrontWithLimitTrigger.encode(proxyAddress, debtInFrontMin);
+
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY;
+
+    const isBundle = false;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
 };
 
 export const chickenBondsEncode = {

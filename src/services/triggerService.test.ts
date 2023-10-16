@@ -24,6 +24,7 @@ import {
   sparkQuotePriceTrigger,
   sparkRatioTrigger,
   trailingStopTrigger,
+  liquityDebtInFrontWithLimitTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -842,6 +843,52 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(curveUsdSoftLiquidationTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.liquityDebtInFrontWithLimitTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [owner: EthereumAddress, debtInFrontMin: string]]> = [
+        [
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a0000000000000000000000000000000000000000019d971e4fe8401e74000000'],
+          [web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'), '500000000']
+        ],
+        [
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a00000000000000000000000000000000000000000001a784379d99db42000000'],
+          [web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'), '2000000']
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(liquityDebtInFrontWithLimitTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ owner: EthereumAddress, debtInFrontMin: string }, TriggerData]> = [
+        [
+          {
+            owner: web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'),
+            debtInFrontMin: '500000000',
+          },
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a0000000000000000000000000000000000000000019d971e4fe8401e74000000'],
+        ],
+        [
+          {
+            owner: web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'),
+            debtInFrontMin: '2000000',
+          },
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a00000000000000000000000000000000000000000001a784379d99db42000000'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(liquityDebtInFrontWithLimitTrigger.decode(actual)).to.eql(expected);
         });
       });
     });

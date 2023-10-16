@@ -62,6 +62,7 @@ export namespace Strategies {
     EXCHANGE_LIMIT_ORDER = 51,
     LIQUITY_DSR_PAYBACK = 69,
     LIQUITY_DSR_SUPPLY = 70,
+    LIQUITY_DEBT_IN_FRONT_REPAY = 75,
   }
 
   export enum OptimismIds {
@@ -94,6 +95,7 @@ export namespace Strategies {
     BondProtection = 'bond-protection',
     Dca = 'dca',
     LimitOrder = 'limit-order',
+    DebtInFrontRepay = 'debt-in-front-repay',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
