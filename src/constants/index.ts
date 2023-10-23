@@ -90,6 +90,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.SavingsDsrSupply,
     protocol: PROTOCOLS.Liquity,
   },
+  [Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY,
+    strategyId: Strategies.Identifiers.DebtInFrontRepay,
+    protocol: PROTOCOLS.Liquity,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO = {

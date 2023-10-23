@@ -21,7 +21,10 @@ import {
   makerCloseSubData,
   makerLeverageManagementSubData,
   makerRepayFromSavingsSubData,
-  morphoAaveV2LeverageManagementSubData, sparkLeverageManagementSubData, sparkQuotePriceSubData,
+  morphoAaveV2LeverageManagementSubData,
+  sparkLeverageManagementSubData,
+  sparkQuotePriceSubData,
+  liquityDebtInFrontRepaySubData,
 } from './subDataService';
 
 describe('Feature: subDataService.ts', () => {
@@ -992,6 +995,66 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(liquityDsrSupplySubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.liquityDebtInFrontRepaySubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [targetRatioIncrease: number]]> = [
+        [
+          [
+            "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0x0000000000000000000000005f98805a4e8be255a32880fdec7f6728c6568ba0",
+            "0x000000000000000000000000000000000000000000000000016345785d8a0000", "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+          [10]
+        ],
+        [
+          [
+            "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0x0000000000000000000000005f98805a4e8be255a32880fdec7f6728c6568ba0",
+            "0x000000000000000000000000000000000000000000000000063eb89da4ed0000", "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+          [45]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(liquityDebtInFrontRepaySubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ targetRatioIncrease: number }, SubData]> = [
+        [
+          {
+            targetRatioIncrease: 10,
+          },
+          [
+            "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0x0000000000000000000000005f98805a4e8be255a32880fdec7f6728c6568ba0",
+            "0x000000000000000000000000000000000000000000000000016345785d8a0000", "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+        ],
+        [
+          {
+            targetRatioIncrease: 45,
+          },
+          [
+            "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0x0000000000000000000000005f98805a4e8be255a32880fdec7f6728c6568ba0",
+            "0x000000000000000000000000000000000000000000000000063eb89da4ed0000", "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+       ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(liquityDebtInFrontRepaySubData.decode(actual)).to.eql(expected);
         });
       });
     });

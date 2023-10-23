@@ -432,3 +432,23 @@ export const liquityDsrSupplySubData = {
     return { targetRatio };
   },
 };
+
+export const liquityDebtInFrontRepaySubData = {
+  encode: (targetRatioIncrease: number) => {
+    const wethAddress = getAssetInfo('WETH').address;
+    const lusdAddress = getAssetInfo('LUSD').address;
+
+    const wethAddressEncoded = AbiCoder.encodeParameter('address', wethAddress);
+    const lusdAddressEncoded = AbiCoder.encodeParameter('address', lusdAddress);
+    const targetRatioIncreaseEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioIncrease));
+    const withdrawIdEncoded = AbiCoder.encodeParameter('uint8', 1); // withdraw - 1
+    const paybackIdEncoded = AbiCoder.encodeParameter('uint8', 0); // payback - 0
+
+    return [wethAddressEncoded, lusdAddressEncoded, targetRatioIncreaseEncoded, withdrawIdEncoded, paybackIdEncoded];
+  },
+  decode: (subData: SubData) => {
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[2]) as any as string;
+    const targetRatioIncrease = weiToRatioPercentage(weiRatio);
+    return { targetRatioIncrease };
+  },
+};

@@ -158,9 +158,14 @@ export declare namespace Position {
       triggerPercentage: number,
       closeToAssetAddr: EthereumAddress,
     }
+
+    interface DebtInFrontRepay extends Base {
+      debtInFrontMin: string,
+      targetRepayRatioIncrease: number,
+    }
   }
 
-  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave | Specific.CloseOnPriceWithMaximumGasPriceAave;
+  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave | Specific.CloseOnPriceWithMaximumGasPriceAave | Specific.DebtInFrontRepay;
 
   export interface Automated {
     chainId: ChainId,
