@@ -8,6 +8,7 @@ import type {
   StrategyModel, SubStorage,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
+import { Strategies, ProtocolIdentifiers } from '../../types/enums';
 
 import { addToObjectIf, isDefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
@@ -84,20 +85,53 @@ export default class StrategiesAutomation extends Automation {
     return parseStrategiesAutomatedPosition(parseData);
   }
 
+  /**
+   * @description Removes expired Limit Order subscriptions
+   */
+  protected removeExpiredSubscriptions(subscriptions: (Position.Automated | null)[]) {
+    return subscriptions.filter((subscription: Position.Automated | null) => {
+      if (!subscription) {
+        return true;
+      }
+
+      const { protocol, strategy, strategyData } = subscription;
+
+      if (
+        protocol.id === ProtocolIdentifiers.StrategiesAutomation.Exchange
+        && strategy.strategyId === Strategies.Identifiers.LimitOrder
+      ) {
+        return new Dec(strategyData.decoded.triggerData.goodUntil).gt(new Dec(Date.now()).div(1000));
+      }
+
+      return true;
+    });
+  }
+
   protected async _getSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     const _options = {
       ...addToObjectIf(isDefined(options), options),
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
-    };
+    } as SubscriptionOptions & PastEventOptions;
 
-
-    const subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
+    let subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
 
     let subscriptions: (Position.Automated | null)[] = [];
 
     if (subscriptionEvents) {
-      // @ts-ignore
-      const strategiesSubs = await this.getStrategiesSubs(subscriptionEvents.map((e) => e.returnValues.subId), _options.toBlock);
+      let strategiesSubs = await this.getStrategiesSubs(
+        subscriptionEvents.map((e: { returnValues: { subId: number } }) => e.returnValues.subId), _options.toBlock,
+      );
+
+      if (_options.enabledOnly) {
+        const filteredSubscriptionEvents = [] as PlaceholderType;
+
+        strategiesSubs = strategiesSubs.filter((sub, index) => {
+          if (sub?.isEnabled) filteredSubscriptionEvents.push(subscriptionEvents[index]);
+          return sub?.isEnabled;
+        });
+
+        subscriptionEvents = filteredSubscriptionEvents;
+      }
 
       subscriptions = await Promise.all(strategiesSubs.map(async (sub, index: number) => {
         let latestUpdate = subscriptionEvents[index].returnValues;
@@ -168,7 +202,7 @@ export default class StrategiesAutomation extends Automation {
       }
     }
 
-    return subscriptions;
+    return _options.unexpiredOnly ? this.removeExpiredSubscriptions(subscriptions) : subscriptions;
   }
 
   public async getSubscriptions(options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
