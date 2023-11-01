@@ -1,6 +1,6 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "",
   "main": "./umd/index.js",
   "module": "./esm/index.js",
@@ -22,8 +22,8 @@
   "license": "ISC",
   "dependencies": {
     "@defisaver/eslint-config": "^1.0.0",
-    "@defisaver/sdk": "^1.0.43",
-    "@defisaver/tokens": "^1.4.55",
+    "@defisaver/sdk": "^1.0.53",
+    "@defisaver/tokens": "^1.5.1",
     "@ethersproject/address": "^5.0.10",
     "@ethersproject/solidity": "^5.0.9",
     "decimal.js": "^10.4.3",
