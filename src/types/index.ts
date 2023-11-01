@@ -61,11 +61,15 @@ export declare namespace Multicall {
   type Payload = any[];
 }
 
-export interface SubscriptionOptions {
+interface _SubscriptionOptions {
   toBlock: BlockNumber,
   fromBlock: BlockNumber,
-  mergeWithSameId?: boolean,
+  mergeWithSameId: boolean,
+  enabledOnly: boolean,
+  unexpiredOnly: boolean,
 }
+
+export type SubscriptionOptions = Partial<_SubscriptionOptions>;
 
 export declare namespace Interfaces {
   interface ProtocolBase {
