@@ -1,3 +1,5 @@
+import Dec from 'decimal.js';
+
 import type Web3 from 'web3';
 import type {
   EthereumAddress, Position, Interfaces, Contract, PlaceholderType, SubscriptionOptions,
@@ -99,14 +101,22 @@ export default class LegacyAutomation extends Automation {
   }
 
   protected async getParsedSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<Position.LegacyAutomated[]> {
+    // Legacy automation was disabled on block 18213086
+    if (
+      !options?.fromBlock
+      || options?.fromBlock === 'latest'
+      || options?.fromBlock === 'pending'
+      || (options?.fromBlock && new Dec(options?.fromBlock.toString()).lt(18213086))
+    ) {
+      return [];
+    }
+
     const subscriptions = await this._getSubscriptions(addresses, options);
 
-    // @ts-ignore
-    return subscriptions.map((sub) => ({
+    return subscriptions.map((sub: any) => ({
       chainId: this.chainId,
       owner: sub[this.getOwnerPropName()],
-      isEnabled: (options?.fromBlock && options?.fromBlock !== 'latest')
-        ? options?.fromBlock > 18213086 : false, // Legacy automation was disabled on block 18213086
+      isEnabled: true,
       protocol: this.protocol,
       specific: { ...sub },
       strategy: {
