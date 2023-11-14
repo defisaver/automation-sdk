@@ -99,6 +99,6 @@ export function getRatioStateInfoForAaveCloseStrategy(
   return { shouldFlip, ratioState };
 }
 
-export function getPositionId(stringId: string) {
-  return web3Utils.keccak256(stringId).toString().split('0x')[1];
+export function getPositionId(...args: (number | string)[]) {
+  return args.join('-');
 }
