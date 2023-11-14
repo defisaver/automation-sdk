@@ -4,6 +4,7 @@ import { ProtocolIdentifiers, Strategies } from '../types/enums';
 import type { ParseData, Position } from '../types';
 
 import { parseStrategiesAutomatedPosition } from './strategiesService';
+import { getPositionId } from './utils';
 
 describe('Feature: strategiesService.ts', () => {
   describe('When testing strategiesService.parseStrategiesAutomatedPosition', async () => {
@@ -13,6 +14,7 @@ describe('Feature: strategiesService.ts', () => {
         {
           isEnabled: true,
           chainId: 1,
+          positionId: getPositionId(`1${ProtocolIdentifiers.StrategiesAutomation.AaveV3}0x9cB7E19861665366011899d74E75d4F2A419aEeD0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e`),
           subHash: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
           blockNumber: 18015756,
           subId: 379,

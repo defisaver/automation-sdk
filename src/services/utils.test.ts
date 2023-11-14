@@ -14,7 +14,7 @@ import {
   compareAddresses,
   compareSubHashes,
   encodeSubId,
-  ethToWeth, getPositionId,
+  ethToWeth,
   getRatioStateInfoForAaveCloseStrategy,
   isAddress,
   isDefined,
@@ -28,6 +28,7 @@ import {
   weiToRatioPercentage,
   wethToEth,
   wethToEthByAddress,
+  getPositionId,
 } from './utils';
 
 describe('Feature: utils.ts', () => {
