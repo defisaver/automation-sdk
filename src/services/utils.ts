@@ -100,5 +100,5 @@ export function getRatioStateInfoForAaveCloseStrategy(
 }
 
 export function getPositionId(...args: (number | string)[]) {
-  return args.join('-');
+  return args.map(arg => arg.toString().toLowerCase().split(' ').join('_')).join('-');
 }

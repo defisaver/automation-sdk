@@ -416,7 +416,7 @@ describe('Feature: utils.ts', () => {
   describe('When testing utils.getPositionId()', () => {
     const examples: Array<[string, (number | string)[]]> = [
       [
-        '1-Aave__V3-0x9cB7E19861665366011899d74E75d4F2A419aEeD-0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
+        '1-aave__v3-0x9cb7e19861665366011899d74e75d4f2a419aeed-0x2f39d218133afab8f2b819b1066c7e434ad94e9e',
         [1, ProtocolIdentifiers.StrategiesAutomation.AaveV3, '0x9cB7E19861665366011899d74E75d4F2A419aEeD', '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e']
       ],
     ];
