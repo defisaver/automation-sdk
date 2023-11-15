@@ -13,10 +13,11 @@ describe('Feature: strategiesService.ts', () => {
         {
           isEnabled: true,
           chainId: 1,
+          positionId: '1-aave__v3-0x9cb7e19861665366011899d74e75d4f2a419aeed-0x2f39d218133afab8f2b819b1066c7e434ad94e9e',
           subHash: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
           blockNumber: 18015756,
           subId: 379,
-          owner: '0x9cB7E19861665366011899d74E75d4F2A419aEeD',
+          owner: '0x9cb7e19861665366011899d74e75d4f2a419aeed',
           protocol: {
             id: ProtocolIdentifiers.StrategiesAutomation.AaveV3,
             name: 'Aave',
@@ -71,7 +72,7 @@ describe('Feature: strategiesService.ts', () => {
           blockNumber: 18015756,
           subscriptionEventData: {
             subId: '379',
-            proxy: '0x9cB7E19861665366011899d74E75d4F2A419aEeD',
+            proxy: '0x9cb7e19861665366011899d74e75d4f2a419aeed',
             subHash: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
             // @ts-ignore
             subStruct:

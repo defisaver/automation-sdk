@@ -6,12 +6,23 @@ import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
   BundleInfoUnion, StrategyInfoUnion,
 } from '../types';
-import type { ChainId } from '../types/enums';
-import { ProtocolIdentifiers, Strategies } from '../types/enums';
+import { ChainId, ProtocolIdentifiers, Strategies } from '../types/enums';
 
-import { getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress } from './utils';
+import {
+  getPositionId, getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress,
+} from './utils';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
+
+const SPARK_MARKET_ADDRESSES = {
+  [ChainId.Ethereum]: '0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE',
+};
+
+const AAVE_V3_MARKET_ADDRESSES = {
+  [ChainId.Ethereum]: '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
+  [ChainId.Optimism]: '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
+  [ChainId.Arbitrum]: '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
+};
 
 function parseMakerSavingsLiqProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
@@ -23,6 +34,8 @@ function parseMakerSavingsLiqProtection(position: Position.Automated, parseData:
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, subData.vaultId);
 
   _position.specific = {
     triggerRepayRatio: Number(triggerData.ratio),
@@ -44,6 +57,8 @@ function parseMakerCloseOnPrice(position: Position.Automated, parseData: ParseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, subData.vaultId);
 
   const isTakeProfit = isRatioStateOver(Number(triggerData.state));
 
@@ -68,6 +83,8 @@ function parseMakerTrailingStop(position: Position.Automated, parseData: ParseDa
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, subData.vaultId);
+
   _position.strategy.strategyId = Strategies.IdOverrides.TrailingStop;
 
   _position.specific = {
@@ -90,6 +107,8 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, subData.vaultId);
 
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
@@ -126,6 +145,8 @@ function parseLiquityCloseOnPrice(position: Position.Automated, parseData: Parse
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
   const isTakeProfit = isRatioStateOver(Number(triggerData.state));
 
   _position.strategy.strategyId = isTakeProfit ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
@@ -149,6 +170,8 @@ function parseLiquityTrailingStop(position: Position.Automated, parseData: Parse
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
   _position.strategy.strategyId = Strategies.IdOverrides.TrailingStop;
 
   _position.specific = {
@@ -171,6 +194,8 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
 
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
@@ -208,6 +233,8 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
   if (isRepay) {
@@ -244,6 +271,8 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
   if (isRepay) {
@@ -279,6 +308,8 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, AAVE_V3_MARKET_ADDRESSES[_position.chainId]);
+
   _position.specific = {
     collAsset: subData.collAsset,
     collAssetId: subData.collAssetId,
@@ -312,6 +343,8 @@ function parseAaveV3CloseOnPriceWithMaximumGasPrice(position: Position.Automated
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, AAVE_V3_MARKET_ADDRESSES[_position.chainId]);
 
   _position.specific = {
     collAsset: subData.collAsset,
@@ -350,7 +383,10 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.owner = triggerData.owner;
+  _position.owner = triggerData.owner.toLowerCase();
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
@@ -386,7 +422,10 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.owner = triggerData.owner;
+  _position.owner = triggerData.owner.toLowerCase();
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
@@ -421,6 +460,8 @@ function parseChickenBondsRebond(position: Position.Automated, parseData: ParseD
   _position.strategyData.decoded.triggerData = triggerService.cBondsRebondTrigger.decode(subStruct.triggerData);
   _position.strategyData.decoded.subData = subDataService.cBondsRebondSubData.decode(subStruct.subData);
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.strategyData.decoded.triggerData.bondId);
+
   return _position;
 }
 
@@ -430,9 +471,11 @@ function parseLiquityBondProtection(position: Position.Automated, parseData: Par
   const { subStruct } = parseData.subscriptionEventData;
 
   const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
-  _position.strategyData.decoded.subData = subDataService.liquityPaybackUsingChickenBondSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subDataService.liquityPaybackUsingChickenBondSubData.decode(subStruct.subData);
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
 
   _position.specific = {
     triggerRepayRatio: Number(triggerData.ratio),
@@ -450,6 +493,8 @@ function parseExchangeDca(position: Position.Automated, parseData: ParseData, ch
   _position.strategyData.decoded.triggerData = triggerService.exchangeTimestampTrigger.decode(subStruct.triggerData);
   _position.strategyData.decoded.subData = subDataService.exchangeDcaSubData.decode(subStruct.subData, chainId);
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
   return _position;
 }
 
@@ -462,6 +507,8 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
   const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken, chainId).decimals;
   const toTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.toToken, chainId).decimals;
   _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals, toTokenDecimals);
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
 
   return _position;
 }
@@ -477,6 +524,8 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
 
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
@@ -514,6 +563,8 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
   if (isRepay) {
@@ -549,6 +600,8 @@ function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseDa
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, SPARK_MARKET_ADDRESSES[_position.chainId as ChainId.Ethereum]);
+
   _position.specific = {
     collAsset: subData.collAsset,
     collAssetId: subData.collAssetId,
@@ -583,6 +636,8 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
   _position.specific = {
     triggerRepayRatio: triggerData.ratio,
     targetRepayRatio: subData.targetRatio,
@@ -593,7 +648,7 @@ function parseLiquitySavingsLiqProtection(position: Position.Automated, parseDat
   return _position;
 }
 
-function parseDebtInFrontRepay(position: Position.Automated, parseData: ParseData): Position.Automated {
+function parseLiquityDebtInFrontRepay(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
@@ -603,6 +658,8 @@ function parseDebtInFrontRepay(position: Position.Automated, parseData: ParseDat
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
 
   _position.specific = {
     debtInFrontMin: triggerData.debtInFrontMin,
@@ -630,7 +687,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseLiquityLeverageManagement,
     [Strategies.Identifiers.SavingsDsrPayback]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.SavingsDsrSupply]: parseLiquitySavingsLiqProtection,
-    [Strategies.Identifiers.DebtInFrontRepay]: parseDebtInFrontRepay,
+    [Strategies.Identifiers.DebtInFrontRepay]: parseLiquityDebtInFrontRepay,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,
@@ -701,8 +758,9 @@ export function parseStrategiesAutomatedPosition(parseData: ParseData): Position
     chainId,
     subHash,
     blockNumber,
+    positionId: 'positionId parsing not implemented.',
     subId: Number(subId),
-    owner: proxy,
+    owner: proxy.toLowerCase(),
     protocol: {
       ...strategyOrBundleInfo.protocol,
     },

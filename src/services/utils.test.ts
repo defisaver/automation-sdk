@@ -4,7 +4,7 @@ import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
-import { ChainId, RatioState } from '../types/enums';
+import { ChainId, ProtocolIdentifiers, RatioState } from '../types/enums';
 
 import { sparkEncode } from './strategySubService';
 
@@ -28,6 +28,7 @@ import {
   weiToRatioPercentage,
   wethToEth,
   wethToEthByAddress,
+  getPositionId,
 } from './utils';
 
 describe('Feature: utils.ts', () => {
@@ -408,6 +409,21 @@ describe('Feature: utils.ts', () => {
     examples.forEach(([expected, actual]) => {
       it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
         expect(getRatioStateInfoForAaveCloseStrategy(...actual)).to.eql(expected);
+      });
+    });
+  });
+
+  describe('When testing utils.getPositionId()', () => {
+    const examples: Array<[string, (number | string)[]]> = [
+      [
+        '1-aave__v3-0x9cb7e19861665366011899d74e75d4f2a419aeed-0x2f39d218133afab8f2b819b1066c7e434ad94e9e',
+        [1, ProtocolIdentifiers.StrategiesAutomation.AaveV3, '0x9cB7E19861665366011899d74E75d4F2A419aEeD', '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e']
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+        expect(getPositionId(...actual)).to.eql(expected);
       });
     });
   });

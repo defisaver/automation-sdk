@@ -173,6 +173,7 @@ export declare namespace Position {
 
   export interface Automated {
     chainId: ChainId,
+    positionId: string, // Helps to unify all strategies connected to a specific position
     owner: EthereumAddress,
     subId: number,
     subIds?: number[],

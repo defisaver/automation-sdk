@@ -98,3 +98,7 @@ export function getRatioStateInfoForAaveCloseStrategy(
   }
   return { shouldFlip, ratioState };
 }
+
+export function getPositionId(...args: (number | string)[]) {
+  return args.map(arg => arg.toString().toLowerCase().split(' ').join('_')).join('-');
+}
