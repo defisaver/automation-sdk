@@ -949,7 +949,7 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@defisaver/eslint-config@^1.0.0":
+"@defisaver/eslint-config@^1.0.0", "@defisaver/eslint-config@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@defisaver/eslint-config/-/eslint-config-1.0.1.tgz#995bfd811c22adcce06287e3616373a36fed760e"
   integrity sha512-4EmTZWFOoOg4j8/HTfse4cho9uxwzAp6FbiMRTzMaVyxR+s6aJyFY8aGkOzJEKTBteh4HneHgrx4vMjpPCyoqQ==
@@ -957,13 +957,13 @@
     eslint-config-airbnb "^19.0.0"
     eslint-config-airbnb-typescript "^17.0.0"
 
-"@defisaver/sdk@^1.0.53":
-  version "1.0.53"
-  resolved "https://registry.yarnpkg.com/@defisaver/sdk/-/sdk-1.0.53.tgz#7baa31a27424063cfe9701184f12fdd76c11b483"
-  integrity sha512-uBzLBJRrR6RL4v6xc+TF+lVeow7+M7frt5mLGYzMmzYFfva6pacPNjmRRYKOYkKB5eNEc9V+6DbAWR3Nzlgeuw==
+"@defisaver/sdk@^1.0.55":
+  version "1.0.55"
+  resolved "https://registry.yarnpkg.com/@defisaver/sdk/-/sdk-1.0.55.tgz#7a1008fbe7c670ef971de44c2ac01dda5b396844"
+  integrity sha512-WTpYOw+kl1O8XfLgCpmxsPUiDBmJmW0Lk7/8nRCzDXch2gF++P3P1ngU4s+tH72EiAAfm5vcfjAsAJKLxW/2HA==
   dependencies:
     "@defisaver/eslint-config" "^1.0.0"
-    "@defisaver/tokens" "^1.5.0"
+    "@defisaver/tokens" "^1.5.2"
     "@ethersproject/address" "^5.0.10"
     "@ethersproject/solidity" "^5.0.9"
     "@types/web3-eth-abi" "^1.2.2"
@@ -973,10 +973,10 @@
     web3-eth-abi "^1.8.0"
     web3-utils "^1.8.0"
 
-"@defisaver/tokens@^1.5.0", "@defisaver/tokens@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@defisaver/tokens/-/tokens-1.5.1.tgz#ae8e5752c28983493b4bb7f8364ca6f8ff3da02e"
-  integrity sha512-2nMuucwk3sqJ1aokUgLLhEuwxY/Q3oYr5gnrwAsryF/YWeXbbIS2J3zqu6B/GB+iayfBdKHKmR/yJAXNKWB/mw==
+"@defisaver/tokens@^1.5.2", "@defisaver/tokens@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@defisaver/tokens/-/tokens-1.5.3.tgz#58beccd984e18b33557037d5b17317ad867ff978"
+  integrity sha512-Ty5i70uAFZrWB/eVqxE9GQWvcl7OYc4+QcPMTcQ0Wu+wgzmmCe5ibCb1ewwUT12dKCYGjw2sLExJ01Jdhq1BZw==
   dependencies:
     decimal.js "^10.2.1"
 

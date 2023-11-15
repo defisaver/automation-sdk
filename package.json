@@ -21,9 +21,9 @@
   "repository": "https://github.com/defisaver/automation-sdk",
   "license": "ISC",
   "dependencies": {
-    "@defisaver/eslint-config": "^1.0.0",
-    "@defisaver/sdk": "^1.0.53",
-    "@defisaver/tokens": "^1.5.1",
+    "@defisaver/eslint-config": "^1.0.1",
+    "@defisaver/sdk": "^1.0.55",
+    "@defisaver/tokens": "^1.5.3",
     "@ethersproject/address": "^5.0.10",
     "@ethersproject/solidity": "^5.0.9",
     "decimal.js": "^10.4.3",
