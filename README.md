@@ -18,6 +18,9 @@ const subscriptions = await ethereumStrategies.getSubscriptionsFor(
   { 
     fromBlock: 0,
     toBlock: 'latest',
+    mergeWithSameId: true, // Used for merging subscriptions with same strategy ID (e.g. boost and repay)
+    enabledOnly: true,
+    unexpiredOnly: true, // Referring to exchange subscriptions
   }
 );
 
