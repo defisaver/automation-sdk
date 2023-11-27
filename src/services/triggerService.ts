@@ -173,19 +173,6 @@ export const liquityRatioTrigger = {
 
 export const liquityDebtInFrontTrigger = {
   encode(owner: EthereumAddress, debtInFrontMin: string) {
-    return [AbiCoder.encodeParameters(['address', 'uint256'], [owner, debtInFrontMin])];
-  },
-  decode(triggerData: TriggerData): { owner: EthereumAddress, debtInFrontMin: string } {
-    const decodedData = AbiCoder.decodeParameters(['address', 'uint256'], triggerData[0]);
-    return {
-      owner: decodedData[0] as EthereumAddress,
-      debtInFrontMin: decodedData[1] as string,
-    };
-  },
-};
-
-export const liquityDebtInFrontWithLimitTrigger = {
-  encode(owner: EthereumAddress, debtInFrontMin: string) {
     const debtInFrontMinWei = web3Utils.toWei(new Dec(debtInFrontMin).toString(), 'ether');
     return [AbiCoder.encodeParameters(['address', 'uint256'], [owner, debtInFrontMinWei])];
   },
@@ -197,6 +184,8 @@ export const liquityDebtInFrontWithLimitTrigger = {
     };
   },
 };
+
+export const liquityDebtInFrontWithLimitTrigger = liquityDebtInFrontTrigger;
 
 export const aaveV2RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
