@@ -165,6 +165,10 @@ export default class StrategiesAutomation extends Automation {
                 && s.owner === current.owner
                 && s.strategy.strategyId === current.strategy.strategyId
                 && s.protocol.id === current.protocol.id
+                && (
+                  s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
+                  || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
+                )
               ));
 
               if (mergePairIndex !== -1) {
