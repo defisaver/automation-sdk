@@ -283,6 +283,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.CompoundV2,
   },
+  [Bundles.MainnetIds.CRVUSD_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.CRVUSD_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.CrvUSD,
+  },
+  [Bundles.MainnetIds.CRVUSD_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.CRVUSD_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.CrvUSD,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

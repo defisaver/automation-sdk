@@ -25,6 +25,7 @@ import {
   sparkRatioTrigger,
   trailingStopTrigger,
   liquityDebtInFrontWithLimitTrigger,
+  crvUSDRatioTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -893,5 +894,41 @@ describe('Feature: triggerService.ts', () => {
       });
     });
   });
+  describe('When testing triggerService.crvUSDRatioTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [owner: EthereumAddress, controller: EthereumAddress, ratioPercentage: number, ratioState: RatioState]]> = [
+        [
+          ['0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d421963500000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+          [web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), 120, RatioState.UNDER]
+        ],
+        [
+          ['0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d42196350000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+          [web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c'), web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), 200, RatioState.OVER]
+        ],
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDRatioTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('decode()', () => {
+      const examples: Array<[{ owner: EthereumAddress, controller: EthereumAddress, ratio: number, ratioState: RatioState }, TriggerData]> = [
+        [
+          { owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), controller: web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), ratio: 120, ratioState: RatioState.UNDER },
+          ['0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d421963500000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+        ],
+        [
+          { owner: web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c'), controller: web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), ratio: 200, ratioState: RatioState.OVER },
+          ['0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d42196350000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+        ],
+      ];
 
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDRatioTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
 });

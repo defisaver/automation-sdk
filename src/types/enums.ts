@@ -39,6 +39,7 @@ export namespace ProtocolIdentifiers {
     MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
     Spark = 'Spark',
+    CrvUSD = 'CurveUSD',
   }
 
   export enum LegacyAutomation {
@@ -138,6 +139,8 @@ export namespace Bundles {
     AAVE_V2_BOOST = 23,
     COMP_V2_REPAY = 20,
     COMP_V2_BOOST = 21,
+    CRVUSD_REPAY = 26,
+    CRVUSD_BOOST = 27,
   }
 
   export enum OptimismIds {

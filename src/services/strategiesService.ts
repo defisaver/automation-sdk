@@ -669,6 +669,43 @@ function parseLiquityDebtInFrontRepay(position: Position.Automated, parseData: P
   return _position;
 }
 
+function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const triggerData = triggerService.crvUSDRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.crvUSDLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+    };
+  }
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller);
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.specific.mergeWithSameId = true;
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -727,6 +764,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseSparkLeverageManagement,
     [Strategies.Identifiers.CloseToDebt]: parseSparkCloseOnPrice,
     [Strategies.Identifiers.CloseToCollateral]: parseSparkCloseOnPrice,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
+    [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseCrvUSDLeverageManagement,
   },
 };
 

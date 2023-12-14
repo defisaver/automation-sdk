@@ -18,6 +18,7 @@ import {
   morphoAaveV2Encode,
   exchangeEncode,
   sparkEncode,
+  crvUSDEncode,
 } from './strategySubService';
 
 describe('Feature: strategySubService.ts', () => {
@@ -828,6 +829,71 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(sparkEncode.closeToAsset(...actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+  describe('When testing strategySubService.crvUSDEncode', () => {
+    describe('leverageManagement()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [owner: EthereumAddress, controllerAddr: EthereumAddress, ratioState: RatioState, targetRatio: number, triggerRatio: number, collTokenAddr: EthereumAddress, crvUSDAddr: EthereumAddress],
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.CRVUSD_REPAY,
+            true,
+            [
+              "0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635000000000000000000000000000000000000000000000000136dcc951d8c00000000000000000000000000000000000000000000000000000000000000000001",
+            ],
+            [
+              "0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635",
+              "0x0000000000000000000000000000000000000000000000000000000000000001",
+              "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
+              "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e",
+            ],
+          ],
+          [
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'),
+            RatioState.UNDER,
+            190,
+            140,
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
+          ]
+        ],
+        [
+          [
+            Bundles.MainnetIds.CRVUSD_BOOST,
+            true,
+            [
+              "0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d42196350000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000"
+            ],
+            [
+              "0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635",
+              "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "0x00000000000000000000000000000000000000000000000016345785d8a00000",
+              "0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e",
+            ],
+          ],
+          [
+            web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c'),
+            web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'),
+            RatioState.OVER,
+            160,
+            200,
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDEncode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });

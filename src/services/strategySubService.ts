@@ -413,3 +413,24 @@ export const sparkEncode = {
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 };
+
+export const crvUSDEncode = {
+  leverageManagement(
+    owner: EthereumAddress,
+    controllerAddr: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    collTokenAddr: EthereumAddress,
+    crvUSDAddr: EthereumAddress,
+  ) {
+    const subData = subDataService.crvUSDLeverageManagementSubData.encode(controllerAddr, ratioState, targetRatio, collTokenAddr, crvUSDAddr);
+    const triggerData = triggerService.crvUSDRatioTrigger.encode(owner, controllerAddr, triggerRatio, ratioState);
+
+    // over is boost, under is repay
+    const strategyOrBundleId = ratioState === RatioState.OVER ? Bundles.MainnetIds.CRVUSD_BOOST : Bundles.MainnetIds.CRVUSD_REPAY;
+    const isBundle = true;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};

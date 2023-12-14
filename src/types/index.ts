@@ -167,9 +167,14 @@ export declare namespace Position {
       debtInFrontMin: string,
       targetRepayRatioIncrease: number,
     }
+
+    interface LeverageManagementCrvUSD extends Base {
+      subHashBoost?: string,
+      subHashRepay?: string,
+    }
   }
 
-  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave | Specific.CloseOnPriceWithMaximumGasPriceAave | Specific.DebtInFrontRepay;
+  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave | Specific.CloseOnPriceWithMaximumGasPriceAave | Specific.DebtInFrontRepay | Specific.LeverageManagementCrvUSD;
 
   export interface Automated {
     chainId: ChainId,

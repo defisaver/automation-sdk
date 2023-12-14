@@ -1,10 +1,10 @@
 import Dec from 'decimal.js';
-import { expect } from 'chai';
-import { getAssetInfo } from '@defisaver/tokens';
+import {expect} from 'chai';
+import {getAssetInfo} from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
-import { ChainId, OrderType } from '../types/enums';
-import type { EthereumAddress, SubData } from '../types';
+import {ChainId, OrderType, RatioState} from '../types/enums';
+import type {EthereumAddress, SubData} from '../types';
 
 import {
   aaveV2LeverageManagementSubData,
@@ -13,8 +13,12 @@ import {
   cBondsRebondSubData,
   compoundV2LeverageManagementSubData,
   compoundV3LeverageManagementSubData,
-  exchangeDcaSubData, exchangeLimitOrderSubData,
-  liquityCloseSubData, liquityDsrPaybackSubData, liquityDsrSupplySubData,
+  exchangeDcaSubData,
+  exchangeLimitOrderSubData,
+  liquityCloseSubData,
+  liquityDebtInFrontRepaySubData,
+  liquityDsrPaybackSubData,
+  liquityDsrSupplySubData,
   liquityLeverageManagementSubData,
   liquityPaybackUsingChickenBondSubData,
   liquityRepayFromSavingsSubData,
@@ -24,7 +28,7 @@ import {
   morphoAaveV2LeverageManagementSubData,
   sparkLeverageManagementSubData,
   sparkQuotePriceSubData,
-  liquityDebtInFrontRepaySubData,
+  crvUSDLeverageManagementSubData,
 } from './subDataService';
 
 describe('Feature: subDataService.ts', () => {
@@ -1055,6 +1059,35 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(liquityDebtInFrontRepaySubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+  describe('When testing subDataService.crvUSDLeverageManagementSubData', () => {
+    describe('encode()', () => {
+
+    });
+    describe('decode()', () => {
+      const examples: Array<[{
+        targetRatio: number,
+      }, SubData]> = [
+        [
+          {
+            targetRatio: 140,
+          },
+          ["0x0000000000000000000000000000000000000000000000001bc16d674ec80000", '0x0000000000000000000000000000000000000000000000000000000000000001', '0x000000000000000000000000000000000000000000000000136dcc951d8c0000', '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e'],
+        ],
+        [
+          {
+            targetRatio: 180,
+          },
+          ["0x0000000000000000000000000000000000000000000000001111d67bb1bb0000", '0x0000000000000000000000000000000000000000000000000000000000000000', '0x00000000000000000000000000000000000000000000000018fae27693b40000', '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });

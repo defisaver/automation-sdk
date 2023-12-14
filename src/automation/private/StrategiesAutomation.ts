@@ -169,6 +169,10 @@ export default class StrategiesAutomation extends Automation {
                   s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
                   || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
                 )
+                && (
+                  s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
+                  || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
+                )
               ));
 
               if (mergePairIndex !== -1) {
