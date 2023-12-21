@@ -957,13 +957,13 @@
     eslint-config-airbnb "^19.0.0"
     eslint-config-airbnb-typescript "^17.0.0"
 
-"@defisaver/sdk@^1.0.55":
-  version "1.0.55"
-  resolved "https://registry.yarnpkg.com/@defisaver/sdk/-/sdk-1.0.55.tgz#7a1008fbe7c670ef971de44c2ac01dda5b396844"
-  integrity sha512-WTpYOw+kl1O8XfLgCpmxsPUiDBmJmW0Lk7/8nRCzDXch2gF++P3P1ngU4s+tH72EiAAfm5vcfjAsAJKLxW/2HA==
+"@defisaver/sdk@^1.0.61":
+  version "1.0.61"
+  resolved "https://registry.yarnpkg.com/@defisaver/sdk/-/sdk-1.0.61.tgz#f152b37ebcbf0dd82f9a8ae4bd22bb8ba92d791a"
+  integrity sha512-1hJLJLy200y1vLbp6knxGT9hpAlcYwbFRrdHE0IBDFEZCykP1Fjl4rDnCOAzqv4H9qO4AKep8YyGlJrPwH+uOQ==
   dependencies:
     "@defisaver/eslint-config" "^1.0.0"
-    "@defisaver/tokens" "^1.5.2"
+    "@defisaver/tokens" "^1.5.5"
     "@ethersproject/address" "^5.0.10"
     "@ethersproject/solidity" "^5.0.9"
     "@types/web3-eth-abi" "^1.2.2"
@@ -973,10 +973,17 @@
     web3-eth-abi "^1.8.0"
     web3-utils "^1.8.0"
 
-"@defisaver/tokens@^1.5.2", "@defisaver/tokens@^1.5.3":
+"@defisaver/tokens@^1.5.3":
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/@defisaver/tokens/-/tokens-1.5.3.tgz#58beccd984e18b33557037d5b17317ad867ff978"
   integrity sha512-Ty5i70uAFZrWB/eVqxE9GQWvcl7OYc4+QcPMTcQ0Wu+wgzmmCe5ibCb1ewwUT12dKCYGjw2sLExJ01Jdhq1BZw==
+  dependencies:
+    decimal.js "^10.2.1"
+
+"@defisaver/tokens@^1.5.5":
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/@defisaver/tokens/-/tokens-1.5.6.tgz#055354a0e1dd6d8dfece4c0e822980353cc82970"
+  integrity sha512-s5HmzmRd6wuZnBiOXawpvLXSkIP1hfFZC1a2PHX4ZPSLZv8ITJqYgM+6n4ynt0h4ojwS+Gw8mvAkmwI7vP6YUQ==
   dependencies:
     decimal.js "^10.2.1"
 
