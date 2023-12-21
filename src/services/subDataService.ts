@@ -452,3 +452,27 @@ export const liquityDebtInFrontRepaySubData = {
     return { targetRatioIncrease };
   },
 };
+
+export const crvUSDLeverageManagementSubData = {
+  encode: (
+    controllerAddr: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    collTokenAddr: EthereumAddress,
+    crvUSDAddr: EthereumAddress,
+  ) => {
+    const controllerAddrEncoded = AbiCoder.encodeParameter('address', controllerAddr);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const collTokenAddrEncoded = AbiCoder.encodeParameter('address', collTokenAddr);
+    const crvUSDAddrEncoded = AbiCoder.encodeParameter('address', crvUSDAddr);
+    return [controllerAddrEncoded, ratioStateEncoded, targetRatioEncoded, collTokenAddrEncoded, crvUSDAddrEncoded];
+  },
+  decode: (subData: SubData) => {
+    const controller = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[2]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return { controller, targetRatio };
+  },
+};
