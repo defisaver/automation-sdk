@@ -1,10 +1,10 @@
 import Dec from 'decimal.js';
-import {expect} from 'chai';
-import {getAssetInfo} from '@defisaver/tokens';
+import { expect } from 'chai';
+import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
-import {ChainId, OrderType, RatioState} from '../types/enums';
-import type {EthereumAddress, SubData} from '../types';
+import { ChainId, OrderType, RatioState } from '../types/enums';
+import type { EthereumAddress, SubData } from '../types';
 
 import {
   aaveV2LeverageManagementSubData,
