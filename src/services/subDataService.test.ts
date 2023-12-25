@@ -1122,4 +1122,53 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
+  describe('When testing subDataService.compoundV3L2LeverageManagementSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        string,
+        [market: EthereumAddress, baseToken: EthereumAddress, triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
+      ]> = [
+        [
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a00000000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
+          [web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'), web3Utils.toChecksumAddress('0x0213d212133AFaB8F2B829B1066c7E43cAd94E2c'), 160, 220, 180, 190, true]
+        ],
+        [
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a00000000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee000000',
+          [web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'), web3Utils.toChecksumAddress('0x0413d212133AFaB8F2B829B1066c7E43cAd94E2c'), 160, 220, 180, 110, false]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(compoundV3L2LeverageManagementSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('decode()', () => {
+      const examples: Array<[{ targetRatio: number }, SubData]> = [
+        [
+          { targetRatio: 200 },
+          [
+            '0x0000000000000000000000000313d212133AFaB8F2B829B1066c7E43cAd94E2c', '0x0000000000000000000000000213d212133AFaB8F2B829B1066c7E43cAd94E2c',
+           '0x0000000000000000000000000000000000000000000000000000000000000001', '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+          ],
+        ],
+        [
+          { targetRatio: 123 },
+          [
+            '0x0000000000000000000000000313d212133AFaB8F2B829B1066c7E43cAd94E2c', '0x0000000000000000000000000413d212133AFaB8F2B829B1066c7E43cAd94E2c',
+            '0x0000000000000000000000000000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000000000001111d67bb1bb0000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(compoundV3L2LeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+
 });
