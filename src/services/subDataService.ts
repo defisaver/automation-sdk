@@ -271,8 +271,6 @@ export const compoundV3L2LeverageManagementSubData = {
     subInput = subInput.concat(baseToken.slice(2).padStart(32, '0'));
     subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
-      .padStart(32, '0'));
     subInput = subInput.concat(new Dec(triggerBoostRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(new Dec(targetBoostRatio).mul(1e16).toHex().slice(2)
