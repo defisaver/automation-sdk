@@ -255,6 +255,42 @@ export const compoundV3LeverageManagementSubData = {
   },
 };
 
+export const compoundV3L2LeverageManagementSubData = {
+  encode(
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
+    boostEnabled: boolean,
+  ): string {
+    let subInput = '0x';
+
+    subInput = subInput.concat(market.slice(2).padStart(32, '0'));
+    subInput = subInput.concat(baseToken.slice(2).padStart(32, '0'));
+    subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(triggerBoostRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(targetBoostRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(new Dec(targetRepayRatio).mul(1e16).toHex().slice(2)
+      .padStart(32, '0'));
+    subInput = subInput.concat(boostEnabled ? '01' : '00');
+
+    return subInput;
+  },
+  decode(subData: SubData): { targetRatio: number } {
+    const ratioWei = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(ratioWei);
+
+    return { targetRatio };
+  },
+};
+
 export const morphoAaveV2LeverageManagementSubData = {
   encode(
     triggerRepayRatio: number,
