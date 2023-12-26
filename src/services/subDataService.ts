@@ -3,7 +3,7 @@ import AbiCoder from 'web3-eth-abi';
 import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 
-import type { EthereumAddress, SubData } from '../types';
+import type { SubData, EthereumAddress } from '../types';
 import type { OrderType } from '../types/enums';
 import { ChainId, RatioState } from '../types/enums';
 
@@ -267,8 +267,8 @@ export const compoundV3L2LeverageManagementSubData = {
   ): string {
     let subInput = '0x';
 
-    subInput = subInput.concat(market.slice(2).padStart(32, '0'));
-    subInput = subInput.concat(baseToken.slice(2).padStart(32, '0'));
+    subInput = subInput.concat(market.slice(2));
+    subInput = subInput.concat(baseToken.slice(2));
     subInput = subInput.concat(new Dec(triggerRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(new Dec(triggerBoostRatio).mul(1e16).toHex().slice(2)
@@ -282,6 +282,7 @@ export const compoundV3L2LeverageManagementSubData = {
     return subInput;
   },
   decode(subData: SubData): { targetRatio: number } {
+    console.log(subData);
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
 
