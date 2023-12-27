@@ -155,6 +155,8 @@ export namespace Bundles {
     AAVE_V3_BOOST = 1,
     AAVE_V3_CLOSE_TO_DEBT = 2,
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
+    COMP_V3_SW_REPAY_BUNDLE = 4,
+    COMP_V3_SW_BOOST_BUNDLE = 5,
   }
 }
 

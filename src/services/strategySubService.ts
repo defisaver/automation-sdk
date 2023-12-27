@@ -327,6 +327,20 @@ export const compoundV3Encode = {
   },
 };
 
+export const compoundV3L2Encode = {
+  leverageManagement(
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
+    boostEnabled: boolean,
+  ) {
+    return subDataService.compoundV3L2LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
+  },
+};
+
 export const morphoAaveV2Encode = {
   leverageManagement(
     triggerRepayRatio: number,
