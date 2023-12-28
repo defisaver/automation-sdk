@@ -282,7 +282,6 @@ export const compoundV3L2LeverageManagementSubData = {
     return subInput;
   },
   decode(subData: SubData): { targetRatio: number } {
-    console.log(subData);
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
 
