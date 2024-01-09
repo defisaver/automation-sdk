@@ -107,6 +107,21 @@ export default class StrategiesAutomation extends Automation {
     });
   }
 
+  private _mergeCheck(s:Position.Automated, current:Position.Automated) {
+    return s.owner === current.owner
+      && s.strategy.strategyId === current.strategy.strategyId
+      && s.protocol.id === current.protocol.id
+      && s.specific.mergeId === current.specific.mergeWithId
+      && (
+        s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
+        || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
+      )
+      && (
+        s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
+        || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
+      );
+  }
+
   protected async _getSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     const _options = {
       ...addToObjectIf(isDefined(options), options),
@@ -163,20 +178,10 @@ export default class StrategiesAutomation extends Automation {
           subIds: [s.subId],
         }));
         mergeBase.forEach((current) => {
-          const mergePairIndex = mergeExtension.findIndex(s => (
-            s.owner === current.owner
-            && s.strategy.strategyId === current.strategy.strategyId
-            && s.protocol.id === current.protocol.id
-            && s.specific.mergeId === current.specific.mergeWithId
-            && (
-              s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
-              || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
-            )
-            && (
-              s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
-              || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
-            )
-          ));
+          const mergePairIndexWithEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current) && s.isEnabled === current.isEnabled);
+          const mergePairIndexWithoutEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current));
+
+          const mergePairIndex = mergePairIndexWithEnabledCheck !== -1 ? mergePairIndexWithEnabledCheck : mergePairIndexWithoutEnabledCheck;
 
           if (mergePairIndex !== -1) {
             const mergePair = mergeExtension[mergePairIndex];
