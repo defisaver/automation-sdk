@@ -118,6 +118,7 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -125,11 +126,11 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -205,6 +206,7 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -212,11 +214,11 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -243,6 +245,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -250,11 +253,11 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -281,6 +284,7 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -288,11 +292,11 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -395,6 +399,7 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -402,11 +407,11 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -438,6 +443,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -445,13 +451,13 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -539,6 +545,7 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -546,11 +553,11 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -577,6 +584,7 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -584,11 +592,11 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }
@@ -692,6 +700,7 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
       repayEnabled: isEnabled,
       subId1: Number(subId),
       subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -700,12 +709,12 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
       boostEnabled: isEnabled,
       subId2: Number(subId),
       subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.Boost,
     };
   }
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller);
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-  _position.specific.mergeWithSameId = true;
 
   return _position;
 }

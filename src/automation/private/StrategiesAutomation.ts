@@ -155,58 +155,55 @@ export default class StrategiesAutomation extends Automation {
       }));
 
       if (options?.mergeWithSameId) {
-        subscriptions = subscriptions.reduce((list: (Position.Automated | null)[], current) => {
-          const copyList = [...list] as (Position.Automated | null)[];
+        const mergeBase = subscriptions.filter(s => isDefined(s) && s.specific.mergeWithId) as Position.Automated[];
+        const mergeExtension = subscriptions.filter(s => isDefined(s) && s.specific.mergeId) as Position.Automated[];
 
-          if (isDefined(current)) {
-            if (current.specific.mergeWithSameId) {
-              const mergePairIndex = copyList.findIndex(s => (
-                s && s.specific.mergeWithSameId
-                && s.owner === current.owner
-                && s.strategy.strategyId === current.strategy.strategyId
-                && s.protocol.id === current.protocol.id
-                && (
-                  s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
-                  || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
-                )
-                && (
-                  s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
-                  || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
-                )
-              ));
+        subscriptions = (subscriptions.filter(s => isDefined(s) && !s?.specific.mergeWithId && !s?.specific.mergeId) as Position.Automated[]).map((s) => ({
+          ...s,
+          subIds: [s.subId],
+        }));
+        mergeBase.forEach((current) => {
+          const mergePairIndex = mergeExtension.findIndex(s => (
+            s.owner === current.owner
+            && s.strategy.strategyId === current.strategy.strategyId
+            && s.protocol.id === current.protocol.id
+            && s.specific.mergeId === current.specific.mergeWithId
+            && (
+              s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MakerDAO // reflexer needs to get added if we have it
+              || s.strategyData.decoded.subData.vaultId === current.strategyData.decoded.triggerData.vaultId
+            )
+            && (
+              s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
+              || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
+            )
+          ));
 
-              if (mergePairIndex !== -1) {
-                const mergePair = copyList[mergePairIndex];
-                if (isDefined(mergePair)) {
-                  copyList[mergePairIndex] = {
-                    ...mergePair,
-                    ...current,
-                    // @ts-ignore
-                    blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
-                    subIds: isDefined(mergePair.subIds) ? [...mergePair.subIds, current.subId] : undefined,
-                    isEnabled: mergePair.isEnabled || current.isEnabled,
-                    subId: mergePair.subId,
-                    specific: {
-                      ...mergePair.specific,
-                      ...current.specific,
-                      mergeWithSameId: false,
-                    },
-                  };
-                  return copyList;
-                }
-              }
-            }
+          if (mergePairIndex !== -1) {
+            const mergePair = mergeExtension[mergePairIndex];
+            mergeExtension.splice(mergePairIndex, 1);
+            subscriptions.push({
+              ...mergePair,
+              ...current,
+              // @ts-ignore
+              blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
+              subIds: [current.subId, mergePair.subId],
+              isEnabled: mergePair.isEnabled || current.isEnabled,
+              specific: {
+                ...mergePair.specific,
+                ...current.specific,
+              },
+            });
           } else {
-            return copyList;
+            subscriptions.push(current);
           }
-
-          copyList.push({
-            ...current,
-            subIds: [current.subId],
-          });
-
-          return copyList;
-        }, []);
+        });
+        if (mergeExtension.length > 0) {
+          console.error('Not all merge-able extensions were used', mergeExtension);
+          subscriptions = [...subscriptions, ...mergeExtension.map((s) => ({
+            ...s,
+            subIds: [s.subId],
+          }))];
+        }
       }
     }
 

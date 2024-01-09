@@ -64,7 +64,7 @@ describe('Feature: strategiesService.ts', () => {
             targetRepayRatio: 200,
             repayEnabled: true,
             subId1: 379,
-            mergeWithSameId: true
+            mergeWithId: Strategies.Identifiers.Boost,
           }
         },
         {
