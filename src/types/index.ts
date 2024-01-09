@@ -120,7 +120,8 @@ export declare namespace Position {
     interface Base {
       subId1?: number,
       subId2?: number,
-      mergeWithSameId?: boolean
+      mergeWithId?: Strategies.Identifiers,
+      mergeId?: Strategies.Identifiers
     }
     interface RatioProtection extends Base {
       triggerRepayRatio?: number,
