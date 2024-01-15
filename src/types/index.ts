@@ -64,7 +64,7 @@ export declare namespace Multicall {
 interface _SubscriptionOptions {
   toBlock: BlockNumber,
   fromBlock: BlockNumber,
-  mergeWithSameId: boolean,
+  mergeSubs: boolean,
   enabledOnly: boolean,
   unexpiredOnly: boolean,
 }
