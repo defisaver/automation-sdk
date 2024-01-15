@@ -10,7 +10,7 @@ import type {
 import type { ChainId } from '../../types/enums';
 import { Strategies, ProtocolIdentifiers } from '../../types/enums';
 
-import { addToObjectIf, isDefined } from '../../services/utils';
+import { addToObjectIf, isDefined, isUndefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
 import { parseStrategiesAutomatedPosition } from '../../services/strategiesService';
@@ -122,6 +122,52 @@ export default class StrategiesAutomation extends Automation {
       );
   }
 
+  protected mergeSubs(_subscriptions:(Position.Automated | null)[]) {
+    const mergeBase = _subscriptions.filter(s => isDefined(s) && isDefined(s.specific.mergeWithId)) as Position.Automated[];
+    const mergeExtension = _subscriptions.filter(s => isDefined(s) && isDefined(s.specific.mergeId)) as Position.Automated[];
+
+    let subscriptions:Position.Automated[] = (_subscriptions.filter(s => isDefined(s) && isUndefined(s.specific.mergeWithId) && isUndefined(s.specific.mergeId)) as Position.Automated[]).map((s) => ({
+      ...s,
+      subIds: [s.subId],
+    }));
+    mergeBase.forEach((current) => {
+      const mergePairIndexSubEnabled = mergeExtension.findIndex(s => this._mergeCheck(s, current) && s.isEnabled === current.isEnabled);
+      const mergePairIndexSubDisabled = mergeExtension.findIndex(s => this._mergeCheck(s, current));
+
+      const mergePairIndex = mergePairIndexSubEnabled !== -1 ? mergePairIndexSubEnabled : mergePairIndexSubDisabled;
+
+      if (mergePairIndex !== -1) {
+        const mergePair = mergeExtension[mergePairIndex];
+        mergeExtension.splice(mergePairIndex, 1);
+        subscriptions.push({
+          ...mergePair,
+          ...current,
+          // @ts-ignore
+          blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
+          subIds: [current.subId, mergePair.subId],
+          isEnabled: mergePair.isEnabled || current.isEnabled,
+          specific: {
+            ...mergePair.specific,
+            ...current.specific,
+          },
+        });
+      } else {
+        subscriptions.push({
+          ...current,
+          subIds: [current.subId],
+        });
+      }
+    });
+    if (mergeExtension.length > 0) {
+      console.error('Not all merge-able extensions were used', mergeExtension);
+      subscriptions = [...subscriptions, ...mergeExtension.map((s) => ({
+        ...s,
+        subIds: [s.subId],
+      }))];
+    }
+    return subscriptions;
+  }
+
   protected async _getSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     const _options = {
       ...addToObjectIf(isDefined(options), options),
@@ -169,46 +215,8 @@ export default class StrategiesAutomation extends Automation {
         });
       }));
 
-      if (options?.mergeWithSameId) {
-        const mergeBase = subscriptions.filter(s => isDefined(s) && s.specific.mergeWithId) as Position.Automated[];
-        const mergeExtension = subscriptions.filter(s => isDefined(s) && s.specific.mergeId) as Position.Automated[];
-
-        subscriptions = (subscriptions.filter(s => isDefined(s) && !s?.specific.mergeWithId && !s?.specific.mergeId) as Position.Automated[]).map((s) => ({
-          ...s,
-          subIds: [s.subId],
-        }));
-        mergeBase.forEach((current) => {
-          const mergePairIndexWithEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current) && s.isEnabled === current.isEnabled);
-          const mergePairIndexWithoutEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current));
-
-          const mergePairIndex = mergePairIndexWithEnabledCheck !== -1 ? mergePairIndexWithEnabledCheck : mergePairIndexWithoutEnabledCheck;
-
-          if (mergePairIndex !== -1) {
-            const mergePair = mergeExtension[mergePairIndex];
-            mergeExtension.splice(mergePairIndex, 1);
-            subscriptions.push({
-              ...mergePair,
-              ...current,
-              // @ts-ignore
-              blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
-              subIds: [current.subId, mergePair.subId],
-              isEnabled: mergePair.isEnabled || current.isEnabled,
-              specific: {
-                ...mergePair.specific,
-                ...current.specific,
-              },
-            });
-          } else {
-            subscriptions.push(current);
-          }
-        });
-        if (mergeExtension.length > 0) {
-          console.error('Not all merge-able extensions were used', mergeExtension);
-          subscriptions = [...subscriptions, ...mergeExtension.map((s) => ({
-            ...s,
-            subIds: [s.subId],
-          }))];
-        }
+      if (options?.mergeSubs) {
+        subscriptions = this.mergeSubs(subscriptions);
       }
     }
 

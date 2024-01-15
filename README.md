@@ -15,10 +15,10 @@ const ethereumStrategies = new EthereumStrategies({
 const subscriptions = await ethereumStrategies.getSubscriptionsFor(
   // Pass one or multiple owner addresses, or use getSubscriptions method to fetch all subscriptions
   ['0x000000000000000000000000000000000000dEaD'],
-  { 
+  {
     fromBlock: 0,
     toBlock: 'latest',
-    mergeWithSameId: true, // Used for merging subscriptions with same strategy ID (e.g. boost and repay)
+    mergeSubs: true, // Used for merging subscriptions with same strategy ID (e.g. boost and repay)
     enabledOnly: true,
     unexpiredOnly: true, // Referring to exchange subscriptions
   }
