@@ -10,7 +10,7 @@ import type {
 import type { ChainId } from '../../types/enums';
 import { Strategies, ProtocolIdentifiers } from '../../types/enums';
 
-import { addToObjectIf, isDefined } from '../../services/utils';
+import { addToObjectIf, isDefined, isUndefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
 import { parseStrategiesAutomatedPosition } from '../../services/strategiesService';
@@ -123,18 +123,18 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected mergeSubs(_subscriptions:(Position.Automated | null)[]) {
-    const mergeBase = _subscriptions.filter(s => isDefined(s) && s.specific.mergeWithId) as Position.Automated[];
-    const mergeExtension = _subscriptions.filter(s => isDefined(s) && s.specific.mergeId) as Position.Automated[];
+    const mergeBase = _subscriptions.filter(s => isDefined(s) && isDefined(s.specific.mergeWithId)) as Position.Automated[];
+    const mergeExtension = _subscriptions.filter(s => isDefined(s) && isDefined(s.specific.mergeId)) as Position.Automated[];
 
-    let subscriptions:Position.Automated[] = (_subscriptions.filter(s => isDefined(s) && !s?.specific.mergeWithId && !s?.specific.mergeId) as Position.Automated[]).map((s) => ({
+    let subscriptions:Position.Automated[] = (_subscriptions.filter(s => isDefined(s) && isUndefined(s.specific.mergeWithId) && isUndefined(s.specific.mergeId)) as Position.Automated[]).map((s) => ({
       ...s,
       subIds: [s.subId],
     }));
     mergeBase.forEach((current) => {
-      const mergePairIndexWithEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current) && s.isEnabled === current.isEnabled);
-      const mergePairIndexWithoutEnabledCheck = mergeExtension.findIndex(s => this._mergeCheck(s, current));
+      const mergePairIndexSubEnabled = mergeExtension.findIndex(s => this._mergeCheck(s, current) && s.isEnabled === current.isEnabled);
+      const mergePairIndexSubDisabled = mergeExtension.findIndex(s => this._mergeCheck(s, current));
 
-      const mergePairIndex = mergePairIndexWithEnabledCheck !== -1 ? mergePairIndexWithEnabledCheck : mergePairIndexWithoutEnabledCheck;
+      const mergePairIndex = mergePairIndexSubEnabled !== -1 ? mergePairIndexSubEnabled : mergePairIndexSubDisabled;
 
       if (mergePairIndex !== -1) {
         const mergePair = mergeExtension[mergePairIndex];
