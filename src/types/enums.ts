@@ -40,6 +40,7 @@ export namespace ProtocolIdentifiers {
     Exchange = 'Exchange',
     Spark = 'Spark',
     CrvUSD = 'CurveUSD',
+    MorphoBlue = 'MorphoBlue',
   }
 
   export enum LegacyAutomation {
@@ -141,6 +142,8 @@ export namespace Bundles {
     COMP_V2_BOOST = 21,
     CRVUSD_REPAY = 26,
     CRVUSD_BOOST = 27,
+    MORPHO_BLUE_REPAY = 32,
+    MORPHO_BLUE_BOOST = 33,
   }
 
   export enum OptimismIds {

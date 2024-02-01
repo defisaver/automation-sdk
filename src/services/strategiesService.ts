@@ -719,6 +719,44 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
   return _position;
 }
 
+function parseMorphoBlueLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const triggerData = triggerService.morphoBlueRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoBlueLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.marketId);
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -781,6 +819,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,
     [Strategies.Identifiers.Boost]: parseCrvUSDLeverageManagement,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.MorphoBlue]: {
+    [Strategies.Identifiers.Repay]: parseMorphoBlueLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseMorphoBlueLeverageManagement,
   },
 };
 

@@ -119,6 +119,10 @@ export default class StrategiesAutomation extends Automation {
       && (
         s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
         || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
+      )
+      && (
+        s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MorphoBlue // merge morpho blue with the same marketId
+        || s.strategyData.decoded.triggerData.marketId.toLowerCase() === current.strategyData.decoded.triggerData.marketId.toLowerCase()
       );
   }
 
