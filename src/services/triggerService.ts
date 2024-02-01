@@ -418,7 +418,7 @@ export const morphoBlueRatioTrigger = {
   decode(
     triggerData: TriggerData,
   ) {
-    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['bytes32', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       marketId: decodedData[0] as string,
       owner: decodedData[1] as EthereumAddress,

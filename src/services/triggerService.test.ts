@@ -25,7 +25,7 @@ import {
   sparkRatioTrigger,
   trailingStopTrigger,
   liquityDebtInFrontWithLimitTrigger,
-  crvUSDRatioTrigger,
+  crvUSDRatioTrigger, morphoBlueRatioTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -927,6 +927,44 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(crvUSDRatioTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.morphoBlueRatioTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [marketId: string, owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState]]> = [
+        [
+          ['0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec410000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+          ['0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41', web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), 120, RatioState.UNDER]
+        ],
+        [
+          ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c0000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+          ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc', web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c'), 200, RatioState.OVER]
+        ],
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueRatioTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('decode()', () => {
+      const examples: Array<[{ marketId: string, owner: EthereumAddress, ratio: number, ratioState: RatioState }, TriggerData]> = [
+        [
+          { marketId: '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41', owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), ratio: 120, ratioState: RatioState.UNDER },
+          ['0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec410000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+        ],
+        [
+          { marketId: '0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc', owner: web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c'), ratio: 200, ratioState: RatioState.OVER },
+          ['0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c0000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueRatioTrigger.decode(actual)).to.eql(expected);
         });
       });
     });
