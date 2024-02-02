@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { ProtocolIdentifiers, Strategies } from '../types/enums';
 import type { ParseData, Position } from '../types';
 
+import '../configuration';
 import { parseStrategiesAutomatedPosition } from './strategiesService';
 
 describe('Feature: strategiesService.ts', () => {

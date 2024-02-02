@@ -7,6 +7,7 @@ import * as web3Utils from 'web3-utils';
 import { Bundles, ChainId, OrderType, RatioState, Strategies } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from '../types';
 
+import '../configuration';
 import {
   aaveV2Encode,
   chickenBondsEncode,

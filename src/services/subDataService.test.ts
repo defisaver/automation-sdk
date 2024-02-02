@@ -6,6 +6,7 @@ import * as web3Utils from 'web3-utils';
 import { ChainId, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
+import '../configuration';
 import {
   aaveV2LeverageManagementSubData,
   aaveV3LeverageManagementSubData,

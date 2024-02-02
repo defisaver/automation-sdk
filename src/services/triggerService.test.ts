@@ -5,6 +5,7 @@ import * as web3Utils from 'web3-utils';
 import { ChainId, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, TriggerData } from '../types';
 
+import '../configuration';
 import {
   aaveV2RatioTrigger,
   aaveV3QuotePriceTrigger,
@@ -25,7 +26,8 @@ import {
   sparkRatioTrigger,
   trailingStopTrigger,
   liquityDebtInFrontWithLimitTrigger,
-  crvUSDRatioTrigger, morphoBlueRatioTrigger,
+  crvUSDRatioTrigger,
+  morphoBlueRatioTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {

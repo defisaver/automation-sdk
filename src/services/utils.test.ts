@@ -8,6 +8,7 @@ import { ChainId, ProtocolIdentifiers, RatioState } from '../types/enums';
 
 import { sparkEncode } from './strategySubService';
 
+import '../configuration';
 import {
   addToArrayIf,
   addToObjectIf,
