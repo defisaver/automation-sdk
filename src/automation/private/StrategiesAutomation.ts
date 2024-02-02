@@ -46,6 +46,9 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected async getEventFromSubStorage(event: string, options?: PastEventOptions) {
+    if (new Dec(this.subStorageContract.createdBlock.toString()).gt(options?.fromBlock?.toString() || 0)) {
+      return [];
+    }
     return getEventsFromContract<SubStorage>(this.subStorageContract, this.subStorageContractFork, event, options);
   }
 

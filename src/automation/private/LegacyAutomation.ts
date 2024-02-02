@@ -101,12 +101,12 @@ export default class LegacyAutomation extends Automation {
   }
 
   protected async getParsedSubscriptions(addresses?: EthereumAddress[], options?: SubscriptionOptions): Promise<Position.LegacyAutomated[]> {
-    // Legacy automation was disabled on block 18213086
+    const legacyAutomationSunset = 18213086;
     if (
       !options?.fromBlock
       || options?.fromBlock === 'latest'
       || options?.fromBlock === 'pending'
-      || (options?.fromBlock && new Dec(options?.fromBlock.toString()).lt(18213086))
+      || (options?.fromBlock && new Dec(options?.fromBlock.toString()).gte(legacyAutomationSunset))
     ) {
       return [];
     }
