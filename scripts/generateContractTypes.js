@@ -28,7 +28,7 @@ async function main() {
       filesToProcess: allFiles,
       allFiles,
       outDir: '.',
-      target: 'web3-v1',
+      target: 'web3-v1-3mihai3',
     });
   } catch (err) {
     console.error(err);

@@ -36,7 +36,7 @@
     "@babel/eslint-parser": "^7.12.17",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
-    "@typechain/web3-v1": "https://gitpkg.now.sh/mihai9-lab/TypeChain/packages/target-web3-v1?temp",
+    "typechain-target-web3-v1-3mihai3": "^6.0.1",
     "@types/chai": "^4.3.6",
     "@types/lodash": "^4.14.191",
     "@types/mocha": "^10.0.1",
