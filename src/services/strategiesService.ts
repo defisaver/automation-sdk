@@ -692,7 +692,10 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller);
+
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
   if (isRepay) {
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
@@ -713,7 +716,6 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
     };
   }
 
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller);
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
 
   return _position;
@@ -729,6 +731,9 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.marketId);
+
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
   if (isRepay) {
@@ -751,7 +756,6 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
     };
   }
 
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.marketId);
   _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
 
   return _position;
