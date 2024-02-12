@@ -404,3 +404,26 @@ export const crvUSDRatioTrigger = {
     };
   },
 };
+
+export const morphoBlueRatioTrigger = {
+  encode(
+    marketId: string, // bytes32
+    owner: EthereumAddress,
+    ratioPercentage: number,
+    ratioState: RatioState,
+  ) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['bytes32', 'address', 'uint256', 'uint8'], [marketId, owner, ratioWei, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['bytes32', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      marketId: decodedData[0] as string,
+      owner: decodedData[1] as EthereumAddress,
+      ratio: weiToRatioPercentage(decodedData[2] as string),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};

@@ -6,6 +6,7 @@ import * as web3Utils from 'web3-utils';
 import { ChainId, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
+import '../configuration';
 import {
   aaveV2LeverageManagementSubData,
   aaveV3LeverageManagementSubData,
@@ -29,7 +30,7 @@ import {
   sparkLeverageManagementSubData,
   sparkQuotePriceSubData,
   crvUSDLeverageManagementSubData,
-  compoundV3L2LeverageManagementSubData,
+  compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData,
 } from './subDataService';
 
 describe('Feature: subDataService.ts', () => {
@@ -1167,6 +1168,101 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(compoundV3L2LeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.morphoBlueLeverageManagementSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [loanToken: EthereumAddress, collToken: EthereumAddress, oracle: EthereumAddress, irm: EthereumAddress, lltv: string, ratioState: RatioState, targetRatio: number, user: EthereumAddress],
+      ]> = [
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+            '0x0000000000000000000000002a01eb9496094da03c4e364def50f5ad1280ad72',
+            '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+            '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000000000000000000000000000010a741a462780000',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+          ],
+          [web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'), web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'), web3Utils.toChecksumAddress('0x2a01eb9496094da03c4e364def50f5ad1280ad72'), web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'), '945000000000000000', RatioState.UNDER, 120, web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c')]
+        ],
+        [
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+            '0x00000000000000000000000048f7e36eb6b826b2df4b2e630b62cd25e89e40e2',
+            '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+            '0x0000000000000000000000000000000000000000000000000bef55718ad60000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c',
+          ],
+          [web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'), web3Utils.toChecksumAddress('0x48F7E36EB6B826B2dF4B2E630B62Cd25e89E40e2'), web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'), '860000000000000000', RatioState.OVER, 200, web3Utils.toChecksumAddress('0x0043d218133AFaB8F2B829B106633E434Ad94E2c')]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(morphoBlueLeverageManagementSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ collToken: EthereumAddress, loanToken: EthereumAddress, oracle: EthereumAddress, irm: EthereumAddress, lltv: string, targetRatio: number, user: EthereumAddress }, SubData]> = [
+        [
+          {
+            'collToken': '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+            'irm': '0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC',
+            'lltv': '945000000000000000',
+            'loanToken': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            'oracle': '0x2a01EB9496094dA03c4E364Def50f5aD1280AD72',
+            'targetRatio': 120,
+            'user': '0x1031d218133AFaB8C2B819B1366c7e434Ad91e9c',
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+            '0x0000000000000000000000002a01eb9496094da03c4e364def50f5ad1280ad72',
+            '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+            '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000000000000000000000000000010a741a462780000',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+          ],
+        ],
+        [
+          {
+            'collToken': '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+            'irm': '0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC',
+            'lltv': '860000000000000000',
+            'loanToken': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            'oracle': '0x48F7E36EB6B826B2dF4B2E630B62Cd25e89E40e2',
+            'targetRatio': 200,
+            'user': '0x0043d218133aFaB8F2b829B106633E434aD94e2C',
+          },
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+            '0x00000000000000000000000048f7e36eb6b826b2df4b2e630b62cd25e89e40e2',
+            '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+            '0x0000000000000000000000000000000000000000000000000bef55718ad60000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });

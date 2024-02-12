@@ -448,3 +448,28 @@ export const crvUSDEncode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
+
+export const morphoBlueEncode = {
+  leverageManagement(
+    marketId: string,
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    user: EthereumAddress,
+  ) {
+    const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user);
+
+    const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
+
+    // over is boost, under is repay
+    const strategyOrBundleId = ratioState === RatioState.OVER ? Bundles.MainnetIds.MORPHO_BLUE_BOOST : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
+    const isBundle = true;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};

@@ -1457,13 +1457,6 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@typechain/web3-v1@https://gitpkg.now.sh/mihai9-lab/TypeChain/packages/target-web3-v1?temp":
-  version "6.0.1"
-  resolved "https://gitpkg.now.sh/mihai9-lab/TypeChain/packages/target-web3-v1?temp#23e521983146f5801454cff3a3b63b72f12d8671"
-  dependencies:
-    lodash "^4.17.15"
-    ts-essentials "^7.0.1"
-
 "@types/bn.js@^5.1.0", "@types/bn.js@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.1.tgz#b51e1b55920a4ca26e9285ff79936bbdec910682"
@@ -6500,6 +6493,14 @@ type@^2.7.2:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/type/-/type-2.7.2.tgz#2376a15a3a28b1efa0f5350dcf72d24df6ef98d0"
   integrity sha512-dzlvlNlt6AXU7EBSfpAscydQ7gXB+pPGsPnfJnZpiNJBDj7IaJzQlBZYGdEi4R9HmPdBv2XmWJ6YUtoTa7lmCw==
+
+typechain-target-web3-v1-3mihai3@^6.0.1:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/typechain-target-web3-v1-3mihai3/-/typechain-target-web3-v1-3mihai3-6.0.2.tgz#5fba4c376ac31ce73994d8a9276b8ecf46f5cb09"
+  integrity sha512-YOW7LExOf7Lp6PnYHmiSVFfoLs3eEXvlwYQTh9cFAXV3Aq7y1w/JMTzHH/e9qm08VxgKybj9Zj7lyKfs4Nc/Xw==
+  dependencies:
+    lodash "^4.17.15"
+    ts-essentials "^7.0.1"
 
 typechain@^8.1.0:
   version "8.1.1"

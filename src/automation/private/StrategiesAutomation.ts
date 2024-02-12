@@ -46,7 +46,9 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected async getEventFromSubStorage(event: string, options?: PastEventOptions) {
-    if (new Dec(this.subStorageContract.createdBlock.toString()).gt(options?.fromBlock?.toString() || 0)) {
+    // only used for backfilling, so in case options?.fromBlock in undefined
+    // (just like we omit fromBlock when we call from app when not on fork), we still want to fetch events
+    if (new Dec(this.subStorageContract.createdBlock.toString()).gt(options?.fromBlock?.toString() || this.subStorageContract.createdBlock.toString())) {
       return [];
     }
     return getEventsFromContract<SubStorage>(this.subStorageContract, this.subStorageContractFork, event, options);
@@ -122,6 +124,10 @@ export default class StrategiesAutomation extends Automation {
       && (
         s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.CrvUSD // merge only crvUSD leverage management for the same market
         || s.strategyData.decoded.subData.controller.toLowerCase() === current.strategyData.decoded.triggerData.controller.toLowerCase()
+      )
+      && (
+        s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MorphoBlue // merge morpho blue with the same marketId
+        || s.strategyData.decoded.triggerData.marketId.toLowerCase() === current.strategyData.decoded.triggerData.marketId.toLowerCase()
       );
   }
 

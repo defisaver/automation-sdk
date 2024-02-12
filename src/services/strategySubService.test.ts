@@ -7,6 +7,7 @@ import * as web3Utils from 'web3-utils';
 import { Bundles, ChainId, OrderType, RatioState, Strategies } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from '../types';
 
+import '../configuration';
 import {
   aaveV2Encode,
   chickenBondsEncode,
@@ -18,7 +19,7 @@ import {
   morphoAaveV2Encode,
   exchangeEncode,
   sparkEncode,
-  crvUSDEncode, compoundV3L2Encode,
+  crvUSDEncode, compoundV3L2Encode, morphoBlueEncode,
 } from './strategySubService';
 
 describe('Feature: strategySubService.ts', () => {
@@ -895,6 +896,94 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(crvUSDEncode.leverageManagement(...actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+  describe('When testing strategySubService.morphoBlueEncode', () => {
+    describe('leverageManagement()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          marketId: string,
+          loanToken: EthereumAddress,
+          collToken: EthereumAddress,
+          oracle: EthereumAddress,
+          irm: EthereumAddress,
+          lltv: string,
+          ratioState: RatioState,
+          targetRatio: number,
+          triggerRatio: number,
+          user: EthereumAddress,
+        ],
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_REPAY,
+            true,
+            [
+              '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec410000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001',
+            ],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x0000000000000000000000002a01eb9496094da03c4e364def50f5ad1280ad72',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x2a01eb9496094da03c4e364def50f5ad1280ad72'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            '945000000000000000',
+            RatioState.UNDER,
+            140,
+            120,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c')
+          ]
+        ],
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_BOOST,
+            true,
+            [
+              '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec410000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c0000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'
+            ],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x0000000000000000000000002a01eb9496094da03c4e364def50f5ad1280ad72',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            '0xc54d7acf14de29e0e5527cabd7a576506870346a78a11a6762e2cca66322ec41',
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x2a01eb9496094da03c4e364def50f5ad1280ad72'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            '945000000000000000',
+            RatioState.OVER,
+            160,
+            200,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c')
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueEncode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });

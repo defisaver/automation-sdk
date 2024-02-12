@@ -8,6 +8,7 @@ import type { BlockNumber, Multicall } from '../types';
 import { Contract } from '../types';
 import type { Erc20 } from '../types/contracts/generated';
 
+import '../configuration';
 import { getEventsFromContract, multicall, } from './ethereumService';
 
 import { makeErc20Contract } from './contractService';
