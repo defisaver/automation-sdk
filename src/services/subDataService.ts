@@ -516,19 +516,27 @@ export const crvUSDLeverageManagementSubData = {
 export const crvUSDPaybackSubData = {
   encode: (
     controllerAddr: EthereumAddress,
+    addressToPullTokensFrom: EthereumAddress,
     paybackAmount: string,
     crvUSDAddr: EthereumAddress,
   ) => {
     const controllerAddrEncoded = AbiCoder.encodeParameter('address', controllerAddr);
+    const addressToPullTokensFromEncoded = AbiCoder.encodeParameter('address', addressToPullTokensFrom);
     const paybackAmountEncoded = AbiCoder.encodeParameter('uint256', toWei(paybackAmount, 'ether'));
     const crvUSDAddrEncoded = AbiCoder.encodeParameter('address', crvUSDAddr);
-    return [controllerAddrEncoded, paybackAmountEncoded, crvUSDAddrEncoded];
+    return [
+      controllerAddrEncoded,
+      addressToPullTokensFromEncoded,
+      paybackAmountEncoded,
+      crvUSDAddrEncoded,
+    ];
   },
   decode: (subData: SubData) => {
     const controller = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
-    const weiPaybackAmount = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const addressToPullTokensFrom = AbiCoder.decodeParameter('address', subData[1]) as any as EthereumAddress;
+    const weiPaybackAmount = AbiCoder.decodeParameter('uint256', subData[2]) as any as string;
     const paybackAmount = fromWei(weiPaybackAmount, 'ether');
-    return { controller, paybackAmount };
+    return { controller, addressToPullTokensFrom, paybackAmount };
   },
 };
 

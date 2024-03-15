@@ -449,12 +449,13 @@ export const crvUSDEncode = {
   },
   payback(
     proxyAddress: EthereumAddress,
+    addressToPullTokensFrom: EthereumAddress,
     paybackAmount: string,
     crvUSDAddr: EthereumAddress,
     controllerAddr: EthereumAddress,
     minHealthRatio: number,
   ) {
-    const subData = subDataService.crvUSDPaybackSubData.encode(controllerAddr, paybackAmount, crvUSDAddr);
+    const subData = subDataService.crvUSDPaybackSubData.encode(controllerAddr, addressToPullTokensFrom, paybackAmount, crvUSDAddr);
     const triggerData = triggerService.crvUsdHealthRatioTrigger.encode(proxyAddress, controllerAddr, minHealthRatio);
 
     const strategyId = Strategies.MainnetIds.CURVEUSD_PAYBACK;
