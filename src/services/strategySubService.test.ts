@@ -899,6 +899,40 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+    describe('payback()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [owner: EthereumAddress, paybackAmount: string, crvUSDAddr: EthereumAddress, controllerAddr: EthereumAddress, minHealthRatio: number],
+      ]> = [
+        [
+          [
+            Strategies.MainnetIds.CURVEUSD_PAYBACK,
+            false,
+            [
+              '0x0000000000000000000000007a2af22ba3276108cd331c8985ef9528e10a871a000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d421963500000000000000000000000000000000000000000000000002c68af0bb140000',
+            ],
+            [
+              '0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635',
+              '0x00000000000000000000000000000000000000000000043c33c1937564800000',
+              '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e'
+            ],
+          ],
+          [
+            web3Utils.toChecksumAddress('0x7a2af22ba3276108cd331c8985ef9528e10a871a'),
+            '20000',
+            '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
+            web3Utils.toChecksumAddress('0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635'),
+            20,
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDEncode.payback(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
   describe('When testing strategySubService.morphoBlueEncode', () => {
     describe('leverageManagement()', () => {

@@ -1,5 +1,7 @@
 import Dec from 'decimal.js';
 import AbiCoder from 'web3-eth-abi';
+import { fromWei, toWei } from 'web3-utils';
+
 import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 import { otherAddresses } from '@defisaver/sdk';
 
@@ -508,6 +510,25 @@ export const crvUSDLeverageManagementSubData = {
     const targetRatio = weiToRatioPercentage(weiRatio);
 
     return { controller, targetRatio };
+  },
+};
+
+export const crvUSDPaybackSubData = {
+  encode: (
+    controllerAddr: EthereumAddress,
+    paybackAmount: string,
+    crvUSDAddr: EthereumAddress,
+  ) => {
+    const controllerAddrEncoded = AbiCoder.encodeParameter('address', controllerAddr);
+    const paybackAmountEncoded = AbiCoder.encodeParameter('uint256', toWei(paybackAmount, 'ether'));
+    const crvUSDAddrEncoded = AbiCoder.encodeParameter('address', crvUSDAddr);
+    return [controllerAddrEncoded, paybackAmountEncoded, crvUSDAddrEncoded];
+  },
+  decode: (subData: SubData) => {
+    const controller = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const weiPaybackAmount = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const paybackAmount = fromWei(weiPaybackAmount, 'ether');
+    return { controller, paybackAmount };
   },
 };
 

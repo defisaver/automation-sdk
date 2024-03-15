@@ -95,6 +95,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.DebtInFrontRepay,
     protocol: PROTOCOLS.Liquity,
   },
+  [Strategies.MainnetIds.CURVEUSD_PAYBACK]: {
+    strategyOrBundleId: Strategies.MainnetIds.CURVEUSD_PAYBACK,
+    strategyId: Strategies.Identifiers.Payback,
+    protocol: PROTOCOLS.CrvUSD,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO = {

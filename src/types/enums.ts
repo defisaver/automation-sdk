@@ -65,6 +65,7 @@ export namespace Strategies {
     LIQUITY_DSR_PAYBACK = 69,
     LIQUITY_DSR_SUPPLY = 70,
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
+    CURVEUSD_PAYBACK = 92,
   }
 
   export enum OptimismIds {
@@ -94,6 +95,7 @@ export namespace Strategies {
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
+    Payback = 'payback',
     BondProtection = 'bond-protection',
     Dca = 'dca',
     LimitOrder = 'limit-order',

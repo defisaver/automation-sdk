@@ -28,6 +28,7 @@ import {
   liquityDebtInFrontWithLimitTrigger,
   crvUSDRatioTrigger,
   morphoBlueRatioTrigger,
+  crvUsdHealthRatioTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -929,6 +930,35 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(crvUSDRatioTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.crvUsdHealthRatioTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [owner: EthereumAddress, controller: EthereumAddress, ratioPercentage: number]]> = [
+        [
+          ['0x0000000000000000000000007a2af22ba3276108cd331c8985ef9528e10a871a000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d421963500000000000000000000000000000000000000000000000002c68af0bb140000'],
+          [web3Utils.toChecksumAddress('0x7a2af22ba3276108cd331c8985ef9528e10a871a'), web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), 20]
+        ]
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUsdHealthRatioTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('decode()', () => {
+      const examples: Array<[{ owner: EthereumAddress, controller: EthereumAddress, ratio: number }, TriggerData]> = [
+        [
+          { owner: web3Utils.toChecksumAddress('0x7a2af22ba3276108cd331c8985ef9528e10a871a'), controller: web3Utils.toChecksumAddress('0xa920de414ea4ab66b97da1bfe9e6eca7d4219635'), ratio: 20 },
+          ['0x0000000000000000000000007a2af22ba3276108cd331c8985ef9528e10a871a000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d421963500000000000000000000000000000000000000000000000002c68af0bb140000'],
+        ],
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUsdHealthRatioTrigger.decode(actual)).to.eql(expected);
         });
       });
     });
