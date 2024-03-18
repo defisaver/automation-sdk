@@ -902,7 +902,7 @@ describe('Feature: strategySubService.ts', () => {
     describe('payback()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
-        [owner: EthereumAddress, addressToPullTokensFrom: EthereumAddress, paybackAmount: string, crvUSDAddr: EthereumAddress, controllerAddr: EthereumAddress, minHealthRatio: number],
+        [owner: EthereumAddress, addressToPullTokensFrom: EthereumAddress, positionOwner: EthereumAddress, paybackAmount: string, crvUSDAddr: EthereumAddress, controllerAddr: EthereumAddress, minHealthRatio: number],
       ]> = [
         [
           [
@@ -914,12 +914,14 @@ describe('Feature: strategySubService.ts', () => {
             [
               '0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635',
               '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
+              '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
               '0x00000000000000000000000000000000000000000000043c33c1937564800000',
               '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e'
             ],
           ],
           [
             web3Utils.toChecksumAddress('0x7a2af22ba3276108cd331c8985ef9528e10a871a'),
+            web3Utils.toChecksumAddress('0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280'),
             web3Utils.toChecksumAddress('0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280'),
             '20000',
             '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
