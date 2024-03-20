@@ -730,7 +730,8 @@ function parseCrvUSDPayback(position: Position.Automated, parseData: ParseData):
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller);
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller, Math.random());
+  _position.strategy.strategyId = Strategies.Identifiers.Payback;
 
   return _position;
 }
