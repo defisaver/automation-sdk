@@ -447,6 +447,23 @@ export const crvUSDEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  payback(
+    proxyAddress: EthereumAddress,
+    addressToPullTokensFrom: EthereumAddress,
+    positionOwner: EthereumAddress,
+    paybackAmount: string,
+    crvUSDAddr: EthereumAddress,
+    controllerAddr: EthereumAddress,
+    minHealthRatio: number,
+  ) {
+    const subData = subDataService.crvUSDPaybackSubData.encode(controllerAddr, addressToPullTokensFrom, positionOwner, paybackAmount, crvUSDAddr);
+    const triggerData = triggerService.crvUsdHealthRatioTrigger.encode(proxyAddress, controllerAddr, minHealthRatio);
+
+    const strategyId = Strategies.MainnetIds.CURVEUSD_PAYBACK;
+    const isBundle = false;
+
+    return [strategyId, isBundle, triggerData, subData];
+  },
 };
 
 export const morphoBlueEncode = {

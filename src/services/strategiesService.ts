@@ -721,6 +721,21 @@ function parseCrvUSDLeverageManagement(position: Position.Automated, parseData: 
   return _position;
 }
 
+function parseCrvUSDPayback(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.crvUsdHealthRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.crvUSDPaybackSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.controller, Math.random());
+  _position.strategy.strategyId = Strategies.Identifiers.Payback;
+
+  return _position;
+}
+
 function parseMorphoBlueLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -823,6 +838,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,
     [Strategies.Identifiers.Boost]: parseCrvUSDLeverageManagement,
+    [Strategies.Identifiers.Payback]: parseCrvUSDPayback,
   },
   [ProtocolIdentifiers.StrategiesAutomation.MorphoBlue]: {
     [Strategies.Identifiers.Repay]: parseMorphoBlueLeverageManagement,

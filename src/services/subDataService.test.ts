@@ -30,7 +30,7 @@ import {
   sparkLeverageManagementSubData,
   sparkQuotePriceSubData,
   crvUSDLeverageManagementSubData,
-  compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData,
+  compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData, crvUSDPaybackSubData,
 } from './subDataService';
 
 describe('Feature: subDataService.ts', () => {
@@ -1120,6 +1120,58 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(crvUSDLeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.crvUSDPaybackSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [controller: EthereumAddress, addressToPullTokensFrom: EthereumAddress, positionOwner: EthereumAddress, paybackAmount: string, crvUSDAddr: EthereumAddress]]> = [
+        [
+          [
+            '0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635',
+            '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
+            '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
+            '0x00000000000000000000000000000000000000000000043c33c1937564800000',
+            '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e',
+          ],
+          ['0xa920de414ea4ab66b97da1bfe9e6eca7d4219635', '0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280', '0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280', '20000', '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E'],
+        ]
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(crvUSDPaybackSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('decode()', () => {
+      const examples: Array<[{
+        controller: EthereumAddress,
+        addressToPullTokensFrom: EthereumAddress,
+        positionOwner: EthereumAddress,
+        paybackAmount: string,
+      }, SubData]> = [
+        [
+          {
+            controller: '0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635',
+            addressToPullTokensFrom: '0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280',
+            positionOwner: '0xDc0Ad7a48088f1AA55d26f8b36F7C1E827DdD280',
+            paybackAmount: '20000'
+          },
+          [
+            '0x000000000000000000000000a920de414ea4ab66b97da1bfe9e6eca7d4219635',
+            '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
+            '0x000000000000000000000000dc0ad7a48088f1aa55d26f8b36f7c1e827ddd280',
+            '0x00000000000000000000000000000000000000000000043c33c1937564800000',
+            '0x000000000000000000000000f939e0a03fb07f59a73314e73794be0e57ac1b4e',
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(crvUSDPaybackSubData.decode(actual)).to.eql(expected);
         });
       });
     });
