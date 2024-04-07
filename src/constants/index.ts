@@ -183,6 +183,26 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.CompoundV3,
   },
+  [Bundles.MainnetIds.COMP_V3_SW_REPAY_V2_BUNDLE]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_SW_REPAY_V2_BUNDLE,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.MainnetIds.COMP_V3_SW_BOOST_V2_BUNDLE]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_SW_BOOST_V2_BUNDLE,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.MainnetIds.COMP_V3_EOA_REPAY_V2_BUNDLE]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_EOA_REPAY_V2_BUNDLE,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.MainnetIds.COMP_V3_EOA_BOOST_V2_BUNDLE]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_EOA_BOOST_V2_BUNDLE,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.CompoundV3,
+  },
   [Bundles.MainnetIds.LIQUITY_PAYBACK_USING_CHICKEN_BOND]: {
     strategyOrBundleId: Bundles.MainnetIds.LIQUITY_PAYBACK_USING_CHICKEN_BOND,
     strategyId: Strategies.Identifiers.BondProtection,
