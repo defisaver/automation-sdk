@@ -404,6 +404,29 @@ export const crvUSDRatioTrigger = {
   },
 };
 
+export const llamaLendRatioTrigger = {
+  encode(
+    owner: EthereumAddress,
+    controller: EthereumAddress,
+    ratioPercentage: number,
+    ratioState: RatioState,
+  ) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, controller, ratioWei, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      owner: decodedData[0] as EthereumAddress,
+      controller: decodedData[1] as EthereumAddress,
+      ratio: weiToRatioPercentage(decodedData[2] as string),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};
+
 export const crvUsdHealthRatioTrigger = {
   encode(
     owner: EthereumAddress,

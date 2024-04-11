@@ -513,6 +513,26 @@ export const crvUSDLeverageManagementSubData = {
   },
 };
 
+export const llamaLendLeverageManagementSubData = {
+  encode: (
+    controllerAddr: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const controllerAddrEncoded = AbiCoder.encodeParameter('address', controllerAddr);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    return [controllerAddrEncoded, ratioStateEncoded, targetRatioEncoded];
+  },
+  decode: (subData: SubData) => {
+    const controller = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[2]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return { controller, targetRatio };
+  },
+};
+
 export const crvUSDPaybackSubData = {
   encode: (
     controllerAddr: EthereumAddress,

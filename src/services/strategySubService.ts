@@ -466,6 +466,25 @@ export const crvUSDEncode = {
   },
 };
 
+export const llamaLendEncode = {
+  leverageManagement(
+    owner: EthereumAddress,
+    controllerAddr: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const subData = subDataService.llamaLendLeverageManagementSubData.encode(controllerAddr, ratioState, targetRatio);
+    const triggerData = triggerService.llamaLendRatioTrigger.encode(owner, controllerAddr, triggerRatio, ratioState);
+
+    // over is boost, under is repay
+    const strategyOrBundleId = ratioState === RatioState.OVER ? Strategies.MainnetIds.LLAMALEND_BOOST : Strategies.MainnetIds.LLAMALEND_REPAY;
+    const isBundle = false;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};
+
 export const morphoBlueEncode = {
   leverageManagement(
     marketId: string,

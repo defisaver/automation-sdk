@@ -100,6 +100,16 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
+  [Strategies.MainnetIds.LLAMALEND_REPAY]: {
+    strategyOrBundleId: Strategies.MainnetIds.LLAMALEND_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.LlamaLend,
+  },
+  [Strategies.MainnetIds.LLAMALEND_BOOST]: {
+    strategyOrBundleId: Strategies.MainnetIds.LLAMALEND_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.LlamaLend,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO = {
@@ -125,6 +135,16 @@ export const ARBITRUM_STRATEGIES_INFO = {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.ArbitrumIds.LLAMALEND_REPAY]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.LLAMALEND_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.LlamaLend,
+  },
+  [Strategies.ArbitrumIds.LLAMALEND_BOOST]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.LLAMALEND_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.LlamaLend,
   },
 };
 

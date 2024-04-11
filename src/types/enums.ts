@@ -41,6 +41,7 @@ export namespace ProtocolIdentifiers {
     Spark = 'Spark',
     CrvUSD = 'CurveUSD',
     MorphoBlue = 'MorphoBlue',
+    LlamaLend = 'LlamaLend',
   }
 
   export enum LegacyAutomation {
@@ -66,6 +67,8 @@ export namespace Strategies {
     LIQUITY_DSR_SUPPLY = 70,
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
+    LLAMALEND_REPAY = 93,
+    LLAMALEND_BOOST = 94,
   }
 
   export enum OptimismIds {
@@ -76,6 +79,8 @@ export namespace Strategies {
   export enum ArbitrumIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    LLAMALEND_REPAY = 14,
+    LLAMALEND_BOOST = 15,
   }
 
   export enum Identifiers {
