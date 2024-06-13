@@ -953,6 +953,7 @@ describe('Feature: strategySubService.ts', () => {
           targetRatio: number,
           triggerRatio: number,
           user: EthereumAddress,
+          isEoa: boolean,
         ],
       ]> = [
         [
@@ -983,7 +984,8 @@ describe('Feature: strategySubService.ts', () => {
             RatioState.UNDER,
             140,
             120,
-            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c')
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            false,
           ]
         ],
         [
@@ -1014,7 +1016,8 @@ describe('Feature: strategySubService.ts', () => {
             RatioState.OVER,
             160,
             200,
-            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c')
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            false,
           ]
         ],
       ];

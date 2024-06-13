@@ -478,13 +478,17 @@ export const morphoBlueEncode = {
     targetRatio: number,
     triggerRatio: number,
     user: EthereumAddress,
+    isEOA: boolean,
   ) {
-    const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user);
+    const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user, isEOA);
 
     const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
 
     // over is boost, under is repay
-    const strategyOrBundleId = ratioState === RatioState.OVER ? Bundles.MainnetIds.MORPHO_BLUE_BOOST : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
+    const isBoost = ratioState === RatioState.OVER;
+    let strategyOrBundleId;
+    if (isBoost) strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST : Bundles.MainnetIds.MORPHO_BLUE_BOOST;
+    else strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
     const isBundle = true;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];

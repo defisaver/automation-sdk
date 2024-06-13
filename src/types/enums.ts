@@ -150,6 +150,8 @@ export namespace Bundles {
     COMP_V3_EOA_BOOST_V2_BUNDLE = 31,
     MORPHO_BLUE_REPAY = 32,
     MORPHO_BLUE_BOOST = 33,
+    MORPHO_BLUE_EOA_REPAY = 34,
+    MORPHO_BLUE_EOA_BOOST = 35,
   }
 
   export enum OptimismIds {

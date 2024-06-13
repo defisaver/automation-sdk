@@ -749,7 +749,7 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.marketId);
 
-  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
     _position.specific = {
@@ -771,7 +771,9 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
     };
   }
 
-  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
+
 
   return _position;
 }
@@ -843,6 +845,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MorphoBlue]: {
     [Strategies.Identifiers.Repay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.Boost]: parseMorphoBlueLeverageManagement,
+    [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
+    [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
   },
 };
 

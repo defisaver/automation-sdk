@@ -328,6 +328,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
