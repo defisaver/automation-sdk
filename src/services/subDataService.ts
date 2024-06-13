@@ -569,7 +569,8 @@ export const morphoBlueLeverageManagementSubData = {
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const userEncoded = AbiCoder.encodeParameter('address', user);
-    return [loanTokenEncoded, collTokenEncoded, oracleEncoded, irmEncoded, lltvEncoded, ratioStateEncoded, targetRatioEncoded, userEncoded, isEOA];
+    const isEOAEncoded = AbiCoder.encodeParameter('bool', isEOA);
+    return [loanTokenEncoded, collTokenEncoded, oracleEncoded, irmEncoded, lltvEncoded, ratioStateEncoded, targetRatioEncoded, userEncoded, isEOAEncoded];
   },
   decode: (subData: SubData) => {
     const loanToken = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
