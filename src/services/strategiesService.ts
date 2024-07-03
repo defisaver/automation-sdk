@@ -431,9 +431,8 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.owner = triggerData.owner.toLowerCase();
 
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.owner.toLowerCase(), triggerData.market);
 
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
@@ -747,7 +746,7 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.marketId);
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.owner.toLowerCase(), triggerData.marketId);
 
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
