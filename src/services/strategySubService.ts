@@ -298,6 +298,25 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+  openOrder(
+    strategyOrBundleId: number,
+    isBundle: boolean = true,
+    triggerData: {
+      tokenAddress: EthereumAddress, price: string, state: RatioState.UNDER
+    },
+    subData: {
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
+    },
+  ) {
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, rateMode,
+    } = subData;
+    const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, rateMode);
+
+    const triggerDataEncoded = triggerService.chainlinkPriceTrigger.encode(triggerData.tokenAddress, triggerData.price, triggerData.state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV2Encode = {

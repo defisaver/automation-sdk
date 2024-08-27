@@ -100,6 +100,7 @@ export namespace Strategies {
     Dca = 'dca',
     LimitOrder = 'limit-order',
     DebtInFrontRepay = 'debt-in-front-repay',
+    OpenOrderFromCollateral = 'open-order-from-collateral',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -152,6 +153,7 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST = 33,
     MORPHO_BLUE_EOA_REPAY = 34,
     MORPHO_BLUE_EOA_BOOST = 35,
+    AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
   }
 
   export enum OptimismIds {

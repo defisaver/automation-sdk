@@ -564,6 +564,62 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+
+    describe('openOrder()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          isBundle: boolean,
+          triggerData: {
+            tokenAddress: EthereumAddress, price: string, state: RatioState.UNDER
+          },
+          subData: {
+            collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
+          },
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+            true,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000007acead34980000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x000000000000000000000000000000000000000000000000000000000000000a',
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+              '0x0000000000000000000000000000000000000000000000000000000000000004',
+              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
+              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000000000000000002'
+            ],
+          ],
+          [
+            Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+            true,
+            {
+              tokenAddress: getAssetInfo('WETH').address, price: '5274.534678', state: RatioState.UNDER
+            },
+            {
+              collAsset: getAssetInfo('WETH').address,
+              collAssetId: 10,
+              debtAsset: getAssetInfo('DAI').address,
+              debtAssetId: 4,
+              marketAddr: '0x2f39d218133afab8f2b819b1066c7e434ad94e9e',
+              targetRatio: 200,
+              rateMode: 2
+            },
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3Encode.openOrder(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
 
   describe('When testing strategySubService.compoundV2Encode', () => {

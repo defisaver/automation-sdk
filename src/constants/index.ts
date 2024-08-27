@@ -12,6 +12,8 @@ import LegacyProtocol from '../automation/private/LegacyProtocol';
 // General
 export const ZERO_ADDRESS: EthereumAddress = '0x0000000000000000000000000000000000000000';
 
+export const AAVE_V3_VARIABLE_BORROW_RATE = 2;
+
 export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
   const protocolsMapping: any = {};
   Object.entries(ProtocolIdentifiers.StrategiesAutomation).forEach(([id, value]) => {
@@ -337,6 +339,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST,
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
