@@ -368,6 +368,11 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
     strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -400,6 +405,11 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.COMP_V3_SW_REPAY_BUNDLE,
     strategyId: Strategies.Identifiers.Repay,
     protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
