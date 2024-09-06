@@ -572,7 +572,7 @@ describe('Feature: strategySubService.ts', () => {
           strategyOrBundleId: number,
           isBundle: boolean,
           triggerData: {
-            tokenAddress: EthereumAddress, price: string, state: RatioState.UNDER
+            baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
           },
           subData: {
             collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
@@ -583,7 +583,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
             true,
-            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000007acead34980000000000000000000000000000000000000000000000000000000000000001'],
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000007acead34980000000000000000000000000000000000000000000000000000000000000001'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x000000000000000000000000000000000000000000000000000000000000000a',
@@ -599,7 +599,7 @@ describe('Feature: strategySubService.ts', () => {
             Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
             true,
             {
-              tokenAddress: getAssetInfo('WETH').address, price: '5274.534678', state: RatioState.UNDER
+              baseTokenAddress: getAssetInfo('WETH').address, quoteTokenAddress: getAssetInfo('DAI').address, price: 5274.534678, state: RatioState.UNDER
             },
             {
               collAsset: getAssetInfo('WETH').address,

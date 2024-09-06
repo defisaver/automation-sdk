@@ -302,7 +302,7 @@ export const aaveV3Encode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      tokenAddress: EthereumAddress, price: string, state: RatioState.UNDER
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
     },
     subData: {
       collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
@@ -313,7 +313,10 @@ export const aaveV3Encode = {
     } = subData;
     const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, rateMode);
 
-    const triggerDataEncoded = triggerService.chainlinkPriceTrigger.encode(triggerData.tokenAddress, triggerData.price, triggerData.state);
+    const {
+      baseTokenAddress, quoteTokenAddress, price, state,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
