@@ -1,5 +1,5 @@
 import type {
-  ArbitrumBundleInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, StrategiesInfo,
+  ArbitrumBundleInfo, ArbitrumStrategiesInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, OptimismStrategiesInfo, StrategiesInfo,
 } from '../types';
 
 import {
@@ -102,9 +102,14 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
+  [Strategies.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
+    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
-export const OPTIMISM_STRATEGIES_INFO = {
+export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
   [Strategies.OptimismIds.EXCHANGE_DCA]: {
     strategyOrBundleId: Strategies.OptimismIds.EXCHANGE_DCA,
     strategyId: Strategies.Identifiers.Dca,
@@ -115,9 +120,14 @@ export const OPTIMISM_STRATEGIES_INFO = {
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
   },
+  [Strategies.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
+    strategyOrBundleId: Strategies.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
+    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
-export const ARBITRUM_STRATEGIES_INFO = {
+export const ARBITRUM_STRATEGIES_INFO: ArbitrumStrategiesInfo = {
   [Strategies.ArbitrumIds.EXCHANGE_DCA]: {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_DCA,
     strategyId: Strategies.Identifiers.Dca,
@@ -127,6 +137,11 @@ export const ARBITRUM_STRATEGIES_INFO = {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
+    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
