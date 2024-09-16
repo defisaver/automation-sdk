@@ -2,6 +2,7 @@ export enum ChainId {
   Ethereum = 1,
   Optimism = 10,
   Arbitrum = 42161,
+  Base = 8453,
 }
 
 export enum RatioState {
@@ -69,6 +70,11 @@ export namespace Strategies {
   }
 
   export enum OptimismIds {
+    EXCHANGE_DCA = 8,
+    EXCHANGE_LIMIT_ORDER = 9,
+  }
+
+  export enum BaseIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
   }
@@ -155,6 +161,13 @@ export namespace Bundles {
   }
 
   export enum OptimismIds {
+    AAVE_V3_REPAY = 0,
+    AAVE_V3_BOOST = 1,
+    AAVE_V3_CLOSE_TO_DEBT = 2,
+    AAVE_V3_CLOSE_TO_COLLATERAL = 3,
+  }
+
+  export enum BaseIds {
     AAVE_V3_REPAY = 0,
     AAVE_V3_BOOST = 1,
     AAVE_V3_CLOSE_TO_DEBT = 2,

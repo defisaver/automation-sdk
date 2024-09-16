@@ -1,5 +1,5 @@
 import type {
-  ArbitrumBundleInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, StrategiesInfo,
+  ArbitrumBundleInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, BaseBundleInfo, StrategiesInfo,
 } from '../types';
 
 import {
@@ -115,6 +115,19 @@ export const OPTIMISM_STRATEGIES_INFO = {
   },
 };
 
+export const BASE_STRATEGIES_INFO = {
+  [Strategies.BaseIds.EXCHANGE_DCA]: {
+    strategyOrBundleId: Strategies.BaseIds.EXCHANGE_DCA,
+    strategyId: Strategies.Identifiers.Dca,
+    protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.BaseIds.EXCHANGE_LIMIT_ORDER]: {
+    strategyOrBundleId: Strategies.BaseIds.EXCHANGE_LIMIT_ORDER,
+    strategyId: Strategies.Identifiers.LimitOrder,
+    protocol: PROTOCOLS.Exchange,
+  },
+};
+
 export const ARBITRUM_STRATEGIES_INFO = {
   [Strategies.ArbitrumIds.EXCHANGE_DCA]: {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_DCA,
@@ -132,12 +145,14 @@ export const STRATEGIES_INFO: StrategiesInfo = {
   [ChainId.Ethereum]: MAINNET_STRATEGIES_INFO,
   [ChainId.Optimism]: OPTIMISM_STRATEGIES_INFO,
   [ChainId.Arbitrum]: ARBITRUM_STRATEGIES_INFO,
+  [ChainId.Base]: BASE_STRATEGIES_INFO,
 };
 
 export const STRATEGY_IDS = {
   [ChainId.Ethereum]: Strategies.MainnetIds,
   [ChainId.Optimism]: Strategies.OptimismIds,
   [ChainId.Arbitrum]: Strategies.ArbitrumIds,
+  [ChainId.Base]: Strategies.BaseIds,
 };
 
 // Bundles info
@@ -363,6 +378,29 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
   },
 };
 
+export const BASE_BUNDLES_INFO: BaseBundleInfo = {
+  [Bundles.BaseIds.AAVE_V3_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_CLOSE_TO_DEBT]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_CLOSE_TO_DEBT,
+    strategyId: Strategies.Identifiers.CloseToDebt,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_CLOSE_TO_COLLATERAL]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_CLOSE_TO_COLLATERAL,
+    strategyId: Strategies.Identifiers.CloseToCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
+};
+
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   [Bundles.ArbitrumIds.AAVE_V3_REPAY]: {
     strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_REPAY,
@@ -400,10 +438,13 @@ export const BUNDLES_INFO: BundlesInfo = {
   [ChainId.Ethereum]: MAINNET_BUNDLES_INFO,
   [ChainId.Optimism]: OPTIMISM_BUNDLES_INFO,
   [ChainId.Arbitrum]: ARBITRUM_BUNDLES_INFO,
+  [ChainId.Base]: BASE_BUNDLES_INFO,
 };
 
 export const BUNDLE_IDS = {
   [ChainId.Ethereum]: Bundles.MainnetIds,
   [ChainId.Optimism]: Bundles.OptimismIds,
   [ChainId.Arbitrum]: Bundles.ArbitrumIds,
+  [ChainId.Base]: Bundles.BaseIds,
+
 };
