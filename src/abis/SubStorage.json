@@ -12,6 +12,10 @@
     "42161": {
       "createdBlock": 19126047,
       "address": "0x24ab68395660b910BfBF1cc88BaA316BA06354eE"
+    },
+    "8453": {
+      "createdBlock": 3655577,
+      "address": "0x44e98bB58d725F2eF93a195F518b335dCB784c78"
     }
   }
 }
