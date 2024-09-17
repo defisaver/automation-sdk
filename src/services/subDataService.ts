@@ -602,7 +602,6 @@ export const aaveV3OpenOrderSubData = {
     debtAssetId: number,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    rateMode: number = AAVE_V3_VARIABLE_BORROW_RATE,
   ): SubData {
     const encodedColl = AbiCoder.encodeParameter('address', collAsset);
     const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
@@ -611,7 +610,6 @@ export const aaveV3OpenOrderSubData = {
     const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const useOnBehalfEncoded = AbiCoder.encodeParameter('bool', false);
-    const encodedRateMode = AbiCoder.encodeParameter('uint8', rateMode);
 
     return [
       encodedColl,
@@ -621,7 +619,6 @@ export const aaveV3OpenOrderSubData = {
       encodedMarket,
       encodedTargetRatio,
       useOnBehalfEncoded,
-      encodedRateMode,
     ];
   },
   decode(subData: SubData): {

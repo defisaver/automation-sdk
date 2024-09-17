@@ -305,13 +305,13 @@ export const aaveV3Encode = {
       baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
     },
     subData: {
-      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
     },
   ) {
     const {
-      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, rateMode,
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     } = subData;
-    const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, rateMode);
+    const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
 
     const {
       baseTokenAddress, quoteTokenAddress, price, state,

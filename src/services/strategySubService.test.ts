@@ -575,7 +575,7 @@ describe('Feature: strategySubService.ts', () => {
             baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
           },
           subData: {
-            collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number,
+            collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
           },
         ]
       ]> = [
@@ -592,7 +592,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
               '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000000000000000000000000000000002'
             ],
           ],
           [
@@ -608,7 +607,6 @@ describe('Feature: strategySubService.ts', () => {
               debtAssetId: 4,
               marketAddr: '0x2f39d218133afab8f2b819b1066c7e434ad94e9e',
               targetRatio: 200,
-              rateMode: 2
             },
           ]
         ],

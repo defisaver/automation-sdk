@@ -1326,7 +1326,7 @@ describe('Feature: subDataService.ts', () => {
 
   describe('When testing subDataService.aaveV3OpenOrderSubData', () => {
     describe('encode()', () => {
-      const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number, rateMode: number]]> = [
+      const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]]> = [
         [
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -1336,7 +1336,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000002'
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1345,7 +1344,6 @@ describe('Feature: subDataService.ts', () => {
             4,
             web3Utils.toChecksumAddress('0x2f39d218133afab8f2b819b1066c7e434ad94e9e'),
             200,
-            2
           ]
         ],
       ];
@@ -1375,7 +1373,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000004',
             '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000002'
           ],
         ],
       ];
