@@ -777,6 +777,18 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   return _position;
 }
 
+function parseAaveV3OpenOrderFromCollateral(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  _position.strategyData.decoded.triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+  _position.strategyData.decoded.subData = subDataService.aaveV3OpenOrderSubData.decode(subStruct.subData);
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -808,6 +820,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseToDebtWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
     [Strategies.Identifiers.CloseToCollateral]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CloseToCollateralWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
+    [Strategies.Identifiers.OpenOrderFromCollateral]: parseAaveV3OpenOrderFromCollateral,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
