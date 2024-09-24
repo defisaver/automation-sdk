@@ -145,6 +145,9 @@ export declare namespace Position {
       price: string,
       ratioState: RatioState,
     }
+    interface BoostOnPriceAave extends CloseOnPriceAave {
+      ratio: number,
+    }
 
     interface CloseOnPriceWithMaximumGasPriceAave extends Base {
       collAsset: EthereumAddress,
@@ -175,7 +178,15 @@ export declare namespace Position {
     }
   }
 
-  type SpecificAny = Specific.CloseOnPrice | Specific.TrailingStop | Specific.RatioProtection | Specific.CloseOnPriceAave | Specific.CloseOnPriceWithMaximumGasPriceAave | Specific.DebtInFrontRepay | Specific.LeverageManagementCrvUSD;
+  type SpecificAny =
+    Specific.CloseOnPrice
+    | Specific.TrailingStop
+    | Specific.RatioProtection
+    | Specific.CloseOnPriceAave
+    | Specific.BoostOnPriceAave
+    | Specific.CloseOnPriceWithMaximumGasPriceAave
+    | Specific.DebtInFrontRepay
+    | Specific.LeverageManagementCrvUSD;
 
   export interface Automated {
     chainId: ChainId,

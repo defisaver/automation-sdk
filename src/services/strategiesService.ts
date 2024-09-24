@@ -782,9 +782,24 @@ function parseAaveV3OpenOrderFromCollateral(position: Position.Automated, parseD
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  _position.strategyData.decoded.triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  _position.strategyData.decoded.subData = subDataService.aaveV3OpenOrderSubData.decode(subStruct.subData);
+  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV3OpenOrderSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  _position.specific = {
+    collAsset: subData.collAsset,
+    debtAsset: subData.debtAsset,
+    baseToken: triggerData.baseTokenAddress,
+    quoteToken: triggerData.quoteTokenAddress,
+    price: triggerData.price,
+    ratioState: triggerData.ratioState,
+    debtAssetId: subData.debtAssetId,
+    collAssetId: subData.collAssetId,
+    ratio: subData.targetRatio,
+  };
 
   return _position;
 }
