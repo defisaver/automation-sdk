@@ -66,16 +66,19 @@ export namespace Strategies {
     LIQUITY_DSR_SUPPLY = 70,
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
+    AAVE_V3_OPEN_ORDER_FROM_DEBT = 96,
   }
 
   export enum OptimismIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    AAVE_V3_OPEN_ORDER_FROM_DEBT = 12,
   }
 
   export enum ArbitrumIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    AAVE_V3_OPEN_ORDER_FROM_DEBT = 16,
   }
 
   export enum Identifiers {
@@ -100,6 +103,8 @@ export namespace Strategies {
     Dca = 'dca',
     LimitOrder = 'limit-order',
     DebtInFrontRepay = 'debt-in-front-repay',
+    OpenOrderFromCollateral = 'open-order-from-collateral',
+    OpenOrderFromDebt = 'open-order-from-debt',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -152,6 +157,7 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST = 33,
     MORPHO_BLUE_EOA_REPAY = 34,
     MORPHO_BLUE_EOA_BOOST = 35,
+    AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
   }
 
   export enum OptimismIds {
@@ -159,6 +165,7 @@ export namespace Bundles {
     AAVE_V3_BOOST = 1,
     AAVE_V3_CLOSE_TO_DEBT = 2,
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
+    AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 4,
   }
 
   export enum ArbitrumIds {
@@ -168,6 +175,7 @@ export namespace Bundles {
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
     COMP_V3_SW_REPAY_BUNDLE = 4,
     COMP_V3_SW_BOOST_BUNDLE = 5,
+    AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 6,
   }
 }
 

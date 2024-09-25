@@ -9,7 +9,7 @@ import type { SubData, EthereumAddress } from '../types';
 import type { OrderType } from '../types/enums';
 import { ChainId, RatioState } from '../types/enums';
 
-import { ZERO_ADDRESS } from '../constants';
+import { AAVE_V3_VARIABLE_BORROW_RATE, ZERO_ADDRESS } from '../constants';
 
 import { compareAddresses, ratioPercentageToWei, weiToRatioPercentage } from './utils';
 
@@ -590,6 +590,56 @@ export const morphoBlueLeverageManagementSubData = {
       lltv,
       user,
       targetRatio,
+    };
+  },
+};
+
+export const aaveV3OpenOrderSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const useOnBehalfEncoded = AbiCoder.encodeParameter('bool', false);
+
+    return [
+      encodedColl,
+      encodedCollId,
+      encodedDebt,
+      encodedDebtId,
+      encodedMarket,
+      encodedTargetRatio,
+      useOnBehalfEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+  } {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     };
   },
 };
