@@ -39,3 +39,9 @@ const subscriptions = await ethereumStrategies.getSubscriptionsFor(
 - Write tests for each method
 - Run tests with `yarn test` or `yarn test fileName` for a specific file (e.g. `yarn test utils`)
 - Congrats! 🥳
+
+## Testing
+
+`npm run test` - Run all tests
+
+`npm run test-single --name=your_test_name` - Run single test for specified name e.g. for MyTest.test.ts test name is MyTest
