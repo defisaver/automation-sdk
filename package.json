@@ -12,9 +12,10 @@
     "build": "npm run lint && npm run build:cjs && npm run build:esm",
     "documentMD": "npx typedoc --plugin typedoc-plugin-markdown --out docs/md",
     "document": "npx typedoc --out docs/default",
-    "lint": "eslint ./src",
-    "gtc": "node scripts/generateContractTypes.js",
-    "prepare": "husky install && npm run gtc",
+    "lint": "eslint ./src --fix",
+    "lint-check": "eslint src/",
+    "generate-contracts": "node scripts/generateContractTypes.js",
+    "prepare": "husky install && npm run generate-contracts",
     "test": "./.tests.sh"
   },
   "author": "DeFi Saver",
