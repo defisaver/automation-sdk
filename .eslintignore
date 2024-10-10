@@ -2,6 +2,5 @@ node_modules
 esm
 test
 docs
-webpack.umd.js
-umd
+cjs
 src/types/contracts/generated/*
