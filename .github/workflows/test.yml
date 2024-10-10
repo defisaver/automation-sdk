@@ -26,6 +26,9 @@ jobs:
 
       - name: Prep dependencies
         run: yarn
+      
+      - name: Lint
+        run: npm run lint
 
       - name: Run tests
         run: npm run test
