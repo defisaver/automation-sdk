@@ -22,6 +22,8 @@ const AAVE_V3_MARKET_ADDRESSES = {
   [ChainId.Ethereum]: '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
   [ChainId.Optimism]: '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
   [ChainId.Arbitrum]: '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
+  [ChainId.Base]: '0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D',
+
 };
 
 function parseMakerSavingsLiqProtection(position: Position.Automated, parseData: ParseData): Position.Automated {

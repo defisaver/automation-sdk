@@ -1,7 +1,7 @@
 # SDK for fetching DeFi Saver strategies data from the blockchain.
 
 Fetch strategies data from the blockchain, and parse it into a readable format.
-Use one of the following classes to fetch data for strategies: EthereumStrategies, OptimismStrategies, or ArbitrumStrategies.
+Use one of the following classes to fetch data for strategies: EthereumStrategies, OptimismStrategies, ArbitrumStrategies or BaseStrategies.
 Use one of the following classes to fetch data for legacy automation: LegacyMakerAutomation, LegacyAaveAutomation, or LegacyCompoundAutomation.
 Various services and constants also available for use.
 

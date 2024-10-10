@@ -12,6 +12,7 @@ import LegacyCompoundAutomation from './automation/public/legacy/LegacyCompoundA
 import EthereumStrategies from './automation/public/EthereumStrategies';
 import OptimismStrategies from './automation/public/OptimismStrategies';
 import ArbitrumStrategies from './automation/public/ArbitrumStrategies';
+import BaseStrategies from './automation/public/BaseStrategies';
 
 import * as triggerService from './services/triggerService';
 import * as subDataService from './services/subDataService';
@@ -30,7 +31,7 @@ const utils = {
 
 export {
   LegacyMakerAutomation, LegacyAaveAutomation, LegacyCompoundAutomation,
-  EthereumStrategies, OptimismStrategies, ArbitrumStrategies,
+  EthereumStrategies, OptimismStrategies, ArbitrumStrategies, BaseStrategies,
   triggerService, subDataService, strategySubService, utils,
   enums, constants, strategiesService,
 };
