@@ -426,6 +426,16 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.CloseToCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.BaseIds.COMP_V3_SW_BOOST_BUNDLE]: {
+    strategyOrBundleId: Bundles.BaseIds.COMP_V3_SW_BOOST_BUNDLE,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.BaseIds.COMP_V3_SW_REPAY_BUNDLE]: {
+    strategyOrBundleId: Bundles.BaseIds.COMP_V3_SW_REPAY_BUNDLE,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.CompoundV3,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
