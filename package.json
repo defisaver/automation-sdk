@@ -1,21 +1,23 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "3.0.9-dev",
+  "version": "3.1.0",
   "description": "",
-  "main": "./umd/index.js",
+  "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
   "scripts": {
     "version-bump": "git commit -am \"Version bump to $(npm version patch | cut -c 2-)\"",
-    "build:esm": "rm -rf esm && tsc -b",
-    "build:umd": "rm -rf umd && webpack --config=webpack.umd.js",
-    "build": "npm run lint && npm run build:umd && npm run build:esm",
+    "build:esm": "rm -rf esm && tsc -p tsconfig.esm.json",
+    "build:cjs": "rm -rf cjs && tsc -b",
+    "build": "npm run lint && npm run build:cjs && npm run build:esm",
     "documentMD": "npx typedoc --plugin typedoc-plugin-markdown --out docs/md",
     "document": "npx typedoc --out docs/default",
-    "lint": "eslint ./src",
-    "gtc": "node scripts/generateContractTypes.js",
-    "prepare": "husky install && npm run gtc",
-    "test": "./.tests.sh"
+    "lint": "eslint ./src --fix",
+    "lint-check": "eslint src/",
+    "generate-contracts": "node scripts/generateContractTypes.js",
+    "prepare": "husky install && npm run generate-contracts",
+    "test": "mocha ./src/**/*.test.ts",
+    "test-single": "mocha ./src/**/$npm_config_name.test.ts"
   },
   "author": "DeFi Saver",
   "repository": "https://github.com/defisaver/automation-sdk",
@@ -32,27 +34,16 @@
     "web3-utils": "^1.10.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/eslint-parser": "^7.12.17",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-typescript": "^7.12.7",
+    "@defisaver/eslint-config": "^1.0.1",
     "typechain-target-web3-v1-3mihai3": "^6.0.1",
     "@types/chai": "^4.3.6",
     "@types/lodash": "^4.14.191",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.15",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
-    "babel-loader": "^8.2.2",
     "chai": "^4.3.8",
     "dotenv": "^16.3.1",
-    "eslint": "8.22.0",
-    "eslint-config-airbnb": "^18.0.2",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-import-resolver-typescript": "^3.5.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react": "^7.31.11",
+    "eslint": "^8.49.0",
     "husky": "^8.0.0",
     "jsdoc-to-markdown": "^6.0.1",
     "mocha": "^10.2.0",
@@ -61,11 +52,10 @@
     "typechain": "^8.1.0",
     "typedoc": "^0.23.20",
     "typedoc-plugin-markdown": "^3.13.6",
-    "typescript": "^4.8.4",
+    "typescript": "^4.8.4"
+  },
+  "peerDependencies": {
     "web3": "^1.10.2",
-    "web3-eth-contract": "^1.8.1",
-    "web3-types": "^1.1.1",
-    "webpack": "^5.76.0",
-    "webpack-cli": "^4.10.0"
+    "web3-eth-contract": "^1.8.1"
   }
 }

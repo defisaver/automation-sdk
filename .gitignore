@@ -3,6 +3,7 @@ node_modules/
 .env
 esm/
 umd/
+cjs/
 
 src/types/contracts/generated
 .yarn/releases
