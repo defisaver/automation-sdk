@@ -229,33 +229,39 @@ type StrategyInfo<T extends number> = Record<T, Strategy<T>>;
 export type MainnetStrategiesInfo = StrategyInfo<Strategies.MainnetIds>;
 export type OptimismStrategiesInfo = StrategyInfo<Strategies.OptimismIds>;
 export type ArbitrumStrategiesInfo = StrategyInfo<Strategies.ArbitrumIds>;
-export type StrategyInfoUnion = MainnetStrategiesInfo | OptimismStrategiesInfo | ArbitrumStrategiesInfo;
+export type BaseStrategiesInfo = StrategyInfo<Strategies.BaseIds>;
+export type StrategyInfoUnion = MainnetStrategiesInfo | OptimismStrategiesInfo | ArbitrumStrategiesInfo | BaseStrategiesInfo;
 
 type BundleInfo<T extends number> = Record<T, BundleOrStrategy<T>>;
 export type MainnetBundleInfo = BundleInfo<Bundles.MainnetIds>;
 export type OptimismBundleInfo = BundleInfo<Bundles.OptimismIds>;
 export type ArbitrumBundleInfo = BundleInfo<Bundles.ArbitrumIds>;
-export type BundleInfoUnion = MainnetBundleInfo | OptimismBundleInfo | ArbitrumBundleInfo;
+export type BaseBundleInfo = BundleInfo<Bundles.BaseIds>;
+export type BundleInfoUnion = MainnetBundleInfo | OptimismBundleInfo | ArbitrumBundleInfo | BaseBundleInfo;
 
 export interface StrategiesInfo {
   [ChainId.Ethereum]: MainnetStrategiesInfo,
   [ChainId.Optimism]: OptimismStrategiesInfo,
-  [ChainId.Arbitrum]: ArbitrumStrategiesInfo
+  [ChainId.Arbitrum]: ArbitrumStrategiesInfo,
+  [ChainId.Base]: BaseStrategiesInfo,
 }
 
 export interface BundlesInfo {
   [ChainId.Ethereum]: MainnetBundleInfo,
   [ChainId.Optimism]: OptimismBundleInfo,
-  [ChainId.Arbitrum]: ArbitrumBundleInfo
+  [ChainId.Arbitrum]: ArbitrumBundleInfo,
+  [ChainId.Base]: BaseBundleInfo,
 }
 
 export type StrategyOrBundleIds =
   typeof Strategies.MainnetIds[keyof typeof Strategies.MainnetIds]
   | typeof Strategies.OptimismIds[keyof typeof Strategies.OptimismIds]
   | typeof Strategies.ArbitrumIds[keyof typeof Strategies.ArbitrumIds]
+  | typeof Strategies.BaseIds[keyof typeof Strategies.BaseIds]
   | typeof Bundles.MainnetIds[keyof typeof Bundles.MainnetIds]
   | typeof Bundles.OptimismIds[keyof typeof Bundles.OptimismIds]
-  | typeof Bundles.ArbitrumIds[keyof typeof Bundles.ArbitrumIds];
+  | typeof Bundles.ArbitrumIds[keyof typeof Bundles.ArbitrumIds]
+  | typeof Bundles.BaseIds[keyof typeof Bundles.BaseIds];
 
 export interface ParseData {
   chainId: ChainId,
