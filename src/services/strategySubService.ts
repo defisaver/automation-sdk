@@ -516,3 +516,23 @@ export const morphoBlueEncode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
+
+export const liquityV2Encode = {
+  leverageManagement(
+    market: EthereumAddress,
+    troveId: string,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, ratioState, targetRatio);
+    const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
+
+    const isBundle = true;
+    const strategyOrBundleId = ratioState === RatioState.OVER
+      ? Bundles.MainnetIds.LIQUITY_V2_BOOST
+      : Bundles.MainnetIds.LIQUITY_V2_REPAY;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};

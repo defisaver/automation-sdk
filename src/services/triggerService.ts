@@ -447,3 +447,26 @@ export const morphoBlueRatioTrigger = {
     };
   },
 };
+
+export const liquityV2RatioTrigger = {
+  encode(
+    market: EthereumAddress,
+    troveId: string,
+    ratioPercentage: number,
+    ratioState: RatioState,
+  ) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256', 'uint8'], [market, troveId, ratioWei, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      troveId: decodedData[1] as string,
+      ratio: weiToRatioPercentage(decodedData[2] as string),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};

@@ -32,6 +32,7 @@ export namespace ProtocolIdentifiers {
   export enum StrategiesAutomation {
     MakerDAO = 'MakerDAO',
     Liquity = 'Liquity',
+    LiquityV2 = 'Liquity__V2',
     ChickenBonds = 'Chicken Bonds',
     CompoundV2 = 'Compound__V2',
     CompoundV3 = 'Compound__V3',
@@ -164,6 +165,8 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_REPAY = 34,
     MORPHO_BLUE_EOA_BOOST = 35,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
+    LIQUITY_V2_REPAY = 37,
+    LIQUITY_V2_BOOST = 38,
   }
 
   export enum OptimismIds {

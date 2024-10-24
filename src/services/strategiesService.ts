@@ -563,6 +563,47 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
   return _position;
 }
 
+function parseLiquityV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.liquityV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2LeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.troveId, triggerData.market,
+  );
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 function parseSparkLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -825,6 +866,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.SavingsDsrPayback]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.SavingsDsrSupply]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.DebtInFrontRepay]: parseLiquityDebtInFrontRepay,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.LiquityV2]: {
+    [Strategies.Identifiers.Repay]: parseLiquityV2LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseLiquityV2LeverageManagement,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

@@ -643,3 +643,30 @@ export const aaveV3OpenOrderSubData = {
     };
   },
 };
+
+export const liquityV2LeverageManagementSubData = {
+  encode: (
+    market: EthereumAddress,
+    troveId: string,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const troveIdEncoded = AbiCoder.encodeParameter('uint256', troveId);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+
+    return [marketEncoded, troveIdEncoded, ratioStateEncoded, targetRatioEncoded];
+  },
+  decode: (subData: SubData) => {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const troveId = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      market, troveId, ratioState, targetRatio,
+    };
+  },
+};
