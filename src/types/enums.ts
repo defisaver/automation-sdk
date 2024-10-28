@@ -21,6 +21,16 @@ export enum BundleProtocols {
   Rari = 'rari',
 }
 
+export enum CollActionType {
+  SUPPLY = 0,
+  WITHDRAW = 1,
+}
+
+export enum DebtActionType {
+  PAYBACK = 0,
+  BORROW = 1,
+}
+
 /**
  * @dev Follow the naming convention:
  *      - Enum name consists of two parts, name and version

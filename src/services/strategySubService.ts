@@ -524,14 +524,18 @@ export const liquityV2Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
+    strategyOrBundleId: number,
   ) {
+    const isBundle = true;
+    const isRepay = ratioState === RatioState.UNDER;
+
     const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, ratioState, targetRatio);
     const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
 
-    const isBundle = true;
-    const strategyOrBundleId = ratioState === RatioState.OVER
-      ? Bundles.MainnetIds.LIQUITY_V2_BOOST
-      : Bundles.MainnetIds.LIQUITY_V2_REPAY;
+    // TODO: we can hardcode right bundles after testing
+    // const strategyOrBundleId = ratioState === RatioState.OVER
+    //   ? Bundles.MainnetIds.LIQUITY_V2_BOOST
+    //   : Bundles.MainnetIds.LIQUITY_V2_REPAY;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },

@@ -7,7 +7,9 @@ import { otherAddresses } from '@defisaver/sdk';
 
 import type { SubData, EthereumAddress } from '../types';
 import type { OrderType } from '../types/enums';
-import { ChainId, RatioState } from '../types/enums';
+import {
+  ChainId, CollActionType, DebtActionType, RatioState,
+} from '../types/enums';
 
 import { AAVE_V3_VARIABLE_BORROW_RATE, ZERO_ADDRESS } from '../constants';
 
@@ -656,7 +658,14 @@ export const liquityV2LeverageManagementSubData = {
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
 
-    return [marketEncoded, troveIdEncoded, ratioStateEncoded, targetRatioEncoded];
+    const isRepay = ratioState === RatioState.UNDER;
+    const collActionType = isRepay ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
+    const debtActionType = isRepay ? DebtActionType.PAYBACK : DebtActionType.BORROW;
+
+    const collActionTypeEncoded = AbiCoder.encodeParameter('uint8', collActionType);
+    const debtActionTypeEncoded = AbiCoder.encodeParameter('uint8', debtActionType);
+
+    return [marketEncoded, troveIdEncoded, ratioStateEncoded, targetRatioEncoded, collActionTypeEncoded, debtActionTypeEncoded];
   },
   decode: (subData: SubData) => {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
