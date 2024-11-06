@@ -385,6 +385,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.LiquityV2,
   },
+  [Bundles.MainnetIds.LIQUITY_V2_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

@@ -847,6 +847,32 @@ function parseAaveV3OpenOrderFromCollateral(position: Position.Automated, parseD
   return _position;
 }
 
+function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.shouldClosePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2CloseSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, subData.troveId, subData.market,
+  );
+
+  // User can have:
+  // - Only TakeProfit
+  // - Only StopLoss
+  // - Both
+  // TODO: see on frontend what specific data we need here because stop-loss and take-profit is one bundle now
+  _position.strategy.strategyId = Strategies.Identifiers.CloseOnPrice;
+  _position.specific = {};
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -870,6 +896,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.LiquityV2]: {
     [Strategies.Identifiers.Repay]: parseLiquityV2LeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityV2LeverageManagement,
+    [Strategies.Identifiers.CloseOnPrice]: parseLiquityV2CloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

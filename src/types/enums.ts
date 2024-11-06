@@ -31,6 +31,22 @@ export enum DebtActionType {
   BORROW = 1,
 }
 
+export enum CloseStrategyType {
+  TAKE_PROFIT_IN_COLLATERAL = 0,
+  STOP_LOSS_IN_COLLATERAL = 1,
+  TAKE_PROFIT_IN_DEBT = 2,
+  STOP_LOSS_IN_DEBT = 3,
+  TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL = 4,
+  TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT = 5,
+  TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT = 6,
+  TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL = 7,
+}
+
+export enum CloseToAssetType {
+  COLLATERAL = 0,
+  DEBT = 1,
+}
+
 /**
  * @dev Follow the naming convention:
  *      - Enum name consists of two parts, name and version
@@ -112,6 +128,7 @@ export namespace Strategies {
     CloseToCollateralWithGasPrice = 'close-to-collateral-with-gas-price',
     CloseOnPriceToDebt = 'close-on-price-to-debt',
     CloseOnPriceToColl = 'close-on-price-to-collateral',
+    CloseOnPrice = 'close-on-price',
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
@@ -177,6 +194,7 @@ export namespace Bundles {
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
     LIQUITY_V2_REPAY = 37,
     LIQUITY_V2_BOOST = 38,
+    LIQUITY_V2_CLOSE = 39,
   }
 
   export enum OptimismIds {

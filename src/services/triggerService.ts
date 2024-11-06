@@ -470,3 +470,33 @@ export const liquityV2RatioTrigger = {
     };
   },
 };
+
+export const shouldClosePriceTrigger = {
+  encode(
+    tokenAddr: EthereumAddress,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'uint256', 'uint256'],
+        [tokenAddr, lowerPriceFormatted, upperPriceFormatted],
+      ),
+    ];
+  },
+  decode(triggerData: TriggerData): {
+    tokenAddr: EthereumAddress,
+    lowerPrice: string,
+    upperPrice: string,
+  } {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      tokenAddr: decodedData[0] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[1] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[2] as string).div(1e8).toString(),
+    };
+  },
+};

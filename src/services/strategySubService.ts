@@ -3,6 +3,7 @@ import { getAssetInfo } from '@defisaver/tokens';
 
 import type { OrderType } from '../types/enums';
 import {
+  CloseStrategyType, CloseToAssetType,
   Bundles, ChainId, RatioState, Strategies,
 } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds } from '../types';
@@ -11,7 +12,9 @@ import { STRATEGY_IDS } from '../constants';
 
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
-import { compareAddresses, requireAddress, requireAddresses } from './utils';
+import {
+  compareAddresses, getCloseStrategyType, requireAddress, requireAddresses,
+} from './utils';
 
 export const makerEncode = {
   repayFromSavings(
@@ -536,6 +539,28 @@ export const liquityV2Encode = {
     // const strategyOrBundleId = ratioState === RatioState.OVER
     //   ? Bundles.MainnetIds.LIQUITY_V2_BOOST
     //   : Bundles.MainnetIds.LIQUITY_V2_REPAY;
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  closeOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subData = subDataService.liquityV2CloseSubData.encode(market, troveId, collToken, boldToken, closeType);
+    const triggerData = triggerService.shouldClosePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
+
+    // TODO: we can hardcode bundleID after testing
+    // Bundles.MainnetIds.LIQUITY_V2_CLOSE;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },

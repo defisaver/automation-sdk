@@ -6,7 +6,7 @@ import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisave
 import { otherAddresses } from '@defisaver/sdk';
 
 import type { SubData, EthereumAddress } from '../types';
-import type { OrderType } from '../types/enums';
+import type { CloseStrategyType, OrderType } from '../types/enums';
 import {
   ChainId, CollActionType, DebtActionType, RatioState,
 } from '../types/enums';
@@ -676,6 +676,51 @@ export const liquityV2LeverageManagementSubData = {
 
     return {
       market, troveId, ratioState, targetRatio,
+    };
+  },
+};
+
+export const liquityV2CloseSubData = {
+  encode(
+    market: EthereumAddress,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    closeType: CloseStrategyType,
+  ): SubData {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const troveIdEncoded = AbiCoder.encodeParameter('uint256', troveId);
+    const collAddrEncoded = AbiCoder.encodeParameter('address', collToken);
+    const boldTokenEncoded = AbiCoder.encodeParameter('address', boldToken);
+    const wethAddress = getAssetInfo('WETH').address;
+    const wethAddressEncoded = AbiCoder.encodeParameter('address', wethAddress);
+    const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+
+    return [
+      marketEncoded,
+      troveIdEncoded,
+      collAddrEncoded,
+      boldTokenEncoded,
+      wethAddressEncoded,
+      closeTypeEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    closeType: CloseStrategyType,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const troveId = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const collToken = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const boldToken = AbiCoder.decodeParameter('address', subData[3]) as any as EthereumAddress;
+    // skip wethAddress
+    const closeType = AbiCoder.decodeParameter('uint8', subData[5]) as any as CloseStrategyType;
+
+    return {
+      market, troveId, collToken, boldToken, closeType,
     };
   },
 };
