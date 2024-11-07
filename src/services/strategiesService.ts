@@ -870,7 +870,13 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
   // - Both
   // TODO: see on frontend what specific data we need here because stop-loss and take-profit is one bundle now
   _position.strategy.strategyId = Strategies.Identifiers.CloseOnPrice;
-  _position.specific = {};
+  _position.specific = {
+    market: subData.market,
+    troveId: subData.troveId,
+    stopLossPrice: triggerData.lowerPrice,
+    takeProfitPrice: triggerData.upperPrice,
+    closeToAssetAddr: triggerData.tokenAddr,
+  };
 
   return _position;
 }

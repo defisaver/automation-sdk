@@ -161,6 +161,14 @@ export declare namespace Position {
       ratioState: RatioState,
     }
 
+    interface CloseOnPriceLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      stopLossPrice: string,
+      takeProfitPrice: string,
+      closeToAssetAddr: EthereumAddress,
+    }
+
     interface TrailingStop extends Base {
       roundId: number,
       triggerPercentage: number,
@@ -186,7 +194,8 @@ export declare namespace Position {
     | Specific.BoostOnPriceAave
     | Specific.CloseOnPriceWithMaximumGasPriceAave
     | Specific.DebtInFrontRepay
-    | Specific.LeverageManagementCrvUSD;
+    | Specific.LeverageManagementCrvUSD
+    | Specific.CloseOnPriceLiquityV2;
 
   export interface Automated {
     chainId: ChainId,
