@@ -136,3 +136,28 @@ export function getCloseStrategyType(
     ? CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL
     : CloseStrategyType.TAKE_PROFIT_IN_DEBT;
 }
+
+export function getStopLossAndTakeProfitTypeByCloseStrategyType(
+  closeStrategyType: CloseStrategyType,
+): { stopLossType: CloseToAssetType | undefined, takeProfitType: CloseToAssetType | undefined } {
+  switch (closeStrategyType) {
+    case CloseStrategyType.STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: undefined };
+    case CloseStrategyType.STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: undefined };
+    case CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL:
+      return { stopLossType: undefined, takeProfitType: CloseToAssetType.COLLATERAL };
+    case CloseStrategyType.TAKE_PROFIT_IN_DEBT:
+      return { stopLossType: undefined, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: CloseToAssetType.COLLATERAL };
+    case CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: CloseToAssetType.COLLATERAL };
+    default:
+      throw new Error('CloseStrategyType not supported');
+  }
+}

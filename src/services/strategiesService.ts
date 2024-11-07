@@ -9,7 +9,7 @@ import type {
 import { ChainId, ProtocolIdentifiers, Strategies } from '../types/enums';
 
 import {
-  getPositionId, getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress,
+  getPositionId, getRatioStateInfoForAaveCloseStrategy, getStopLossAndTakeProfitTypeByCloseStrategyType, isRatioStateOver, wethToEthByAddress,
 } from './utils';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
@@ -864,6 +864,8 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
     _position.chainId, _position.protocol.id, _position.owner, subData.troveId, subData.market,
   );
 
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(subData.closeType);
+
   // User can have:
   // - Only TakeProfit
   // - Only StopLoss
@@ -876,6 +878,8 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
     stopLossPrice: triggerData.lowerPrice,
     takeProfitPrice: triggerData.upperPrice,
     closeToAssetAddr: triggerData.tokenAddr,
+    takeProfitType,
+    stopLossType,
   };
 
   return _position;

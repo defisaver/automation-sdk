@@ -5,6 +5,7 @@ import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage'
 import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
   RatioState,
+  CloseToAssetType,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -167,6 +168,8 @@ export declare namespace Position {
       stopLossPrice: string,
       takeProfitPrice: string,
       closeToAssetAddr: EthereumAddress,
+      stopLossType: CloseToAssetType | undefined,
+      takeProfitType: CloseToAssetType | undefined,
     }
 
     interface TrailingStop extends Base {
