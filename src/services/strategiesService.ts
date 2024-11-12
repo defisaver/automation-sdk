@@ -864,7 +864,7 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
     _position.chainId, _position.protocol.id, _position.owner, subData.troveId, subData.market,
   );
 
-  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(subData.closeType);
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
 
   // User can have:
   // - Only TakeProfit
