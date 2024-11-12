@@ -854,7 +854,7 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  const triggerData = triggerService.shouldClosePriceTrigger.decode(subStruct.triggerData);
+  const triggerData = triggerService.closePriceTrigger.decode(subStruct.triggerData);
   const subData = subDataService.liquityV2CloseSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;

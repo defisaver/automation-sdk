@@ -557,7 +557,7 @@ export const liquityV2Encode = {
     const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
     const subData = subDataService.liquityV2CloseSubData.encode(market, troveId, collToken, boldToken, closeType);
-    const triggerData = triggerService.shouldClosePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
+    const triggerData = triggerService.closePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
 
     // TODO: we can hardcode bundleID after testing
     // Bundles.MainnetIds.LIQUITY_V2_CLOSE;

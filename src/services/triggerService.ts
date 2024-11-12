@@ -471,7 +471,7 @@ export const liquityV2RatioTrigger = {
   },
 };
 
-export const shouldClosePriceTrigger = {
+export const closePriceTrigger = {
   encode(
     tokenAddr: EthereumAddress,
     lowerPrice: number,
