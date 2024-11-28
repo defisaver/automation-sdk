@@ -436,6 +436,21 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.Repay,
     protocol: PROTOCOLS.CompoundV3,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
+    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
