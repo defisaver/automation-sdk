@@ -1008,6 +1008,7 @@ describe('Feature: strategySubService.ts', () => {
           triggerRatio: number,
           user: EthereumAddress,
           isEoa: boolean,
+          network: ChainId
         ],
       ]> = [
         [
@@ -1041,6 +1042,7 @@ describe('Feature: strategySubService.ts', () => {
             120,
             web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
             false,
+            ChainId.Ethereum,
           ]
         ],
         [
@@ -1074,6 +1076,7 @@ describe('Feature: strategySubService.ts', () => {
             200,
             web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
             false,
+            ChainId.Ethereum,
           ]
         ],
       ];
