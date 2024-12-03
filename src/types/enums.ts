@@ -181,6 +181,9 @@ export namespace Bundles {
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
     COMP_V3_SW_REPAY_BUNDLE = 4,
     COMP_V3_SW_BOOST_BUNDLE = 5,
+    MORPHO_BLUE_REPAY = 8,
+    MORPHO_BLUE_BOOST = 9,
+    AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 10,
   }
 
   export enum ArbitrumIds {
