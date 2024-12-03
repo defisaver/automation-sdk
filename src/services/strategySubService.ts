@@ -501,6 +501,7 @@ export const morphoBlueEncode = {
     triggerRatio: number,
     user: EthereumAddress,
     isEOA: boolean,
+    network: ChainId,
   ) {
     const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user, isEOA);
 
@@ -509,6 +510,11 @@ export const morphoBlueEncode = {
     // over is boost, under is repay
     const isBoost = ratioState === RatioState.OVER;
     let strategyOrBundleId;
+
+    if (network === ChainId.Base) {
+      return [isBoost ? Bundles.BaseIds.MORPHO_BLUE_BOOST : Bundles.BaseIds.MORPHO_BLUE_REPAY, true, triggerData, subData];
+    }
+
     if (isBoost) strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST : Bundles.MainnetIds.MORPHO_BLUE_BOOST;
     else strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
     const isBundle = true;
