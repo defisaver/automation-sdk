@@ -375,6 +375,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -450,6 +455,11 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyOrBundleId: Bundles.BaseIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
     protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
   },
 };
 
