@@ -28,7 +28,7 @@ export const AAVE_V3_VARIABLE_BORROW_RATE = 2;
 export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
   const protocolsMapping: any = {};
   Object.entries(ProtocolIdentifiers.StrategiesAutomation).forEach(([id, value]) => {
-    protocolsMapping[id] = new Protocol({id: value});
+    protocolsMapping[id] = new Protocol({ id: value });
   });
   return protocolsMapping;
 })();
@@ -36,7 +36,7 @@ export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutoma
 export const LEGACY_PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.LegacyAutomation, Interfaces.LegacyProtocol> = (() => {
   const protocolsMapping: any = {};
   Object.entries(ProtocolIdentifiers.LegacyAutomation).forEach(([id, value]) => {
-    protocolsMapping[id] = new LegacyProtocol({id: value});
+    protocolsMapping[id] = new LegacyProtocol({ id: value });
   });
   return protocolsMapping;
 })();
