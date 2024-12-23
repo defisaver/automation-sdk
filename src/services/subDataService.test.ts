@@ -31,7 +31,7 @@ import {
   sparkQuotePriceSubData,
   crvUSDLeverageManagementSubData,
   compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData, crvUSDPaybackSubData,
-  aaveV3OpenOrderSubData, aaveV3RepayOnPriceSubData,
+  aaveV3LeverageManagementOnPriceSubData,
 } from './subDataService';
 import { AAVE_V3_VARIABLE_BORROW_RATE } from '../constants';
 
@@ -1324,7 +1324,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.aaveV3OpenOrderSubData', () => {
+  describe('When testing subDataService.aaveV3LeverageManagementOnPriceSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]]> = [
         [
@@ -1350,7 +1350,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV3OpenOrderSubData.encode(...actual)).to.eql(expected);
+          expect(aaveV3LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1379,68 +1379,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3OpenOrderSubData.decode(actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
-  describe('When testing subDataService.aaveV3RepayOnPriceSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]]> = [
-        [
-          [
-            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
-            '0x0000000000000000000000000000000000000000000000000000000000000004',
-            '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            0,
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            4,
-            web3Utils.toChecksumAddress('0x2f39d218133afab8f2b819b1066c7e434ad94e9e'),
-            200,
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV3RepayOnPriceSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('decode()', () => {
-      const examples: Array<[{ collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number}, SubData]> = [
-        [
-          {
-            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            collAssetId: 0,
-            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            debtAssetId: 4,
-            marketAddr: web3Utils.toChecksumAddress('0x2f39d218133afab8f2b819b1066c7e434ad94e9e'),
-            targetRatio: 200,
-          },
-          [
-            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
-            '0x0000000000000000000000000000000000000000000000000000000000000004',
-            '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-          ],
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3RepayOnPriceSubData.decode(actual)).to.eql(expected);
+          expect(aaveV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });

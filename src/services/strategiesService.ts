@@ -779,40 +779,13 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   return _position;
 }
 
-function parseAaveV3OpenOrderFromCollateral(position: Position.Automated, parseData: ParseData): Position.Automated {
+function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
 
   const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV3OpenOrderSubData.decode(subStruct.subData);
-
-  _position.strategyData.decoded.triggerData = triggerData;
-  _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
-
-  _position.specific = {
-    collAsset: subData.collAsset,
-    debtAsset: subData.debtAsset,
-    baseToken: triggerData.baseTokenAddress,
-    quoteToken: triggerData.quoteTokenAddress,
-    price: triggerData.price,
-    ratioState: triggerData.ratioState,
-    debtAssetId: subData.debtAssetId,
-    collAssetId: subData.collAssetId,
-    ratio: subData.targetRatio,
-  };
-
-  return _position;
-}
-
-function parseAaveV3RepayOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
-  const _position = cloneDeep(position);
-
-  const { subStruct } = parseData.subscriptionEventData;
-
-  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV3OpenOrderSubData.decode(subStruct.subData);
+  const subData = subDataService.aaveV3LeverageManagementOnPriceSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -864,8 +837,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseToDebtWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
     [Strategies.Identifiers.CloseToCollateral]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CloseToCollateralWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
-    [Strategies.Identifiers.OpenOrderFromCollateral]: parseAaveV3OpenOrderFromCollateral,
-    [Strategies.Identifiers.RepayOnPrice]: parseAaveV3RepayOnPrice,
+    [Strategies.Identifiers.OpenOrderFromCollateral]: parseAaveV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.RepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,

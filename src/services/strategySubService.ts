@@ -298,7 +298,7 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
-  openOrder(
+  leverageManagementOnPrice(
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
@@ -311,29 +311,7 @@ export const aaveV3Encode = {
     const {
       collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     } = subData;
-    const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
-
-    const {
-      baseTokenAddress, quoteTokenAddress, price, state,
-    } = triggerData;
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
-
-    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
-  },
-  repayOnPrice(
-    strategyOrBundleId: number,
-    isBundle: boolean = true,
-    triggerData: {
-      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
-    },
-    subData: {
-      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
-    },
-  ) {
-    const {
-      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
-    } = subData;
-    const subDataEncoded = subDataService.aaveV3RepayOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
 
     const {
       baseTokenAddress, quoteTokenAddress, price, state,
