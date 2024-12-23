@@ -1,5 +1,16 @@
 import type {
-  ArbitrumBundleInfo, ArbitrumStrategiesInfo, BundlesInfo, EthereumAddress, Interfaces, MainnetBundleInfo, MainnetStrategiesInfo, OptimismBundleInfo, OptimismStrategiesInfo, BaseBundleInfo, BaseStrategiesInfo, StrategiesInfo,
+  ArbitrumBundleInfo,
+  ArbitrumStrategiesInfo,
+  BundlesInfo,
+  EthereumAddress,
+  Interfaces,
+  MainnetBundleInfo,
+  MainnetStrategiesInfo,
+  OptimismBundleInfo,
+  OptimismStrategiesInfo,
+  BaseBundleInfo,
+  BaseStrategiesInfo,
+  StrategiesInfo,
 } from '../types';
 
 import {
@@ -17,7 +28,7 @@ export const AAVE_V3_VARIABLE_BORROW_RATE = 2;
 export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
   const protocolsMapping: any = {};
   Object.entries(ProtocolIdentifiers.StrategiesAutomation).forEach(([id, value]) => {
-    protocolsMapping[id] = new Protocol({ id: value });
+    protocolsMapping[id] = new Protocol({id: value});
   });
   return protocolsMapping;
 })();
@@ -25,7 +36,7 @@ export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutoma
 export const LEGACY_PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.LegacyAutomation, Interfaces.LegacyProtocol> = (() => {
   const protocolsMapping: any = {};
   Object.entries(ProtocolIdentifiers.LegacyAutomation).forEach(([id, value]) => {
-    protocolsMapping[id] = new LegacyProtocol({ id: value });
+    protocolsMapping[id] = new LegacyProtocol({id: value});
   });
   return protocolsMapping;
 })();
@@ -102,11 +113,6 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
-  [Strategies.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
-    strategyOrBundleId: Strategies.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
-    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
-    protocol: PROTOCOLS.AaveV3,
-  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
@@ -119,11 +125,6 @@ export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
     strategyOrBundleId: Strategies.OptimismIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
-  },
-  [Strategies.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
-    strategyOrBundleId: Strategies.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
-    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
-    protocol: PROTOCOLS.AaveV3,
   },
 };
 
@@ -150,11 +151,6 @@ export const ARBITRUM_STRATEGIES_INFO: ArbitrumStrategiesInfo = {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
-  },
-  [Strategies.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_DEBT]: {
-    strategyOrBundleId: Strategies.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_DEBT,
-    strategyId: Strategies.Identifiers.OpenOrderFromDebt,
-    protocol: PROTOCOLS.AaveV3,
   },
 };
 
@@ -375,6 +371,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.AAVE_V3_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -401,6 +402,11 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
   [Bundles.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
     strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
@@ -451,6 +457,11 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.BaseIds.AAVE_V3_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -487,6 +498,11 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   [Bundles.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
     strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
