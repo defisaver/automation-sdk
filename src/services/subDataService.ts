@@ -594,7 +594,7 @@ export const morphoBlueLeverageManagementSubData = {
   },
 };
 
-export const aaveV3OpenOrderSubData = {
+export const aaveV3LeverageManagementOnPriceSubData = {
   encode(
     collAsset: EthereumAddress,
     collAssetId: number,

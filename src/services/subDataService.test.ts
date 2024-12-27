@@ -31,7 +31,7 @@ import {
   sparkQuotePriceSubData,
   crvUSDLeverageManagementSubData,
   compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData, crvUSDPaybackSubData,
-  aaveV3OpenOrderSubData,
+  aaveV3LeverageManagementOnPriceSubData,
 } from './subDataService';
 import { AAVE_V3_VARIABLE_BORROW_RATE } from '../constants';
 
@@ -1324,7 +1324,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.aaveV3OpenOrderSubData', () => {
+  describe('When testing subDataService.aaveV3LeverageManagementOnPriceSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]]> = [
         [
@@ -1350,7 +1350,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV3OpenOrderSubData.encode(...actual)).to.eql(expected);
+          expect(aaveV3LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1379,7 +1379,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3OpenOrderSubData.decode(actual)).to.eql(expected);
+          expect(aaveV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });
