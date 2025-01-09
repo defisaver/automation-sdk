@@ -565,7 +565,7 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('openOrder()', () => {
+    describe('leverageManagementOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
         [
@@ -614,7 +614,7 @@ describe('Feature: strategySubService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3Encode.openOrder(...actual)).to.eql(expected);
+          expect(aaveV3Encode.leverageManagementOnPrice(...actual)).to.eql(expected);
         });
       });
     });
