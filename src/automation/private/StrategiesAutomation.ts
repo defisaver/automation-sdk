@@ -4,8 +4,9 @@ import type { PastEventOptions } from 'web3-eth-contract';
 import type {
   Position, Interfaces, EthereumAddress, SubscriptionOptions, Contract, ParseData, PlaceholderType, BlockNumber,
 } from '../../types';
-import type {
-  StrategyModel, SubStorage,
+import PromisePool from 'es6-promise-pool';
+import {
+  StrategyModel, Subscribe, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
 import { Strategies, ProtocolIdentifiers } from '../../types/enums';
@@ -77,13 +78,13 @@ export default class StrategiesAutomation extends Automation {
   }
 
   protected async getSubscriptionEventsFromSubStorage(options?: PastEventOptions) {
-    return this.getEventFromSubStorage('Subscribe', options);
+    return this.getEventFromSubStorage('Subscribe', options) as Promise<Subscribe[]>;
   }
 
   protected async getUpdateDataEventsFromSubStorage(options?: PastEventOptions) {
     const events = await this.getEventFromSubStorage('UpdateData', options);
     /** @dev - Some RPCs sort events differently */
-    return events.sort((a, b) => a.blockNumber - b.blockNumber);
+    return events.sort((a, b) => a.blockNumber - b.blockNumber) as UpdateData[];
   }
 
   protected getParsedSubscriptions(parseData: ParseData) {
@@ -183,13 +184,13 @@ export default class StrategiesAutomation extends Automation {
       ...addToObjectIf(isDefined(addresses), { filter: { proxy: addresses } }),
     } as SubscriptionOptions & PastEventOptions;
 
-    let subscriptionEvents = (await this.getSubscriptionEventsFromSubStorage(_options)) as PlaceholderType; // TODO PlaceholderType
+    let subscriptionEvents = await this.getSubscriptionEventsFromSubStorage(_options);
 
     let subscriptions: (Position.Automated | null)[] = [];
 
     if (subscriptionEvents) {
       let strategiesSubs = await this.getStrategiesSubs(
-        subscriptionEvents.map((e: { returnValues: { subId: number } }) => e.returnValues.subId), _options.toBlock,
+        subscriptionEvents.map((e) => +e.returnValues.subId), _options.toBlock,
       );
 
       if (_options.enabledOnly) {
@@ -203,26 +204,37 @@ export default class StrategiesAutomation extends Automation {
         subscriptionEvents = filteredSubscriptionEvents;
       }
 
-      subscriptions = await Promise.all(strategiesSubs.map(async (sub, index: number) => {
+      const replaceSubWithUpdate = async (index: number) => {
+        const sub = strategiesSubs[index];
         let latestUpdate = subscriptionEvents[index].returnValues;
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
           const updates = await this.getUpdateDataEventsFromSubStorage({
             ...addToObjectIf(!!_options, _options),
-            filter: { subId: latestUpdate.subId },
+            filter: {subId: latestUpdate.subId},
           });
           latestUpdate = {
             ...latestUpdate, // Update is missing proxy, hence this
             ...updates?.[updates.length - 1]?.returnValues,
           };
         }
-        return this.getParsedSubscriptions({
-          chainId: this.chainId,
-          blockNumber: subscriptionEvents[index].blockNumber,
-          subscriptionEventData: latestUpdate,
-          strategiesSubsData: sub,
-        });
-      }));
+        subscriptions.push(
+          this.getParsedSubscriptions({
+            chainId: this.chainId,
+            blockNumber: subscriptionEvents[index].blockNumber,
+            subscriptionEventData: latestUpdate,
+            strategiesSubsData: sub,
+          })
+        );
+      }
+
+      const generatePromises = function * () {
+        for (let index = 0; index < strategiesSubs.length; index++) {
+          yield replaceSubWithUpdate(index);
+        }
+      }
+      const pool = new PromisePool(generatePromises as any, 50);
+      await pool.start();
 
       if (options?.mergeSubs) {
         subscriptions = this.mergeSubs(subscriptions);
