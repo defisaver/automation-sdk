@@ -1,11 +1,11 @@
 import Dec from 'decimal.js';
 import type Web3 from 'web3';
 import type { PastEventOptions } from 'web3-eth-contract';
+import PromisePool from 'es6-promise-pool';
 import type {
   Position, Interfaces, EthereumAddress, SubscriptionOptions, Contract, ParseData, PlaceholderType, BlockNumber,
 } from '../../types';
-import PromisePool from 'es6-promise-pool';
-import {
+import type {
   StrategyModel, Subscribe, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
@@ -206,16 +206,17 @@ export default class StrategiesAutomation extends Automation {
 
       const replaceSubWithUpdate = async (index: number) => {
         const sub = strategiesSubs[index];
-        let latestUpdate = subscriptionEvents[index].returnValues;
+        let latestUpdate = { ...subscriptionEvents[index].returnValues };
 
         if (latestUpdate.subHash !== sub?.strategySubHash) {
           const updates = await this.getUpdateDataEventsFromSubStorage({
             ...addToObjectIf(!!_options, _options),
-            filter: {subId: latestUpdate.subId},
+            filter: { subId: latestUpdate.subId },
           });
           latestUpdate = {
             ...latestUpdate, // Update is missing proxy, hence this
             ...updates?.[updates.length - 1]?.returnValues,
+            2: latestUpdate[2], // type issue
           };
         }
         subscriptions.push(
@@ -224,16 +225,16 @@ export default class StrategiesAutomation extends Automation {
             blockNumber: subscriptionEvents[index].blockNumber,
             subscriptionEventData: latestUpdate,
             strategiesSubsData: sub,
-          })
+          }),
         );
-      }
+      };
 
-      const generatePromises = function * () {
+      // eslint-disable-next-line func-names
+      const pool = new PromisePool(function* () {
         for (let index = 0; index < strategiesSubs.length; index++) {
           yield replaceSubWithUpdate(index);
         }
-      }
-      const pool = new PromisePool(generatePromises as any, 50);
+      } as any, 50);
       await pool.start();
 
       if (options?.mergeSubs) {
