@@ -19,7 +19,7 @@ import Automation from './Automation';
 
 interface IStrategiesAutomation extends Interfaces.Automation {
   chainId: ChainId,
-  providerFork: Web3,
+  providerFork?: Web3,
 }
 
 export default class StrategiesAutomation extends Automation {
@@ -27,7 +27,7 @@ export default class StrategiesAutomation extends Automation {
 
   protected web3: Web3;
 
-  protected web3Fork: Web3;
+  protected web3Fork?: Web3;
 
   protected subStorageContract: Contract.WithMeta<SubStorage>;
 

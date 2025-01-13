@@ -301,7 +301,7 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
-  openOrder(
+  leverageManagementOnPrice(
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
@@ -314,7 +314,7 @@ export const aaveV3Encode = {
     const {
       collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     } = subData;
-    const subDataEncoded = subDataService.aaveV3OpenOrderSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
 
     const {
       baseTokenAddress, quoteTokenAddress, price, state,
@@ -504,6 +504,7 @@ export const morphoBlueEncode = {
     triggerRatio: number,
     user: EthereumAddress,
     isEOA: boolean,
+    network: ChainId,
   ) {
     const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user, isEOA);
 
@@ -512,6 +513,11 @@ export const morphoBlueEncode = {
     // over is boost, under is repay
     const isBoost = ratioState === RatioState.OVER;
     let strategyOrBundleId;
+
+    if (network === ChainId.Base) {
+      return [isBoost ? Bundles.BaseIds.MORPHO_BLUE_BOOST : Bundles.BaseIds.MORPHO_BLUE_REPAY, true, triggerData, subData];
+    }
+
     if (isBoost) strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST : Bundles.MainnetIds.MORPHO_BLUE_BOOST;
     else strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
     const isBundle = true;
