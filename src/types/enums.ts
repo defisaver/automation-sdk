@@ -191,9 +191,9 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST = 35,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
     AAVE_V3_REPAY_ON_PRICE = 37,
-    LIQUITY_V2_REPAY = 38,
-    LIQUITY_V2_BOOST = 39,
-    LIQUITY_V2_CLOSE = 40,
+    LIQUITY_V2_REPAY = 39,
+    LIQUITY_V2_BOOST = 40,
+    LIQUITY_V2_CLOSE = 41,
   }
 
   export enum OptimismIds {
