@@ -570,4 +570,20 @@ export const liquityV2Encode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    price: number,
+    state: RatioState,
+    troveId: number,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+  ) {
+    const subDataEncoded = subDataService.liquityV2LeverageManagementOnPriceSubData.encode(market, troveId, collToken, boldToken, targetRatio,);
+
+    const triggerDataEncoded = triggerService.liquityV2QuotePriceTrigger.encode(market, price, state);
+    const isBundle = true;
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };

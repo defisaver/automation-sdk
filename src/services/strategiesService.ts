@@ -885,6 +885,31 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
   return _position;
 }
 
+function parseLiquityV2LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.liquityV2QuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2LeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  _position.specific = {
+    market: subData.market,
+    troveId: subData.troveId,
+    collToken: subData.collToken,
+    boldToken: subData.boldToken,
+    ratio: subData.targetRatio,
+    price: triggerData.price,
+    ratioState: triggerData.ratioState,
+  };
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -909,6 +934,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Repay]: parseLiquityV2LeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityV2LeverageManagement,
     [Strategies.Identifiers.CloseOnPrice]: parseLiquityV2CloseOnPrice,
+    [Strategies.Identifiers.OpenOrderFromCollateral]: parseLiquityV2LeverageManagementOnPrice,
+    [Strategies.Identifiers.RepayOnPrice]: parseLiquityV2LeverageManagementOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

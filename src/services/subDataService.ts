@@ -724,3 +724,45 @@ export const liquityV2CloseSubData = {
     };
   },
 };
+
+export const liquityV2LeverageManagementOnPriceSubData = {
+  encode(
+    market: EthereumAddress,
+    troveId: number,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+  ): SubData {
+    const encodedMarket = AbiCoder.encodeParameter('address', market);
+    const encodedTroveId = AbiCoder.encodeParameter('uint256', troveId);
+    const encodedCollToken = AbiCoder.encodeParameter('address', collToken);
+    const encodedBoldToken = AbiCoder.encodeParameter('uint8', boldToken);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+
+    return [
+      encodedMarket,
+      encodedTroveId,
+      encodedCollToken,
+      encodedBoldToken,
+      encodedTargetRatio,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    troveId: number,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const troveId = Number(AbiCoder.decodeParameter('uint256', subData[1]));
+    const collToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const boldToken = AbiCoder.decodeParameter('address', subData[3]) as unknown as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[4]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      market, troveId, collToken, boldToken, targetRatio,
+    };
+  },
+};

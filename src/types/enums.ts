@@ -194,6 +194,8 @@ export namespace Bundles {
     LIQUITY_V2_REPAY = 39,
     LIQUITY_V2_BOOST = 40,
     LIQUITY_V2_CLOSE = 41,
+    LIQUITY_V2_REPAY_ON_PRICE = 42,
+    LIQUITY_V2_BOOST_ON_PRICE = 43,
   }
 
   export enum OptimismIds {

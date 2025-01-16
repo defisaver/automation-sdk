@@ -471,6 +471,29 @@ export const liquityV2RatioTrigger = {
   },
 };
 
+export const liquityV2QuotePriceTrigger = {
+  encode(
+    market: EthereumAddress,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    // Price is always in 18 decimals
+    const _price = new Dec(price.toString()).mul(10 ** 18).floor().toString();
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [market, _price, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const price = new Dec(decodedData[1] as string).div(10 ** 18).toDP(18).toString();
+    return {
+      market: decodedData[0] as EthereumAddress,
+      price,
+      ratioState: Number(decodedData[2]),
+    };
+  },
+}
+
 export const closePriceTrigger = {
   encode(
     tokenAddr: EthereumAddress,
