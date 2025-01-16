@@ -492,7 +492,7 @@ export const liquityV2QuotePriceTrigger = {
       ratioState: Number(decodedData[2]),
     };
   },
-}
+};
 
 export const closePriceTrigger = {
   encode(

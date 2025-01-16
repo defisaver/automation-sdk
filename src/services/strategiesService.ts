@@ -896,16 +896,16 @@ function parseLiquityV2LeverageManagementOnPrice(position: Position.Automated, p
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
-
+  /// @TODO: what does even go here
+  /*
   _position.specific = {
     market: subData.market,
     troveId: subData.troveId,
-    collToken: subData.collToken,
-    boldToken: subData.boldToken,
     ratio: subData.targetRatio,
     price: triggerData.price,
     ratioState: triggerData.ratioState,
   };
+  */
 
   return _position;
 }

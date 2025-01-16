@@ -728,7 +728,7 @@ export const liquityV2CloseSubData = {
 export const liquityV2LeverageManagementOnPriceSubData = {
   encode(
     market: EthereumAddress,
-    troveId: number,
+    troveId: string,
     collToken: EthereumAddress,
     boldToken: EthereumAddress,
     targetRatio: number,
@@ -749,13 +749,13 @@ export const liquityV2LeverageManagementOnPriceSubData = {
   },
   decode(subData: SubData): {
     market: EthereumAddress,
-    troveId: number,
+    troveId: string,
     collToken: EthereumAddress,
     boldToken: EthereumAddress,
     targetRatio: number,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
-    const troveId = Number(AbiCoder.decodeParameter('uint256', subData[1]));
+    const troveId = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
     const collToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const boldToken = AbiCoder.decodeParameter('address', subData[3]) as unknown as EthereumAddress;
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[4]) as any as string;
