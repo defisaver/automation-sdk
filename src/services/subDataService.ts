@@ -736,7 +736,7 @@ export const liquityV2LeverageManagementOnPriceSubData = {
     const encodedMarket = AbiCoder.encodeParameter('address', market);
     const encodedTroveId = AbiCoder.encodeParameter('uint256', troveId);
     const encodedCollToken = AbiCoder.encodeParameter('address', collToken);
-    const encodedBoldToken = AbiCoder.encodeParameter('uint8', boldToken);
+    const encodedBoldToken = AbiCoder.encodeParameter('address', boldToken);
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
 
     return [
