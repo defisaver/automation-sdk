@@ -149,6 +149,11 @@ export declare namespace Position {
       ratio: number,
     }
 
+    interface BoostOnPriceMorpho extends Base {
+      marketId: string;
+      subHash: string;
+    }
+
     interface CloseOnPriceWithMaximumGasPriceAave extends Base {
       collAsset: EthereumAddress,
       collAssetId: number,
@@ -186,7 +191,8 @@ export declare namespace Position {
     | Specific.BoostOnPriceAave
     | Specific.CloseOnPriceWithMaximumGasPriceAave
     | Specific.DebtInFrontRepay
-    | Specific.LeverageManagementCrvUSD;
+    | Specific.LeverageManagementCrvUSD
+    | Specific.BoostOnPriceMorpho;
 
   export interface Automated {
     chainId: ChainId,
