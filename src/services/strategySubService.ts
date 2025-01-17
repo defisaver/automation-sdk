@@ -530,21 +530,16 @@ export const liquityV2Encode = {
   leverageManagement(
     market: EthereumAddress,
     troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
     strategyOrBundleId: number,
   ) {
     const isBundle = true;
-    const isRepay = ratioState === RatioState.UNDER;
-
-    const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, ratioState, targetRatio);
+    const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, collToken, boldToken, ratioState, targetRatio);
     const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
-
-    // TODO: we can hardcode right bundles after testing
-    // const strategyOrBundleId = ratioState === RatioState.OVER
-    //   ? Bundles.MainnetIds.LIQUITY_V2_BOOST
-    //   : Bundles.MainnetIds.LIQUITY_V2_REPAY;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -564,9 +559,6 @@ export const liquityV2Encode = {
 
     const subData = subDataService.liquityV2CloseSubData.encode(market, troveId, collToken, boldToken, closeType);
     const triggerData = triggerService.closePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
-
-    // TODO: we can hardcode bundleID after testing
-    // Bundles.MainnetIds.LIQUITY_V2_CLOSE;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
