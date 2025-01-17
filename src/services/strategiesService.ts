@@ -793,14 +793,6 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
 
-  console.log('encoding:', [
-    subData.loanToken,
-    subData.collToken,
-    subData.oracle,
-    subData.irm,
-    subData.lltv,
-  ]);
-
   const marketIdEncodedData = web3.eth.abi.encodeParameters(
     ['address', 'address', 'address', 'address', 'uint256'],
     [
