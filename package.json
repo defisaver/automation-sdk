@@ -1,6 +1,6 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "3.1.4-dev-4",
+  "version": "3.1.4-dev-5",
   "description": "",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@defisaver/eslint-config": "^1.0.1",
-    "@defisaver/sdk": "^1.2.16-dev-liquity-v2-5",
+    "@defisaver/sdk": "^1.2.16-dev-liquity-v2-6",
     "@defisaver/tokens": "^1.5.52-dev-5",
     "@ethersproject/address": "^5.0.10",
     "@ethersproject/solidity": "^5.0.9",
