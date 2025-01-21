@@ -571,8 +571,11 @@ export const liquityV2Encode = {
     collToken: EthereumAddress,
     boldToken: EthereumAddress,
     targetRatio: number,
+    isRepayOnPrice: boolean,
   ) {
-    const subDataEncoded = subDataService.liquityV2LeverageManagementOnPriceSubData.encode(market, troveId, collToken, boldToken, targetRatio);
+    const subDataEncoded = subDataService.liquityV2LeverageManagementOnPriceSubData.encode(
+      market, troveId, collToken, boldToken, targetRatio, isRepayOnPrice,
+    );
 
     const triggerDataEncoded = triggerService.liquityV2QuotePriceTrigger.encode(market, price, state);
     const isBundle = true;

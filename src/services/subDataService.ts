@@ -750,6 +750,7 @@ export const liquityV2LeverageManagementOnPriceSubData = {
     collToken: EthereumAddress,
     boldToken: EthereumAddress,
     targetRatio: number,
+    isRepayOnPrice: boolean,
   ): SubData {
     const encodedMarket = AbiCoder.encodeParameter('address', market);
     const encodedTroveId = AbiCoder.encodeParameter('uint256', troveId);
@@ -757,12 +758,20 @@ export const liquityV2LeverageManagementOnPriceSubData = {
     const encodedBoldToken = AbiCoder.encodeParameter('address', boldToken);
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
 
+    const collActionType = isRepayOnPrice ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
+    const debtActionType = isRepayOnPrice ? DebtActionType.PAYBACK : DebtActionType.BORROW;
+
+    const encodedCollActionType = AbiCoder.encodeParameter('uint8', collActionType);
+    const encodedDebtActionType = AbiCoder.encodeParameter('uint8', debtActionType);
+
     return [
       encodedMarket,
       encodedTroveId,
       encodedCollToken,
       encodedBoldToken,
       encodedTargetRatio,
+      encodedCollActionType,
+      encodedDebtActionType,
     ];
   },
   decode(subData: SubData): {
