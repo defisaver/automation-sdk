@@ -90,7 +90,7 @@ export declare namespace Interfaces {
 
   interface Automation {
     provider: Web3,
-    providerFork: Web3,
+    providerFork?: Web3,
   }
   interface LegacyAutomation<T extends BaseContract> {
     provider: Web3,
