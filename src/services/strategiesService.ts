@@ -1,6 +1,7 @@
 import { getAssetInfoByAddress } from '@defisaver/tokens';
 import { cloneDeep } from 'lodash';
 
+import Web3 from 'web3';
 import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
 import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
@@ -13,6 +14,8 @@ import {
 } from './utils';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
+
+const web3 = new Web3();
 
 const SPARK_MARKET_ADDRESSES = {
   [ChainId.Ethereum]: '0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE',
@@ -822,6 +825,42 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   return _position;
 }
 
+function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.morphoBluePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  const marketIdEncodedData = web3.eth.abi.encodeParameters(
+    ['address', 'address', 'address', 'address', 'uint256'],
+    [
+      subData.loanToken,
+      subData.collToken,
+      subData.oracle,
+      subData.irm,
+      subData.lltv,
+    ],
+  );
+
+  const marketId = web3.utils.keccak256(marketIdEncodedData);
+
+  _position.specific = {
+    subHash: _position.subHash,
+    marketId,
+    collAsset: subData.collToken,
+    debtAsset: subData.loanToken,
+    price: triggerData.price,
+    ratio: subData.targetRatio,
+  };
+
+  return _position;
+}
+
 function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -988,6 +1027,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
+    [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
   },
 };
 

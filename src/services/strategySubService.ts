@@ -524,6 +524,23 @@ export const morphoBlueEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    isBundle: boolean = true,
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    user: EthereumAddress,
+    targetRatio: number,
+    price: number,
+    priceState: RatioState,
+  ) {
+    const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, targetRatio, user);
+    const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
 };
 
 export const liquityV2Encode = {
