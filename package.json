@@ -24,8 +24,8 @@
   "license": "ISC",
   "dependencies": {
     "@defisaver/eslint-config": "^1.0.1",
-    "@defisaver/sdk": "^1.2.16-dev-liquity-v2-7",
-    "@defisaver/tokens": "^1.5.53-dev-1",
+    "@defisaver/sdk": "^1.2.17",
+    "@defisaver/tokens": "^1.5.54",
     "@ethersproject/address": "^5.0.10",
     "@ethersproject/solidity": "^5.0.9",
     "decimal.js": "^10.4.3",
