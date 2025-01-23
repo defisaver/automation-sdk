@@ -4,7 +4,9 @@ import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
-import { ChainId, RatioState } from '../types/enums';
+import {
+  ChainId, CloseStrategyType, CloseToAssetType, RatioState,
+} from '../types/enums';
 
 export function isDefined<T>(value: T): value is NonNullable<T> {
   return value !== undefined && value !== null;
@@ -101,4 +103,61 @@ export function getRatioStateInfoForAaveCloseStrategy(
 
 export function getPositionId(...args: (number | string)[]) {
   return args.map(arg => arg.toString().toLowerCase().split(' ').join('_')).join('-');
+}
+
+export function getCloseStrategyType(
+  stopLossPrice: number,
+  stopLossType: CloseToAssetType,
+  takeProfitPrice: number,
+  takeProfitType: CloseToAssetType,
+): CloseStrategyType {
+  const isStopLoss = stopLossPrice > 0;
+  const isTakeProfit = takeProfitPrice > 0;
+
+  if (!isStopLoss && !isTakeProfit) {
+    throw new Error('CloseOnPrice: At least one price must be defined');
+  }
+
+  if (isStopLoss && isTakeProfit) {
+    if (stopLossType === CloseToAssetType.COLLATERAL && takeProfitType === CloseToAssetType.COLLATERAL) {
+      return CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL;
+    } if (stopLossType === CloseToAssetType.COLLATERAL) {
+      return CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL;
+    } if (takeProfitType === CloseToAssetType.COLLATERAL) {
+      return CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT;
+    }
+    return CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT;
+  } if (isStopLoss) {
+    return stopLossType === CloseToAssetType.COLLATERAL
+      ? CloseStrategyType.STOP_LOSS_IN_COLLATERAL
+      : CloseStrategyType.STOP_LOSS_IN_DEBT;
+  }
+  return takeProfitType === CloseToAssetType.COLLATERAL
+    ? CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL
+    : CloseStrategyType.TAKE_PROFIT_IN_DEBT;
+}
+
+export function getStopLossAndTakeProfitTypeByCloseStrategyType(
+  closeStrategyType: CloseStrategyType,
+): { stopLossType: CloseToAssetType | undefined, takeProfitType: CloseToAssetType | undefined } {
+  switch (closeStrategyType) {
+    case CloseStrategyType.STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: undefined };
+    case CloseStrategyType.STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: undefined };
+    case CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL:
+      return { stopLossType: undefined, takeProfitType: CloseToAssetType.COLLATERAL };
+    case CloseStrategyType.TAKE_PROFIT_IN_DEBT:
+      return { stopLossType: undefined, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: CloseToAssetType.COLLATERAL };
+    case CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT:
+      return { stopLossType: CloseToAssetType.DEBT, takeProfitType: CloseToAssetType.DEBT };
+    case CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL:
+      return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: CloseToAssetType.COLLATERAL };
+    default:
+      throw new Error('CloseStrategyType not supported');
+  }
 }

@@ -376,6 +376,31 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.LIQUITY_V2_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
   [Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
     strategyId: Strategies.Identifiers.BoostOnPrice,

@@ -448,6 +448,81 @@ export const morphoBlueRatioTrigger = {
   },
 };
 
+export const liquityV2RatioTrigger = {
+  encode(
+    market: EthereumAddress,
+    troveId: string,
+    ratioPercentage: number,
+    ratioState: RatioState,
+  ) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256', 'uint8'], [market, troveId, ratioWei, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      troveId: decodedData[1] as string,
+      ratio: weiToRatioPercentage(decodedData[2] as string),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};
+
+export const liquityV2QuotePriceTrigger = {
+  encode(
+    market: EthereumAddress,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    // Price is always in 18 decimals
+    const _price = new Dec(price.toString()).mul(10 ** 18).floor().toString();
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [market, _price, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    const price = new Dec(decodedData[1] as string).div(10 ** 18).toDP(18).toString();
+    return {
+      market: decodedData[0] as EthereumAddress,
+      price,
+      ratioState: Number(decodedData[2]),
+    };
+  },
+};
+
+export const closePriceTrigger = {
+  encode(
+    tokenAddr: EthereumAddress,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'uint256', 'uint256'],
+        [tokenAddr, lowerPriceFormatted, upperPriceFormatted],
+      ),
+    ];
+  },
+  decode(triggerData: TriggerData): {
+    tokenAddr: EthereumAddress,
+    lowerPrice: string,
+    upperPrice: string,
+  } {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      tokenAddr: decodedData[0] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[1] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[2] as string).div(1e8).toString(),
+    };
+  },
+};
 export const morphoBluePriceTrigger = {
   encode(
     oracle: EthereumAddress,

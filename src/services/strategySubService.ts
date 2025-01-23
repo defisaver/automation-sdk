@@ -3,6 +3,7 @@ import { getAssetInfo } from '@defisaver/tokens';
 
 import type { OrderType } from '../types/enums';
 import {
+  CloseStrategyType, CloseToAssetType,
   Bundles, ChainId, RatioState, Strategies,
 } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds } from '../types';
@@ -11,7 +12,9 @@ import { STRATEGY_IDS } from '../constants';
 
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
-import { compareAddresses, requireAddress, requireAddresses } from './utils';
+import {
+  compareAddresses, getCloseStrategyType, requireAddress, requireAddresses,
+} from './utils';
 
 export const makerEncode = {
   repayFromSavings(
@@ -537,5 +540,62 @@ export const morphoBlueEncode = {
     const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, targetRatio, user);
     const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
     return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};
+
+export const liquityV2Encode = {
+  leverageManagement(
+    market: EthereumAddress,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    strategyOrBundleId: number,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, collToken, boldToken, ratioState, targetRatio);
+    const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  closeOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subData = subDataService.liquityV2CloseSubData.encode(market, troveId, collToken, boldToken, closeType);
+    const triggerData = triggerService.closePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    price: number,
+    state: RatioState,
+    troveId: string,
+    collToken: EthereumAddress,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+    isRepayOnPrice: boolean,
+  ) {
+    const subDataEncoded = subDataService.liquityV2LeverageManagementOnPriceSubData.encode(
+      market, troveId, collToken, boldToken, targetRatio, isRepayOnPrice,
+    );
+
+    const triggerDataEncoded = triggerService.liquityV2QuotePriceTrigger.encode(market, price, state);
+    const isBundle = true;
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 };

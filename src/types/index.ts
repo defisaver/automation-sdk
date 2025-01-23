@@ -5,6 +5,7 @@ import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage'
 import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
   RatioState,
+  CloseToAssetType,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -166,6 +167,16 @@ export declare namespace Position {
       ratioState: RatioState,
     }
 
+    interface CloseOnPriceLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      stopLossPrice: string,
+      takeProfitPrice: string,
+      closeToAssetAddr: EthereumAddress,
+      stopLossType: CloseToAssetType | undefined,
+      takeProfitType: CloseToAssetType | undefined,
+    }
+
     interface TrailingStop extends Base {
       roundId: number,
       triggerPercentage: number,
@@ -192,6 +203,7 @@ export declare namespace Position {
     | Specific.CloseOnPriceWithMaximumGasPriceAave
     | Specific.DebtInFrontRepay
     | Specific.LeverageManagementCrvUSD
+    | Specific.CloseOnPriceLiquityV2
     | Specific.BoostOnPriceMorpho;
 
   export interface Automated {
