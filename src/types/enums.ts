@@ -108,6 +108,7 @@ export namespace Strategies {
     DebtInFrontRepay = 'debt-in-front-repay',
     OpenOrderFromCollateral = 'open-order-from-collateral',
     OpenOrderFromDebt = 'open-order-from-debt',
+    BoostOnPrice = 'boost-on-price',
     RepayOnPrice = 'repay-on-price',
   }
   export enum IdOverrides {
@@ -163,6 +164,7 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST = 35,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
     AAVE_V3_REPAY_ON_PRICE = 37,
+    MORPHO_BLUE_BOOST_ON_PRICE = 38,
   }
 
   export enum OptimismIds {
@@ -185,6 +187,7 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST = 9,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 10,
     AAVE_V3_REPAY_ON_PRICE = 11,
+    MORPHO_BLUE_BOOST_ON_PRICE = 12,
   }
 
   export enum ArbitrumIds {

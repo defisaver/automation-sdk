@@ -447,3 +447,32 @@ export const morphoBlueRatioTrigger = {
     };
   },
 };
+
+export const morphoBluePriceTrigger = {
+  encode(
+    oracle: EthereumAddress,
+    collateralToken: EthereumAddress,
+    loanToken: EthereumAddress,
+    price: number,
+    priceState: RatioState,
+  ) {
+    const _price = new Dec(price.toString()).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'address', 'address', 'uint256', 'uint8'],
+        [oracle, collateralToken, loanToken, _price, priceState]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      oracle: decodedData[0] as EthereumAddress,
+      collateralToken: decodedData[1] as EthereumAddress,
+      loanToken: decodedData[2] as EthereumAddress,
+      price: new Dec(decodedData[3] as string).div(1e8).toString(),
+      priceState: Number(decodedData[4]),
+    };
+  },
+};
