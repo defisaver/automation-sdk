@@ -833,3 +833,52 @@ export const morphoBlueLeverageManagementOnPriceSubData = {
     };
   },
 };
+
+export const fluidLeverageManagementSubData = {
+  encode: (
+    nftId: string,
+    vault: EthereumAddress,
+    collToken: EthereumAddress,
+    debtToken: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const nftIdEncoded = AbiCoder.encodeParameter('uint256', nftId);
+    const vaultEncoded = AbiCoder.encodeParameter('address', vault);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const debtTokenEncoded = AbiCoder.encodeParameter('address', debtToken);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+
+    const isRepay = ratioState === RatioState.UNDER;
+    const collActionType = isRepay ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
+    const debtActionType = isRepay ? DebtActionType.PAYBACK : DebtActionType.BORROW;
+
+    const collActionTypeEncoded = AbiCoder.encodeParameter('uint8', collActionType);
+    const debtActionTypeEncoded = AbiCoder.encodeParameter('uint8', debtActionType);
+
+    return [
+      nftIdEncoded,
+      vaultEncoded,
+      collTokenEncoded,
+      debtTokenEncoded,
+      ratioStateEncoded,
+      targetRatioEncoded,
+      collActionTypeEncoded,
+      debtActionTypeEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const nftId = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
+    const vault = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const debtToken = AbiCoder.decodeParameter('address', subData[3]) as any as EthereumAddress;
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[4]) as any as RatioState;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      nftId, vault, collToken, debtToken, ratioState, targetRatio,
+    };
+  },
+};

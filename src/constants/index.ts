@@ -406,6 +406,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.MainnetIds.FLUID_T2_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T2_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

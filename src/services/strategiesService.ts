@@ -949,6 +949,49 @@ function parseLiquityV2LeverageManagementOnPrice(position: Position.Automated, p
   return _position;
 }
 
+function parseFluidT1LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.fluidRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.fluidLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.nftId, subData.vault,
+  );
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -1028,6 +1071,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
+    [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseFluidT1LeverageManagement,
   },
 };
 

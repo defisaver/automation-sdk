@@ -599,3 +599,22 @@ export const liquityV2Encode = {
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 };
+
+export const fluidEncode = {
+  leverageManagement(
+    nftId: string,
+    vault: EthereumAddress,
+    collToken: EthereumAddress,
+    debtToken: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    strategyOrBundleId: number,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.fluidLeverageManagementSubData.encode(nftId, vault, collToken, debtToken, ratioState, targetRatio);
+    const triggerData = triggerService.fluidRatioTrigger.encode(nftId, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};
