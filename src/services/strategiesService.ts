@@ -935,16 +935,17 @@ function parseLiquityV2LeverageManagementOnPrice(position: Position.Automated, p
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
-  /// @TODO: what does even go here
-  /*
+
   _position.specific = {
+    subHash: _position.subHash,
     market: subData.market,
     troveId: subData.troveId,
-    ratio: subData.targetRatio,
+    collAsset: subData.collToken,
+    debtAsset: subData.boldToken,
     price: triggerData.price,
+    ratio: subData.targetRatio,
     ratioState: triggerData.ratioState,
   };
-  */
 
   return _position;
 }
@@ -973,7 +974,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Repay]: parseLiquityV2LeverageManagement,
     [Strategies.Identifiers.Boost]: parseLiquityV2LeverageManagement,
     [Strategies.Identifiers.CloseOnPrice]: parseLiquityV2CloseOnPrice,
-    [Strategies.Identifiers.OpenOrderFromCollateral]: parseLiquityV2LeverageManagementOnPrice,
+    [Strategies.Identifiers.BoostOnPrice]: parseLiquityV2LeverageManagementOnPrice,
     [Strategies.Identifiers.RepayOnPrice]: parseLiquityV2LeverageManagementOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
