@@ -69,6 +69,7 @@ export namespace ProtocolIdentifiers {
     Spark = 'Spark',
     CrvUSD = 'CurveUSD',
     MorphoBlue = 'MorphoBlue',
+    FluidT1 = 'FluidT1',
   }
 
   export enum LegacyAutomation {
@@ -198,6 +199,8 @@ export namespace Bundles {
     LIQUITY_V2_CLOSE = 41,
     LIQUITY_V2_REPAY_ON_PRICE = 42,
     LIQUITY_V2_BOOST_ON_PRICE = 43,
+    FLUID_T1_REPAY = 44,
+    FLUID_T2_BOOST = 45,
   }
 
   export enum OptimismIds {
