@@ -849,6 +849,7 @@ export const fluidLeverageManagementSubData = {
     const debtTokenEncoded = AbiCoder.encodeParameter('address', debtToken);
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const wrapEthEncoded = AbiCoder.encodeParameter('bool', true);
 
     const isRepay = ratioState === RatioState.UNDER;
     const collActionType = isRepay ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
@@ -864,6 +865,7 @@ export const fluidLeverageManagementSubData = {
       debtTokenEncoded,
       ratioStateEncoded,
       targetRatioEncoded,
+      wrapEthEncoded,
       collActionTypeEncoded,
       debtActionTypeEncoded,
     ];
