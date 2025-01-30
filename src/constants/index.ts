@@ -393,12 +393,12 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   },
   [Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE,
-    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.LiquityV2,
   },
   [Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE,
-    strategyId: Strategies.Identifiers.RepayOnPrice,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.LiquityV2,
   },
   [Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
