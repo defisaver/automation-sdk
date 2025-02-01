@@ -113,6 +113,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
+  [Strategies.MainnetIds.LIQUITY_V2_PAYBACK]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_V2_PAYBACK,
+    strategyId: Strategies.Identifiers.Payback,
+    protocol: PROTOCOLS.LiquityV2,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {

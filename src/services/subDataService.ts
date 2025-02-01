@@ -833,3 +833,38 @@ export const morphoBlueLeverageManagementOnPriceSubData = {
     };
   },
 };
+export const liquityV2PaybackSubData = {
+  encode: (
+    market: EthereumAddress,
+    troveId: string,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+    ratioState: RatioState,
+  ) => {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const troveIdEncoded = AbiCoder.encodeParameter('uint256', troveId);
+    const boldTokenEncoded = AbiCoder.encodeParameter('address', boldToken);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+
+    return [
+      marketEncoded,
+      troveIdEncoded,
+      boldTokenEncoded,
+      targetRatioEncoded,
+      ratioStateEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const troveId = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const boldToken = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[4]) as any as RatioState;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      market, troveId, boldToken, ratioState, targetRatio,
+    };
+  },
+};
