@@ -962,6 +962,14 @@ function parseLiquityV2Payback(position: Position.Automated, parseData: ParseDat
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.troveId, triggerData.market);
   _position.strategy.strategyId = Strategies.Identifiers.Payback;
 
+  _position.specific = {
+    subHash: _position.subHash,
+    market: subData.market,
+    troveId: subData.troveId,
+    targetRatio: subData.targetRatio,
+    triggerRatio: triggerData.ratio,
+  };
+
   return _position;
 }
 
