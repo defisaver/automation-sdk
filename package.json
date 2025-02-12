@@ -1,6 +1,6 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "3.1.8-dev-2",
+  "version": "3.1.9",
   "description": "",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
