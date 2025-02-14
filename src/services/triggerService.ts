@@ -551,3 +551,24 @@ export const morphoBluePriceTrigger = {
     };
   },
 };
+
+export const fluidRatioTrigger = {
+  encode(
+    nftId: string,
+    ratioPercentage: number,
+    ratioState: RatioState,
+  ) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['uint256', 'uint256', 'uint8'], [nftId, ratioWei, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['uint256', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      nftId: decodedData[0] as string,
+      ratio: weiToRatioPercentage(decodedData[1] as string),
+      ratioState: Number(decodedData[2]),
+    };
+  },
+};
