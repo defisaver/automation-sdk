@@ -95,6 +95,7 @@ export namespace Strategies {
     LIQUITY_DSR_SUPPLY = 70,
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
+    LIQUITY_V2_PAYBACK = 113,
   }
 
   export enum OptimismIds {

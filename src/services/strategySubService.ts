@@ -598,6 +598,22 @@ export const liquityV2Encode = {
     const isBundle = true;
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+  payback(
+    market: EthereumAddress,
+    troveId: string,
+    boldToken: EthereumAddress,
+    targetRatio: number,
+    ratioState: RatioState,
+    triggerRatio: number,
+  ) {
+    const strategyId = Strategies.MainnetIds.LIQUITY_V2_PAYBACK;
+    const isBundle = false;
+
+    const subData = subDataService.liquityV2PaybackSubData.encode(market, troveId, boldToken, targetRatio, ratioState);
+    const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
+
+    return [strategyId, isBundle, triggerData, subData];
+  },
 };
 
 export const fluidEncode = {

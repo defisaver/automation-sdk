@@ -177,6 +177,19 @@ export declare namespace Position {
       takeProfitType: CloseToAssetType | undefined,
     }
 
+    interface BoostOnPriceLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      subHash: string;
+    }
+
+    interface PaybackLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      targetRatio: number;
+      triggerRatio: number;
+    }
+
     interface TrailingStop extends Base {
       roundId: number,
       triggerPercentage: number,
@@ -204,7 +217,9 @@ export declare namespace Position {
     | Specific.DebtInFrontRepay
     | Specific.LeverageManagementCrvUSD
     | Specific.CloseOnPriceLiquityV2
-    | Specific.BoostOnPriceMorpho;
+    | Specific.BoostOnPriceMorpho
+    | Specific.BoostOnPriceLiquityV2
+    | Specific.PaybackLiquityV2;
 
   export interface Automated {
     chainId: ChainId,

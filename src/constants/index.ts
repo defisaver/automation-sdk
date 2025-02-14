@@ -113,6 +113,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
+  [Strategies.MainnetIds.LIQUITY_V2_PAYBACK]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_V2_PAYBACK,
+    strategyId: Strategies.Identifiers.Payback,
+    protocol: PROTOCOLS.LiquityV2,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
@@ -393,12 +398,12 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   },
   [Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE,
-    strategyId: Strategies.Identifiers.OpenOrderFromCollateral,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.LiquityV2,
   },
   [Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE,
-    strategyId: Strategies.Identifiers.RepayOnPrice,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.LiquityV2,
   },
   [Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
