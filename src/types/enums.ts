@@ -201,7 +201,7 @@ export namespace Bundles {
     LIQUITY_V2_REPAY_ON_PRICE = 42,
     LIQUITY_V2_BOOST_ON_PRICE = 43,
     FLUID_T1_REPAY = 44,
-    FLUID_T2_BOOST = 45,
+    FLUID_T1_BOOST = 45,
   }
 
   export enum OptimismIds {
@@ -225,6 +225,8 @@ export namespace Bundles {
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 10,
     AAVE_V3_REPAY_ON_PRICE = 11,
     MORPHO_BLUE_BOOST_ON_PRICE = 12,
+    FLUID_T1_REPAY = 13,
+    FLUID_T1_BOOST = 14,
   }
 
   export enum ArbitrumIds {
@@ -236,6 +238,8 @@ export namespace Bundles {
     COMP_V3_SW_BOOST_BUNDLE = 5,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 6,
     AAVE_V3_REPAY_ON_PRICE = 7,
+    FLUID_T1_REPAY = 8,
+    FLUID_T1_BOOST = 9,
   }
 }
 
