@@ -411,6 +411,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.MainnetIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -502,6 +512,16 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.BaseIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -544,6 +564,16 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_REPAY_ON_PRICE,
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.ArbitrumIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
   },
 };
 

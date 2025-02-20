@@ -833,6 +833,7 @@ export const morphoBlueLeverageManagementOnPriceSubData = {
     };
   },
 };
+
 export const liquityV2PaybackSubData = {
   encode: (
     market: EthereumAddress,
@@ -865,6 +866,49 @@ export const liquityV2PaybackSubData = {
 
     return {
       market, troveId, boldToken, ratioState, targetRatio,
+    };
+  },
+};
+
+export const fluidLeverageManagementSubData = {
+  encode: (
+    nftId: string,
+    vault: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const nftIdEncoded = AbiCoder.encodeParameter('uint256', nftId);
+    const vaultEncoded = AbiCoder.encodeParameter('address', vault);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const wrapEthEncoded = AbiCoder.encodeParameter('bool', true);
+
+    const isRepay = ratioState === RatioState.UNDER;
+    const collActionType = isRepay ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
+    const debtActionType = isRepay ? DebtActionType.PAYBACK : DebtActionType.BORROW;
+
+    const collActionTypeEncoded = AbiCoder.encodeParameter('uint8', collActionType);
+    const debtActionTypeEncoded = AbiCoder.encodeParameter('uint8', debtActionType);
+
+    return [
+      nftIdEncoded,
+      vaultEncoded,
+      ratioStateEncoded,
+      targetRatioEncoded,
+      wrapEthEncoded,
+      collActionTypeEncoded,
+      debtActionTypeEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const nftId = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
+    const vault = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      nftId, vault, ratioState, targetRatio,
     };
   },
 };
