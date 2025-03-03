@@ -5,6 +5,7 @@ import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage'
 import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
   RatioState,
+  CloseToAssetType,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -149,6 +150,11 @@ export declare namespace Position {
       ratio: number,
     }
 
+    interface BoostOnPriceMorpho extends Base {
+      marketId: string;
+      subHash: string;
+    }
+
     interface CloseOnPriceWithMaximumGasPriceAave extends Base {
       collAsset: EthereumAddress,
       collAssetId: number,
@@ -159,6 +165,29 @@ export declare namespace Position {
       price: string,
       maximumGasPrice: string,
       ratioState: RatioState,
+    }
+
+    interface CloseOnPriceLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      stopLossPrice: string,
+      takeProfitPrice: string,
+      closeToAssetAddr: EthereumAddress,
+      stopLossType: CloseToAssetType | undefined,
+      takeProfitType: CloseToAssetType | undefined,
+    }
+
+    interface BoostOnPriceLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      subHash: string;
+    }
+
+    interface PaybackLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      targetRatio: number;
+      triggerRatio: number;
     }
 
     interface TrailingStop extends Base {
@@ -186,7 +215,11 @@ export declare namespace Position {
     | Specific.BoostOnPriceAave
     | Specific.CloseOnPriceWithMaximumGasPriceAave
     | Specific.DebtInFrontRepay
-    | Specific.LeverageManagementCrvUSD;
+    | Specific.LeverageManagementCrvUSD
+    | Specific.CloseOnPriceLiquityV2
+    | Specific.BoostOnPriceMorpho
+    | Specific.BoostOnPriceLiquityV2
+    | Specific.PaybackLiquityV2;
 
   export interface Automated {
     chainId: ChainId,

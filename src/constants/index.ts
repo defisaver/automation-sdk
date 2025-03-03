@@ -113,6 +113,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.CrvUSD,
   },
+  [Strategies.MainnetIds.LIQUITY_V2_PAYBACK]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_V2_PAYBACK,
+    strategyId: Strategies.Identifiers.Payback,
+    protocol: PROTOCOLS.LiquityV2,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
@@ -376,6 +381,46 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.MainnetIds.LIQUITY_V2_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.LIQUITY_V2_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.LiquityV2,
+  },
+  [Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.MainnetIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -462,6 +507,21 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.BaseIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -504,6 +564,16 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_REPAY_ON_PRICE,
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.FLUID_T1_REPAY]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.FLUID_T1_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FluidT1,
+  },
+  [Bundles.ArbitrumIds.FLUID_T1_BOOST]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.FLUID_T1_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FluidT1,
   },
 };
 

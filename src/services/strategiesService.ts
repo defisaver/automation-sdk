@@ -1,6 +1,7 @@
 import { getAssetInfoByAddress } from '@defisaver/tokens';
 import { cloneDeep } from 'lodash';
 
+import Web3 from 'web3';
 import { BUNDLES_INFO, STRATEGIES_INFO } from '../constants';
 import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
@@ -9,10 +10,12 @@ import type {
 import { ChainId, ProtocolIdentifiers, Strategies } from '../types/enums';
 
 import {
-  getPositionId, getRatioStateInfoForAaveCloseStrategy, isRatioStateOver, wethToEthByAddress,
+  getPositionId, getRatioStateInfoForAaveCloseStrategy, getStopLossAndTakeProfitTypeByCloseStrategyType, isRatioStateOver, wethToEthByAddress,
 } from './utils';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
+
+const web3 = new Web3();
 
 const SPARK_MARKET_ADDRESSES = {
   [ChainId.Ethereum]: '0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE',
@@ -563,6 +566,49 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
   return _position;
 }
 
+function parseLiquityV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.liquityV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2LeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.troveId, triggerData.market,
+  );
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 function parseSparkLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -779,6 +825,42 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   return _position;
 }
 
+function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.morphoBluePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  const marketIdEncodedData = web3.eth.abi.encodeParameters(
+    ['address', 'address', 'address', 'address', 'uint256'],
+    [
+      subData.loanToken,
+      subData.collToken,
+      subData.oracle,
+      subData.irm,
+      subData.lltv,
+    ],
+  );
+
+  const marketId = web3.utils.keccak256(marketIdEncodedData);
+
+  _position.specific = {
+    subHash: _position.subHash,
+    marketId,
+    collAsset: subData.collToken,
+    debtAsset: subData.loanToken,
+    price: triggerData.price,
+    ratio: subData.targetRatio,
+  };
+
+  return _position;
+}
+
 function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -806,6 +888,134 @@ function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, pars
   return _position;
 }
 
+function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.closePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2CloseSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, subData.troveId, subData.market,
+  );
+
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+
+  // User can have:
+  // - Only TakeProfit
+  // - Only StopLoss
+  // - Both
+  // TODO: see on frontend what specific data we need here because stop-loss and take-profit is one bundle now
+  _position.strategy.strategyId = Strategies.Identifiers.CloseOnPrice;
+  _position.specific = {
+    market: subData.market,
+    troveId: subData.troveId,
+    stopLossPrice: triggerData.lowerPrice,
+    takeProfitPrice: triggerData.upperPrice,
+    closeToAssetAddr: triggerData.tokenAddr,
+    takeProfitType,
+    stopLossType,
+  };
+
+  return _position;
+}
+
+function parseLiquityV2LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.liquityV2QuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2LeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  _position.specific = {
+    subHash: _position.subHash,
+    market: subData.market,
+    troveId: subData.troveId,
+    collAsset: subData.collToken,
+    debtAsset: subData.boldToken,
+    price: triggerData.price,
+    ratio: subData.targetRatio,
+    ratioState: triggerData.ratioState,
+  };
+
+  return _position;
+}
+
+function parseLiquityV2Payback(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.liquityV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2PaybackSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.troveId, triggerData.market);
+  _position.strategy.strategyId = Strategies.Identifiers.Payback;
+
+  _position.specific = {
+    subHash: _position.subHash,
+    market: subData.market,
+    troveId: subData.troveId,
+    targetRatio: subData.targetRatio,
+    triggerRatio: triggerData.ratio,
+  };
+
+  return _position;
+}
+
+function parseFluidT1LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.fluidRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.fluidLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.nftId, subData.vault,
+  );
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -825,6 +1035,14 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.SavingsDsrPayback]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.SavingsDsrSupply]: parseLiquitySavingsLiqProtection,
     [Strategies.Identifiers.DebtInFrontRepay]: parseLiquityDebtInFrontRepay,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.LiquityV2]: {
+    [Strategies.Identifiers.Repay]: parseLiquityV2LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseLiquityV2LeverageManagement,
+    [Strategies.Identifiers.CloseOnPrice]: parseLiquityV2CloseOnPrice,
+    [Strategies.Identifiers.BoostOnPrice]: parseLiquityV2LeverageManagementOnPrice,
+    [Strategies.Identifiers.RepayOnPrice]: parseLiquityV2LeverageManagementOnPrice,
+    [Strategies.Identifiers.Payback]: parseLiquityV2Payback,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,
@@ -877,6 +1095,11 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
+    [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
+    [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,
+    [Strategies.Identifiers.Boost]: parseFluidT1LeverageManagement,
   },
 };
 

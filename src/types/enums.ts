@@ -21,6 +21,32 @@ export enum BundleProtocols {
   Rari = 'rari',
 }
 
+export enum CollActionType {
+  SUPPLY = 0,
+  WITHDRAW = 1,
+}
+
+export enum DebtActionType {
+  PAYBACK = 0,
+  BORROW = 1,
+}
+
+export enum CloseStrategyType {
+  TAKE_PROFIT_IN_COLLATERAL = 0,
+  STOP_LOSS_IN_COLLATERAL = 1,
+  TAKE_PROFIT_IN_DEBT = 2,
+  STOP_LOSS_IN_DEBT = 3,
+  TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL = 4,
+  TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT = 5,
+  TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT = 6,
+  TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL = 7,
+}
+
+export enum CloseToAssetType {
+  COLLATERAL = 0,
+  DEBT = 1,
+}
+
 /**
  * @dev Follow the naming convention:
  *      - Enum name consists of two parts, name and version
@@ -32,6 +58,7 @@ export namespace ProtocolIdentifiers {
   export enum StrategiesAutomation {
     MakerDAO = 'MakerDAO',
     Liquity = 'Liquity',
+    LiquityV2 = 'Liquity__V2',
     ChickenBonds = 'Chicken Bonds',
     CompoundV2 = 'Compound__V2',
     CompoundV3 = 'Compound__V3',
@@ -42,6 +69,7 @@ export namespace ProtocolIdentifiers {
     Spark = 'Spark',
     CrvUSD = 'CurveUSD',
     MorphoBlue = 'MorphoBlue',
+    FluidT1 = 'FluidT1',
   }
 
   export enum LegacyAutomation {
@@ -67,6 +95,7 @@ export namespace Strategies {
     LIQUITY_DSR_SUPPLY = 70,
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
+    LIQUITY_V2_PAYBACK = 113,
   }
 
   export enum OptimismIds {
@@ -98,6 +127,7 @@ export namespace Strategies {
     CloseToCollateralWithGasPrice = 'close-to-collateral-with-gas-price',
     CloseOnPriceToDebt = 'close-on-price-to-debt',
     CloseOnPriceToColl = 'close-on-price-to-collateral',
+    CloseOnPrice = 'close-on-price',
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
@@ -108,6 +138,7 @@ export namespace Strategies {
     DebtInFrontRepay = 'debt-in-front-repay',
     OpenOrderFromCollateral = 'open-order-from-collateral',
     OpenOrderFromDebt = 'open-order-from-debt',
+    BoostOnPrice = 'boost-on-price',
     RepayOnPrice = 'repay-on-price',
   }
   export enum IdOverrides {
@@ -163,6 +194,14 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST = 35,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 36,
     AAVE_V3_REPAY_ON_PRICE = 37,
+    MORPHO_BLUE_BOOST_ON_PRICE = 38,
+    LIQUITY_V2_REPAY = 39,
+    LIQUITY_V2_BOOST = 40,
+    LIQUITY_V2_CLOSE = 41,
+    LIQUITY_V2_REPAY_ON_PRICE = 42,
+    LIQUITY_V2_BOOST_ON_PRICE = 43,
+    FLUID_T1_REPAY = 44,
+    FLUID_T1_BOOST = 45,
   }
 
   export enum OptimismIds {
@@ -185,6 +224,9 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST = 9,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 10,
     AAVE_V3_REPAY_ON_PRICE = 11,
+    MORPHO_BLUE_BOOST_ON_PRICE = 12,
+    FLUID_T1_REPAY = 13,
+    FLUID_T1_BOOST = 14,
   }
 
   export enum ArbitrumIds {
@@ -196,6 +238,8 @@ export namespace Bundles {
     COMP_V3_SW_BOOST_BUNDLE = 5,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 6,
     AAVE_V3_REPAY_ON_PRICE = 7,
+    FLUID_T1_REPAY = 8,
+    FLUID_T1_BOOST = 9,
   }
 }
 
