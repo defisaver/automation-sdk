@@ -169,7 +169,6 @@ export default class StrategiesAutomation extends Automation {
       }
     });
     if (mergeExtension.length > 0) {
-      console.error('Not all merge-able extensions were used', mergeExtension);
       subscriptions = [...subscriptions, ...mergeExtension.map((s) => ({
         ...s,
         subIds: [s.subId],
