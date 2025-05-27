@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@defisaver/sdk": "^1.2.20",
-    "@defisaver/tokens": "^1.5.56",
+    "@defisaver/tokens": "^1.6.7",
     "@ethersproject/address": "^5.0.10",
     "@ethersproject/solidity": "^5.0.9",
     "decimal.js": "^10.4.3",
