@@ -187,6 +187,34 @@ export const liquityDebtInFrontTrigger = {
 
 export const liquityDebtInFrontWithLimitTrigger = liquityDebtInFrontTrigger;
 
+export const liquityV2DebtInFrontTrigger = {
+  encode(market: EthereumAddress, troveId: string, debtInFrontMin: string) {
+    const debtInFrontMinWei = web3Utils.toWei(new Dec(debtInFrontMin).toString(), 'ether');
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256'], [market, troveId, debtInFrontMinWei])];
+  },
+  decode(triggerData: TriggerData): { market: EthereumAddress, troveId: string, debtInFrontMin: string } {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      troveId: decodedData[1] as string,
+      debtInFrontMin: new Dec(decodedData[2] as string).div(10 ** 18).toString(),
+    };
+  },
+};
+
+export const liquityV2AdjustTimeTrigger = {
+  encode(market: EthereumAddress, troveId: string) {
+    return [AbiCoder.encodeParameters(['address', 'uint256'], [market, troveId])];
+  },
+  decode(triggerData: TriggerData): { market: EthereumAddress, troveId: string } {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      troveId: decodedData[1] as string,
+    };
+  },
+};
+
 export const aaveV2RatioTrigger = {
   encode(owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
     const ratioWei = ratioPercentageToWei(ratioPercentage);

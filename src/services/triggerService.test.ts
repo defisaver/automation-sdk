@@ -28,7 +28,7 @@ import {
   liquityDebtInFrontWithLimitTrigger,
   crvUSDRatioTrigger,
   morphoBlueRatioTrigger,
-  crvUsdHealthRatioTrigger,
+  crvUsdHealthRatioTrigger, liquityV2DebtInFrontTrigger, liquityV2AdjustTimeTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -487,6 +487,132 @@ describe('Feature: triggerService.ts', () => {
     });
   });
 
+  describe('When testing triggerService.liquityV2DebtInFrontTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [market: EthereumAddress, troveId: string, debtInFrontMin: string]]> = [
+        [
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434ad94e2c00000000000000000000000000000000000000000000000000000000075bcd1500000000000000000000000000000000000000000000006e0be8c4995af80000'],
+          [web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434Ad94E2c'), '123456789', '2030']
+        ],
+        [
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434a192e2c000000000000000000000000000000000000000000000000000000003ade68b1000000000000000000000000000000000000000000004697f83e6356dd440000'],
+          [web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434A192E2c'), '987654321', '333369']
+        ],
+        [
+          ['0x00000000000000000000000030462ad9d8f01a20a2ec7e7f1a8f1b303662aebf00000000000000000000000000000000000000000000000000000000075bd924000000000000000000000000000000000000000000084595161401484a000000'],
+          [web3Utils.toChecksumAddress('0x30462AD9D8F01A20A2EC7E7F1A8F1B303662AEBF'), '123459876', '10000000']
+        ],
+        [
+          ['0x00000000000000000000000030462ad9d8f01a20a2ec7e7f1a8f1b303662aebf000000000000000000000000000000000000000000000000000000002060d4950000000000000000000000000000000000000000000000000000000000989680'],
+          [web3Utils.toChecksumAddress('0x30462AD9D8F01A20A2EC7E7F1A8F1B303662AEBF'), '543216789', '0.00000000001']
+        ],
+        [
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a000000000000000000000000000000000000000000000000000000003ade5ca20000000000000000000000000000000000000000019d971e4fe8401e74000000'],
+          [web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'), '987651234', '500000000']
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(liquityV2DebtInFrontTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, troveId: string, debtInFrontMin: string }, TriggerData]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434Ad94E2c'),
+            troveId: '123456789',
+            debtInFrontMin: '2030',
+          },
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434ad94e2c00000000000000000000000000000000000000000000000000000000075bcd1500000000000000000000000000000000000000000000006e0be8c4995af80000'],
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434A192E2c'),
+            troveId: '987654321',
+            debtInFrontMin: '333369',
+          },
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434a192e2c000000000000000000000000000000000000000000000000000000003ade68b1000000000000000000000000000000000000000000004697f83e6356dd440000'],
+        ], [
+          {
+            market: web3Utils.toChecksumAddress('0x30462AD9D8F01A20A2EC7E7F1A8F1B303662AEBF'),
+            troveId: '123459876',
+            debtInFrontMin: '10000000',
+          },
+          ['0x00000000000000000000000030462ad9d8f01a20a2ec7e7f1a8f1b303662aebf00000000000000000000000000000000000000000000000000000000075bd924000000000000000000000000000000000000000000084595161401484a000000'],
+        ], [
+          {
+            market: web3Utils.toChecksumAddress('0x30462AD9D8F01A20A2EC7E7F1A8F1B303662AEBF'),
+            troveId: '543216789',
+            debtInFrontMin: '0.00000000001',
+          },
+          ['0x00000000000000000000000030462ad9d8f01a20a2ec7e7f1a8f1b303662aebf000000000000000000000000000000000000000000000000000000002060d4950000000000000000000000000000000000000000000000000000000000989680'],
+        ], [
+          {
+            market: web3Utils.toChecksumAddress('0x235d6A8DB3C57c3f7b4ebA749E1738Db6093732a'),
+            troveId: '987651234',
+            debtInFrontMin: '500000000',
+          },
+          ['0x000000000000000000000000235d6a8db3c57c3f7b4eba749e1738db6093732a000000000000000000000000000000000000000000000000000000003ade5ca20000000000000000000000000000000000000000019d971e4fe8401e74000000'],
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(liquityV2DebtInFrontTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.liquityV2AdjustTimeTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [market: EthereumAddress, troveId: string]]> = [
+        [
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434ad94e2c00000000000000000000000000000000000000000000000000000000075bcd15'],
+          [web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434Ad94E2c'), '123456789']
+        ],
+        [
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434a192e2c000000000000000000000000000000000000000000000000000000003ade68b1'],
+          [web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434A192E2c'), '987654321']
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(liquityV2AdjustTimeTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, troveId: string }, TriggerData]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434Ad94E2c'),
+            troveId: '123456789',
+          },
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434ad94e2c00000000000000000000000000000000000000000000000000000000075bcd15'],
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0x0049d218133AFaB8F2B829B1066c7E434A192E2c'),
+            troveId: '987654321',
+          },
+          ['0x0000000000000000000000000049d218133afab8f2b829b1066c7e434a192e2c000000000000000000000000000000000000000000000000000000003ade68b1'],
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(liquityV2AdjustTimeTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
   describe('When testing triggerService.aaveV2RatioTrigger', () => {
     describe('encode()', () => {
       const examples: Array<[[string], [owner: EthereumAddress, market: EthereumAddress, ratioPercentage: number, ratioState: RatioState]]> = [
