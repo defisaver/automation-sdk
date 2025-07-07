@@ -193,7 +193,7 @@ export const liquityV2DebtInFrontTrigger = {
     return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256'], [market, troveId, debtInFrontMinWei])];
   },
   decode(triggerData: TriggerData): { market: EthereumAddress, troveId: string, debtInFrontMin: string } {
-    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'address'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256'], triggerData[0]);
     return {
       market: decodedData[0] as EthereumAddress,
       troveId: decodedData[1] as string,
