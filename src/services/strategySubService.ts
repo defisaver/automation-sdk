@@ -350,6 +350,39 @@ export const compoundV3Encode = {
   ) {
     return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
   },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    targetRatio: number,
+    price: number,
+    priceState: RatioState,
+  ) {
+    const isBundle = true;
+    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio);
+    const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(market, collToken, price, priceState);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+  closeOnPrice(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.compoundV3CloseSubData.encode(market, collToken, baseToken, closeType);
+    const triggerDataEncoded = triggerService.compoundV3PriceRangeTrigger.encode(market, collToken, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV3L2Encode = {

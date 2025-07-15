@@ -466,6 +466,62 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
   return _position;
 }
 
+function parseCompoundV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.compoundV3PriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.compoundV3LeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.market, Math.random());
+
+  _position.specific = {
+    market: subData.market,
+    collToken: subData.collToken,
+    baseToken: subData.baseToken,
+    ratio: subData.targetRatio,
+    price: triggerData.price,
+    priceState: triggerData.priceState,
+  };
+
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
+
+  return _position;
+}
+
+function parseCompoundV3CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.compoundV3PriceRangeTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.compoundV3CloseSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.market, Math.random());
+
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.Identifiers.EoaCloseOnPrice : Strategies.Identifiers.CloseOnPrice;
+
+  _position.specific = {
+    market: subData.market,
+    collToken: subData.collToken,
+    baseToken: subData.baseToken,
+    stopLossPrice: triggerData.lowerPrice,
+    takeProfitPrice: triggerData.upperPrice,
+    takeProfitType,
+    stopLossType,
+  };
+
+  return _position;
+}
+
 function parseChickenBondsRebond(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -909,7 +965,6 @@ function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: Par
   // - Only TakeProfit
   // - Only StopLoss
   // - Both
-  // TODO: see on frontend what specific data we need here because stop-loss and take-profit is one bundle now
   _position.strategy.strategyId = Strategies.Identifiers.CloseOnPrice;
   _position.specific = {
     market: subData.market,
@@ -1067,6 +1122,12 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Boost]: parseCompoundV3LeverageManagement,
     [Strategies.Identifiers.EoaRepay]: parseCompoundV3LeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseCompoundV3LeverageManagement,
+    [Strategies.Identifiers.RepayOnPrice]: parseCompoundV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.BoostOnPrice]: parseCompoundV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaRepayOnPrice]: parseCompoundV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaBoostOnPrice]: parseCompoundV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.CloseOnPrice]: parseCompoundV3CloseOnPrice,
+    [Strategies.Identifiers.EoaCloseOnPrice]: parseCompoundV3CloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.ChickenBonds]: {
     [Strategies.Identifiers.Rebond]: parseChickenBondsRebond,

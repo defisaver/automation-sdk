@@ -912,3 +912,76 @@ export const fluidLeverageManagementSubData = {
     };
   },
 };
+
+export const compoundV3LeverageManagementOnPriceSubData = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    targetRatio: number,
+  ): SubData {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+
+    return [
+      marketEncoded,
+      collTokenEncoded,
+      baseTokenEncoded,
+      targetRatioEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    targetRatio: number,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    return {
+      market, collToken, baseToken, targetRatio,
+    };
+  },
+};
+
+export const compoundV3CloseSubData = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    closeType: CloseStrategyType,
+  ): SubData {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
+    const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+
+    return [
+      marketEncoded,
+      collTokenEncoded,
+      baseTokenEncoded,
+      closeTypeEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    closeType: CloseStrategyType,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const closeType = AbiCoder.decodeParameter('uint8', subData[3]) as any as CloseStrategyType;
+
+    return {
+      market, collToken, baseToken, closeType,
+    };
+  },
+};

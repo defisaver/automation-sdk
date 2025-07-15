@@ -205,6 +205,25 @@ export declare namespace Position {
       subHashBoost?: string,
       subHashRepay?: string,
     }
+
+    interface CompoundV3Base extends Base {
+      market: EthereumAddress,
+      collToken: EthereumAddress,
+      baseToken: EthereumAddress,
+    }
+
+    interface CompoundV3LeverageManagementOnPrice extends CompoundV3Base {
+      ratio: number,
+      price: string,
+      priceState: RatioState,
+    }
+
+    interface CompoundV3CloseOnPrice extends CompoundV3Base {
+      stopLossPrice: string,
+      takeProfitPrice: string,
+      stopLossType: CloseToAssetType | undefined,
+      takeProfitType: CloseToAssetType | undefined,
+    }
   }
 
   type SpecificAny =
@@ -219,7 +238,9 @@ export declare namespace Position {
     | Specific.CloseOnPriceLiquityV2
     | Specific.BoostOnPriceMorpho
     | Specific.BoostOnPriceLiquityV2
-    | Specific.PaybackLiquityV2;
+    | Specific.PaybackLiquityV2
+    | Specific.CompoundV3LeverageManagementOnPrice
+    | Specific.CompoundV3CloseOnPrice;
 
   export interface Automated {
     chainId: ChainId,
