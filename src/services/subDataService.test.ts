@@ -7,32 +7,7 @@ import { ChainId, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
 import '../configuration';
-import {
-  aaveV2LeverageManagementSubData,
-  aaveV3LeverageManagementSubData,
-  aaveV3QuotePriceSubData,
-  cBondsRebondSubData,
-  compoundV2LeverageManagementSubData,
-  compoundV3LeverageManagementSubData,
-  exchangeDcaSubData,
-  exchangeLimitOrderSubData,
-  liquityCloseSubData,
-  liquityDebtInFrontRepaySubData,
-  liquityDsrPaybackSubData,
-  liquityDsrSupplySubData,
-  liquityLeverageManagementSubData,
-  liquityPaybackUsingChickenBondSubData,
-  liquityRepayFromSavingsSubData,
-  makerCloseSubData,
-  makerLeverageManagementSubData,
-  makerRepayFromSavingsSubData,
-  morphoAaveV2LeverageManagementSubData,
-  sparkLeverageManagementSubData,
-  sparkQuotePriceSubData,
-  crvUSDLeverageManagementSubData,
-  compoundV3L2LeverageManagementSubData, morphoBlueLeverageManagementSubData, crvUSDPaybackSubData,
-  aaveV3LeverageManagementOnPriceSubData,
-} from './subDataService';
+import * as subDataService from './subDataService';
 import { AAVE_V3_VARIABLE_BORROW_RATE } from '../constants';
 
 describe('Feature: subDataService.ts', () => {
@@ -51,7 +26,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(makerRepayFromSavingsSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.makerRepayFromSavingsSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -74,7 +49,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerRepayFromSavingsSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.makerRepayFromSavingsSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -94,7 +69,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityRepayFromSavingsSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityRepayFromSavingsSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -121,7 +96,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(makerCloseSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.makerCloseSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -152,7 +127,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerCloseSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.makerCloseSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -172,7 +147,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.makerLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -192,7 +167,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -217,7 +192,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(liquityCloseSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.liquityCloseSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -246,7 +221,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityCloseSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityCloseSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -267,7 +242,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.aaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -286,7 +261,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.aaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -307,7 +282,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.aaveV3LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -346,7 +321,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV3QuotePriceSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.aaveV3QuotePriceSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -383,7 +358,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3QuotePriceSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.aaveV3QuotePriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -404,7 +379,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(compoundV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.compoundV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -423,7 +398,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.compoundV2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -470,7 +445,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(compoundV3LeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.compoundV3LeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -495,7 +470,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV3LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.compoundV3LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -516,7 +491,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(morphoAaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.morphoAaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -535,7 +510,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(morphoAaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.morphoAaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -556,7 +531,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(cBondsRebondSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.cBondsRebondSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -575,7 +550,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(cBondsRebondSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.cBondsRebondSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -602,7 +577,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(liquityPaybackUsingChickenBondSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.liquityPaybackUsingChickenBondSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -627,7 +602,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityPaybackUsingChickenBondSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityPaybackUsingChickenBondSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -664,7 +639,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(exchangeDcaSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.exchangeDcaSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -705,7 +680,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(exchangeDcaSubData.decode(...actual)).to.eql(expected);
+          expect(subDataService.exchangeDcaSubData.decode(...actual)).to.eql(expected);
         });
       });
     });
@@ -754,7 +729,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(exchangeLimitOrderSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.exchangeLimitOrderSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -793,7 +768,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(exchangeLimitOrderSubData.decode(...actual)).to.eql(expected);
+          expect(subDataService.exchangeLimitOrderSubData.decode(...actual)).to.eql(expected);
         });
       });
     });
@@ -814,7 +789,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.sparkLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -853,7 +828,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(sparkQuotePriceSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.sparkQuotePriceSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -890,7 +865,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkQuotePriceSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.sparkQuotePriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -917,7 +892,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(liquityDsrPaybackSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.liquityDsrPaybackSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -946,7 +921,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityDsrPaybackSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityDsrPaybackSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -973,7 +948,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(liquityDsrSupplySubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.liquityDsrSupplySubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1002,7 +977,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityDsrSupplySubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityDsrSupplySubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1031,7 +1006,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(liquityDebtInFrontRepaySubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.liquityDebtInFrontRepaySubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1062,7 +1037,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityDebtInFrontRepaySubData.decode(actual)).to.eql(expected);
+          expect(subDataService.liquityDebtInFrontRepaySubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1094,7 +1069,7 @@ describe('Feature: subDataService.ts', () => {
       ];
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(crvUSDLeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.crvUSDLeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1121,7 +1096,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(crvUSDLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.crvUSDLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1143,7 +1118,7 @@ describe('Feature: subDataService.ts', () => {
       ];
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(crvUSDPaybackSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.crvUSDPaybackSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1173,7 +1148,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(crvUSDPaybackSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.crvUSDPaybackSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1197,7 +1172,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(compoundV3L2LeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.compoundV3L2LeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1221,7 +1196,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV3L2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.compoundV3L2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1265,7 +1240,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(morphoBlueLeverageManagementSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.morphoBlueLeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1318,7 +1293,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(morphoBlueLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.morphoBlueLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -1350,7 +1325,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(aaveV3LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
+          expect(subDataService.aaveV3LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -1379,7 +1354,87 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.aaveV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.compoundV3LeverageManagementOnPriceSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number]]> = [
+        [
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000'
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            200
+          ]
+        ],
+        [
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000'
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            190
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.compoundV3LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number }, string[]]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            targetRatio: 200,
+          },
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000'
+          ]
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            targetRatio: 190,
+          },
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000'
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.compoundV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });
