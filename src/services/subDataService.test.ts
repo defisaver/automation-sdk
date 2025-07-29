@@ -1362,19 +1362,21 @@ describe('Feature: subDataService.ts', () => {
 
   describe('When testing subDataService.compoundV3LeverageManagementOnPriceSubData', () => {
     describe('encode()', () => {
-      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number]]> = [
+      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState]]> = [
         [
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000'
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001'
           ],
           [
             web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
-            200
+            200,
+            RatioState.UNDER
           ]
         ],
         [
@@ -1382,13 +1384,15 @@ describe('Feature: subDataService.ts', () => {
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000'
+            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
           ],
           [
             web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
-            190
+            190,
+            RatioState.OVER
           ]
         ],
       ];
@@ -1401,19 +1405,21 @@ describe('Feature: subDataService.ts', () => {
     });
 
     describe('decode()', () => {
-      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number }, string[]]> = [
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState }, string[]]> = [
         [
           {
             market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 200,
+            ratioState: RatioState.UNDER
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000'
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001'
           ]
         ],
         [
@@ -1422,12 +1428,14 @@ describe('Feature: subDataService.ts', () => {
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 190,
+            ratioState: RatioState.OVER
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000'
+            '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
           ]
         ],
       ];

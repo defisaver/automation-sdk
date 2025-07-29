@@ -605,25 +605,27 @@ export const compoundV3PriceTrigger = {
   encode(
     market: EthereumAddress,
     collToken: EthereumAddress,
+    user: EthereumAddress,
     price: number,
     priceState: RatioState,
   ) {
     const _price = new Dec(price.toString()).mul(1e8).floor().toString();
     return [
       AbiCoder.encodeParameters(
-        ['address', 'address', 'uint256', 'uint8'],
-        [market, collToken, _price, priceState]),
+        ['address', 'address', 'address', 'uint256', 'uint8'],
+        [market, collToken, user, _price, priceState]),
     ];
   },
   decode(
     triggerData: TriggerData,
   ) {
-    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'address', 'uint256', 'uint8'], triggerData[0]);
     return {
       market: decodedData[0] as EthereumAddress,
       collToken: decodedData[1] as EthereumAddress,
-      price: new Dec(decodedData[2] as string).div(1e8).toString(),
-      priceState: Number(decodedData[3]),
+      user: decodedData[2] as EthereumAddress,
+      price: new Dec(decodedData[3] as string).div(1e8).toString(),
+      priceState: Number(decodedData[4]),
     };
   },
 };

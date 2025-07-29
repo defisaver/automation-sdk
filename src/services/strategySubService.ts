@@ -358,10 +358,12 @@ export const compoundV3Encode = {
     targetRatio: number,
     price: number,
     priceState: RatioState,
+    ratioState: RatioState, // REPAY for repay on price, BOOST for boost on price
+    user: EthereumAddress,
   ) {
     const isBundle = true;
-    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio);
-    const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(market, collToken, price, priceState);
+    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio, ratioState);
+    const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(market, collToken, user, price, priceState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },

@@ -919,17 +919,20 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     collToken: EthereumAddress,
     baseToken: EthereumAddress,
     targetRatio: number,
+    ratioState: RatioState,
   ): SubData {
     const marketEncoded = AbiCoder.encodeParameter('address', market);
     const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
     const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
 
     return [
       marketEncoded,
       collTokenEncoded,
       baseTokenEncoded,
       targetRatioEncoded,
+      ratioStateEncoded,
     ];
   },
   decode(subData: SubData): {
@@ -937,15 +940,17 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     collToken: EthereumAddress,
     baseToken: EthereumAddress,
     targetRatio: number,
+    ratioState: RatioState,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
     const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4])) as any as RatioState;
 
     return {
-      market, collToken, baseToken, targetRatio,
+      market, collToken, baseToken, targetRatio, ratioState,
     };
   },
 };
