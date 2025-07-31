@@ -244,6 +244,8 @@ export namespace Bundles {
     COMP_V3_EOA_REPAY_ON_PRICE = 18,
     COMP_V3_EOA_BOOST_ON_PRICE = 19,
     COMP_V3_EOA_CLOSE = 20,
+    COMP_V3_EOA_REPAY = 21,
+    COMP_V3_EOA_BOOST = 22,
   }
 
   export enum ArbitrumIds {
@@ -263,6 +265,8 @@ export namespace Bundles {
     COMP_V3_EOA_REPAY_ON_PRICE = 13,
     COMP_V3_EOA_BOOST_ON_PRICE = 14,
     COMP_V3_EOA_CLOSE = 15,
+    COMP_V3_EOA_REPAY = 16,
+    COMP_V3_EOA_BOOST = 17,
   }
 }
 

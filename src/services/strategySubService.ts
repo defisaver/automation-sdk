@@ -396,8 +396,9 @@ export const compoundV3L2Encode = {
     targetBoostRatio: number,
     targetRepayRatio: number,
     boostEnabled: boolean,
+    isEOA: boolean = false,
   ) {
-    return subDataService.compoundV3L2LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
+    return subDataService.compoundV3L2LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
   },
 };
 

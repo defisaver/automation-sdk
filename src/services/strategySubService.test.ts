@@ -1211,23 +1211,25 @@ describe('Feature: strategySubService.ts', () => {
 
   describe('When testing strategySubService.compoundV3L2Encode', () => {
     describe('leverageManagement()', () => {
-      const examples: Array<[string, [EthereumAddress, EthereumAddress, number, number, number, number, boolean]]> = [
+      const examples: Array<[string, [EthereumAddress, EthereumAddress, number, number, number, number, boolean, boolean]]> = [
         [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e00000100',
           [
             web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             web3Utils.toChecksumAddress('0x0213d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             160, 220, 180, 190,
-            true
+            true,
+            false,
           ],
         ],
         [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee000000',
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee00000000',
           [
             web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             web3Utils.toChecksumAddress('0x0413d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             160, 220, 180, 110,
-            false
+            false,
+            false,
           ],
         ],
       ];

@@ -416,7 +416,8 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
     };
   }
 
-  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
   return _position;
 }
@@ -462,7 +463,6 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
   const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
-
   return _position;
 }
 
@@ -476,7 +476,7 @@ function parseCompoundV3LeverageManagementOnPrice(position: Position.Automated, 
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.market, Math.random());
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.market, triggerData.user, Math.random());
 
   _position.specific = {
     market: subData.market,

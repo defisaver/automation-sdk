@@ -268,6 +268,7 @@ export const compoundV3L2LeverageManagementSubData = {
     targetBoostRatio: number,
     targetRepayRatio: number,
     boostEnabled: boolean,
+    isEOA: boolean,
   ): string {
     let subInput = '0x';
 
@@ -282,6 +283,7 @@ export const compoundV3L2LeverageManagementSubData = {
     subInput = subInput.concat(new Dec(targetRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(boostEnabled ? '01' : '00');
+    subInput = subInput.concat(isEOA ? '01' : '00');
 
     return subInput;
   },
