@@ -362,7 +362,7 @@ export const compoundV3Encode = {
     user: EthereumAddress,
   ) {
     const isBundle = true;
-    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio, ratioState);
+    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio, ratioState, user);
     const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(market, collToken, user, price, priceState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
@@ -376,11 +376,12 @@ export const compoundV3Encode = {
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
     takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+    user: EthereumAddress,
   ) {
     const isBundle = true;
     const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.compoundV3CloseSubData.encode(market, collToken, baseToken, closeType);
+    const subDataEncoded = subDataService.compoundV3CloseSubData.encode(market, collToken, baseToken, closeType, user);
     const triggerDataEncoded = triggerService.compoundV3PriceRangeTrigger.encode(market, collToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];

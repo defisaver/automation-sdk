@@ -922,12 +922,14 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     baseToken: EthereumAddress,
     targetRatio: number,
     ratioState: RatioState,
+    user: EthereumAddress,
   ): SubData {
     const marketEncoded = AbiCoder.encodeParameter('address', market);
     const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
     const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
 
     return [
       marketEncoded,
@@ -935,6 +937,7 @@ export const compoundV3LeverageManagementOnPriceSubData = {
       baseTokenEncoded,
       targetRatioEncoded,
       ratioStateEncoded,
+      userEncoded,
     ];
   },
   decode(subData: SubData): {
@@ -943,6 +946,7 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     baseToken: EthereumAddress,
     targetRatio: number,
     ratioState: RatioState,
+    user: EthereumAddress,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
@@ -950,9 +954,10 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
     const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4])) as any as RatioState;
+    const user = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
 
     return {
-      market, collToken, baseToken, targetRatio, ratioState,
+      market, collToken, baseToken, targetRatio, ratioState, user,
     };
   },
 };
@@ -963,17 +968,20 @@ export const compoundV3CloseSubData = {
     collToken: EthereumAddress,
     baseToken: EthereumAddress,
     closeType: CloseStrategyType,
+    user: EthereumAddress,
   ): SubData {
     const marketEncoded = AbiCoder.encodeParameter('address', market);
     const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
     const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
     const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
 
     return [
       marketEncoded,
       collTokenEncoded,
       baseTokenEncoded,
       closeTypeEncoded,
+      userEncoded,
     ];
   },
   decode(subData: SubData): {
@@ -981,14 +989,16 @@ export const compoundV3CloseSubData = {
     collToken: EthereumAddress,
     baseToken: EthereumAddress,
     closeType: CloseStrategyType,
+    user: EthereumAddress,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
     const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
-    const closeType = AbiCoder.decodeParameter('uint8', subData[3]) as any as CloseStrategyType;
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[3])) as CloseStrategyType;
+    const user = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
 
     return {
-      market, collToken, baseToken, closeType,
+      market, collToken, baseToken, closeType, user,
     };
   },
 };

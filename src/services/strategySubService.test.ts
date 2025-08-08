@@ -704,6 +704,7 @@ describe('Feature: strategySubService.ts', () => {
               '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
               '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
               '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
             ],
           ],
           [
@@ -729,6 +730,7 @@ describe('Feature: strategySubService.ts', () => {
               '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
               '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
             ],
           ],
           [
@@ -753,7 +755,7 @@ describe('Feature: strategySubService.ts', () => {
     describe('closeOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
-        [strategyOrBundleId: number, market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, stopLossPrice: number, stopLossType: CloseToAssetType, takeProfitPrice: number, takeProfitType: CloseToAssetType]
+        [strategyOrBundleId: number, market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, stopLossPrice: number, stopLossType: CloseToAssetType, takeProfitPrice: number, takeProfitType: CloseToAssetType, user: EthereumAddress]
       ]> = [
         [
           [
@@ -764,7 +766,8 @@ describe('Feature: strategySubService.ts', () => {
               '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              '0x0000000000000000000000000000000000000000000000000000000000000006'
+              '0x0000000000000000000000000000000000000000000000000000000000000006',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
             ],
           ],
           [
@@ -776,6 +779,7 @@ describe('Feature: strategySubService.ts', () => {
             CloseToAssetType.DEBT,
             4000,
             CloseToAssetType.DEBT,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
           ],
         ],
         [
@@ -787,7 +791,8 @@ describe('Feature: strategySubService.ts', () => {
               '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              '0x0000000000000000000000000000000000000000000000000000000000000000'
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
             ],
           ],
           [
@@ -799,6 +804,7 @@ describe('Feature: strategySubService.ts', () => {
             CloseToAssetType.DEBT,
             5000,
             CloseToAssetType.COLLATERAL,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
           ],
         ]
       ];

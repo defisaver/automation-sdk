@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
-import { ChainId, OrderType, RatioState } from '../types/enums';
+import { ChainId, CloseStrategyType, CloseToAssetType, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
 import '../configuration';
@@ -1362,21 +1362,23 @@ describe('Feature: subDataService.ts', () => {
 
   describe('When testing subDataService.compoundV3LeverageManagementOnPriceSubData', () => {
     describe('encode()', () => {
-      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState]]> = [
+      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState, user: EthereumAddress]]> = [
         [
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000001'
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c'
           ],
           [
             web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             200,
-            RatioState.UNDER
+            RatioState.UNDER,
+            web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
           ]
         ],
         [
@@ -1385,14 +1387,16 @@ describe('Feature: subDataService.ts', () => {
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000'
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c'
           ],
           [
             web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             190,
-            RatioState.OVER
+            RatioState.OVER,
+            web3Utils.toChecksumAddress('0x0043d218133afab8f2b829b106633e434ad94e2c')
           ]
         ],
       ];
@@ -1405,21 +1409,23 @@ describe('Feature: subDataService.ts', () => {
     });
 
     describe('decode()', () => {
-      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState }, string[]]> = [
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState, user: EthereumAddress }, string[]]> = [
         [
           {
             market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 200,
-            ratioState: RatioState.UNDER
+            ratioState: RatioState.UNDER,
+            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000001'
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c'
           ]
         ],
         [
@@ -1428,14 +1434,16 @@ describe('Feature: subDataService.ts', () => {
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 190,
-            ratioState: RatioState.OVER
+            ratioState: RatioState.OVER,
+            user: web3Utils.toChecksumAddress('0x0043d218133afab8f2b829b106633e434ad94e2c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000'
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000043d218133afab8f2b829b106633e434ad94e2c'
           ]
         ],
       ];
@@ -1443,6 +1451,94 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(subDataService.compoundV3LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.compoundV3CloseSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[string[], [market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, closeType: CloseStrategyType, user: EthereumAddress]]> = [
+        [
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000006',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
+            web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c'),
+          ]
+        ],
+        [
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
+            web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c'),
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.compoundV3CloseSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, closeType: CloseStrategyType, user: EthereumAddress }, string[]]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
+            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
+          },
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000006',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c'
+          ]
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
+            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
+          },
+          [
+            '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c'
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.compoundV3CloseSubData.decode(actual)).to.eql(expected);
         });
       });
     });
