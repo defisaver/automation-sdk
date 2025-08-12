@@ -946,7 +946,7 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     baseToken: EthereumAddress,
     targetRatio: number,
     ratioState: RatioState,
-    user: EthereumAddress,
+    owner: EthereumAddress,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
@@ -954,10 +954,10 @@ export const compoundV3LeverageManagementOnPriceSubData = {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
     const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4])) as any as RatioState;
-    const user = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
 
     return {
-      market, collToken, baseToken, targetRatio, ratioState, user,
+      market, collToken, baseToken, targetRatio, ratioState, owner,
     };
   },
 };
@@ -989,16 +989,16 @@ export const compoundV3CloseSubData = {
     collToken: EthereumAddress,
     baseToken: EthereumAddress,
     closeType: CloseStrategyType,
-    user: EthereumAddress,
+    owner: EthereumAddress,
   } {
     const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
     const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const closeType = Number(AbiCoder.decodeParameter('uint8', subData[3])) as CloseStrategyType;
-    const user = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
 
     return {
-      market, collToken, baseToken, closeType, user,
+      market, collToken, baseToken, closeType, owner,
     };
   },
 };
