@@ -173,6 +173,26 @@ export const aaveV3LeverageManagementSubData = { // TODO encode?
   },
 };
 
+export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
+  encode(
+    targetRatio: number,
+    ratioState: RatioState,
+  ): SubData {
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+    const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', true);
+    const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', false);
+
+    return [encodedTargetRatio, encodedRatioState, encodedUseDefaultMarket, encodedUseOnBehalf];
+  },
+  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
+
+    return { targetRatio, ratioState };
+  },
+};
+
 export const aaveV3QuotePriceSubData = {
   encode(
     collAsset: EthereumAddress,
