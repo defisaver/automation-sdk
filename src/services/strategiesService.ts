@@ -487,9 +487,6 @@ function parseCompoundV3LeverageManagementOnPrice(position: Position.Automated, 
     priceState: triggerData.priceState,
   };
 
-  const isEOA = _position.strategy.strategyId.includes('eoa');
-  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
-
   return _position;
 }
 
