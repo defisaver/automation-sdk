@@ -1409,7 +1409,7 @@ describe('Feature: subDataService.ts', () => {
     });
 
     describe('decode()', () => {
-      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState, user: EthereumAddress }, string[]]> = [
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState, owner: EthereumAddress }, string[]]> = [
         [
           {
             market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
@@ -1417,7 +1417,7 @@ describe('Feature: subDataService.ts', () => {
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 200,
             ratioState: RatioState.UNDER,
-            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
+            owner: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
@@ -1435,7 +1435,7 @@ describe('Feature: subDataService.ts', () => {
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             targetRatio: 190,
             ratioState: RatioState.OVER,
-            user: web3Utils.toChecksumAddress('0x0043d218133afab8f2b829b106633e434ad94e2c')
+            owner: web3Utils.toChecksumAddress('0x0043d218133afab8f2b829b106633e434ad94e2c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
@@ -1501,14 +1501,14 @@ describe('Feature: subDataService.ts', () => {
     });
 
     describe('decode()', () => {
-      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, closeType: CloseStrategyType, user: EthereumAddress }, string[]]> = [
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, closeType: CloseStrategyType, owner: EthereumAddress }, string[]]> = [
         [
           {
             market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
-            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
+            owner: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
@@ -1524,7 +1524,7 @@ describe('Feature: subDataService.ts', () => {
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             baseToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
-            user: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
+            owner: web3Utils.toChecksumAddress('0x1031d218133afab8c2b819b1366c7e434ad91e9c')
           },
           [
             '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
