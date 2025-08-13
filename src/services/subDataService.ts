@@ -288,6 +288,7 @@ export const compoundV3L2LeverageManagementSubData = {
     targetBoostRatio: number,
     targetRepayRatio: number,
     boostEnabled: boolean,
+    isEOA: boolean,
   ): string {
     let subInput = '0x';
 
@@ -302,6 +303,7 @@ export const compoundV3L2LeverageManagementSubData = {
     subInput = subInput.concat(new Dec(targetRepayRatio).mul(1e16).toHex().slice(2)
       .padStart(32, '0'));
     subInput = subInput.concat(boostEnabled ? '01' : '00');
+    subInput = subInput.concat(isEOA ? '01' : '00');
 
     return subInput;
   },
@@ -929,6 +931,94 @@ export const fluidLeverageManagementSubData = {
 
     return {
       nftId, vault, ratioState, targetRatio,
+    };
+  },
+};
+
+export const compoundV3LeverageManagementOnPriceSubData = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    targetRatio: number,
+    ratioState: RatioState,
+    user: EthereumAddress,
+  ): SubData {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
+
+    return [
+      marketEncoded,
+      collTokenEncoded,
+      baseTokenEncoded,
+      targetRatioEncoded,
+      ratioStateEncoded,
+      userEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    targetRatio: number,
+    ratioState: RatioState,
+    owner: EthereumAddress,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4])) as any as RatioState;
+    const owner = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+
+    return {
+      market, collToken, baseToken, targetRatio, ratioState, owner,
+    };
+  },
+};
+
+export const compoundV3CloseSubData = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    closeType: CloseStrategyType,
+    user: EthereumAddress,
+  ): SubData {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const baseTokenEncoded = AbiCoder.encodeParameter('address', baseToken);
+    const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
+
+    return [
+      marketEncoded,
+      collTokenEncoded,
+      baseTokenEncoded,
+      closeTypeEncoded,
+      userEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    baseToken: EthereumAddress,
+    closeType: CloseStrategyType,
+    owner: EthereumAddress,
+  } {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const baseToken = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[3])) as CloseStrategyType;
+    const owner = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+
+    return {
+      market, collToken, baseToken, closeType, owner,
     };
   },
 };

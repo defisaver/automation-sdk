@@ -600,3 +600,60 @@ export const fluidRatioTrigger = {
     };
   },
 };
+
+export const compoundV3PriceTrigger = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    user: EthereumAddress,
+    price: number,
+    priceState: RatioState,
+  ) {
+    const _price = new Dec(price.toString()).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'address', 'address', 'uint256', 'uint8'],
+        [market, collToken, user, _price, priceState]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      collToken: decodedData[1] as EthereumAddress,
+      user: decodedData[2] as EthereumAddress,
+      price: new Dec(decodedData[3] as string).div(1e8).toString(),
+      priceState: Number(decodedData[4]),
+    };
+  },
+};
+
+export const compoundV3PriceRangeTrigger = {
+  encode(
+    market: EthereumAddress,
+    collToken: EthereumAddress,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'address', 'uint256', 'uint256'],
+        [market, collToken, lowerPriceFormatted, upperPriceFormatted]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      collToken: decodedData[1] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[2] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
+    };
+  },
+};

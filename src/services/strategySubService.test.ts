@@ -4,7 +4,7 @@ import { otherAddresses } from '@defisaver/sdk';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
-import { Bundles, ChainId, OrderType, RatioState, Strategies } from '../types/enums';
+import { Bundles, ChainId, CloseToAssetType, OrderType, RatioState, Strategies } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from '../types';
 
 import '../configuration';
@@ -688,6 +688,132 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+    describe('leverageManagementOnPrice()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [strategyOrBundleId: number, market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, price: number, priceState: RatioState, ratioState: RatioState, user: EthereumAddress]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.COMP_V3_SW_REPAY_ON_PRICE,
+            true,
+            ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f07775030000000000000000000000000000000000000000000000000000002e90edd0000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.COMP_V3_SW_REPAY_ON_PRICE,
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            200,
+            2000,
+            RatioState.UNDER,
+            RatioState.UNDER,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.COMP_V3_SW_BOOST_ON_PRICE,
+            true,
+            ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f077750300000000000000000000000000000000000000000000000000000045d964b8000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.COMP_V3_SW_BOOST_ON_PRICE,
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            190,
+            3000,
+            RatioState.OVER,
+            RatioState.OVER,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+          ],
+        ]
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(compoundV3Encode.leverageManagementOnPrice(...actual)).to.eql(expected);
+        });
+      });
+    });
+    describe('closeOnPrice()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [strategyOrBundleId: number, market: EthereumAddress, collToken: EthereumAddress, baseToken: EthereumAddress, stopLossPrice: number, stopLossType: CloseToAssetType, takeProfitPrice: number, takeProfitType: CloseToAssetType, user: EthereumAddress]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.COMP_V3_SW_CLOSE,
+            true,
+            ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+            [
+              '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000006',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.COMP_V3_SW_CLOSE,
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1500,
+            CloseToAssetType.DEBT,
+            4000,
+            CloseToAssetType.DEBT,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.COMP_V3_EOA_CLOSE,
+            true,
+            ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+            [
+              '0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f0777503',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.COMP_V3_EOA_CLOSE,
+            web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            0,
+            CloseToAssetType.DEBT,
+            5000,
+            CloseToAssetType.COLLATERAL,
+            web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+          ],
+        ]
+      ];
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(compoundV3Encode.closeOnPrice(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
 
   describe('When testing strategySubService.morphoAaveV2Encode', () => {
@@ -1091,23 +1217,25 @@ describe('Feature: strategySubService.ts', () => {
 
   describe('When testing strategySubService.compoundV3L2Encode', () => {
     describe('leverageManagement()', () => {
-      const examples: Array<[string, [EthereumAddress, EthereumAddress, number, number, number, number, boolean]]> = [
+      const examples: Array<[string, [EthereumAddress, EthereumAddress, number, number, number, number, boolean, boolean]]> = [
         [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e00000100',
           [
             web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             web3Utils.toChecksumAddress('0x0213d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             160, 220, 180, 190,
-            true
+            true,
+            false,
           ],
         ],
         [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee000000',
+          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee00000000',
           [
             web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             web3Utils.toChecksumAddress('0x0413d212133AFaB8F2B829B1066c7E43cAd94E2c'),
             160, 220, 180, 110,
-            false
+            false,
+            false,
           ],
         ],
       ];

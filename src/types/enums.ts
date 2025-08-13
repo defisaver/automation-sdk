@@ -128,6 +128,7 @@ export namespace Strategies {
     CloseOnPriceToDebt = 'close-on-price-to-debt',
     CloseOnPriceToColl = 'close-on-price-to-collateral',
     CloseOnPrice = 'close-on-price',
+    EoaCloseOnPrice = 'eoa-close-on-price',
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
@@ -140,6 +141,8 @@ export namespace Strategies {
     OpenOrderFromDebt = 'open-order-from-debt',
     BoostOnPrice = 'boost-on-price',
     RepayOnPrice = 'repay-on-price',
+    EoaBoostOnPrice = 'eoa-boost-on-price',
+    EoaRepayOnPrice = 'eoa-repay-on-price',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -149,6 +152,8 @@ export namespace Strategies {
     TrailingStop = 'trailing-stop',
     LeverageManagement = 'leverage-management',
     EoaLeverageManagement = 'leverage-management-eoa',
+    LeverageManagementOnPrice = 'leverage-management-on-price',
+    EoaLeverageManagementOnPrice = 'leverage-management-on-price-eoa',
   }
 }
 
@@ -202,6 +207,12 @@ export namespace Bundles {
     LIQUITY_V2_BOOST_ON_PRICE = 43,
     FLUID_T1_REPAY = 44,
     FLUID_T1_BOOST = 45,
+    COMP_V3_SW_REPAY_ON_PRICE = 46,
+    COMP_V3_SW_BOOST_ON_PRICE = 47,
+    COMP_V3_SW_CLOSE = 48,
+    COMP_V3_EOA_REPAY_ON_PRICE = 49,
+    COMP_V3_EOA_BOOST_ON_PRICE = 50,
+    COMP_V3_EOA_CLOSE = 51,
   }
 
   export enum OptimismIds {
@@ -227,6 +238,14 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST_ON_PRICE = 12,
     FLUID_T1_REPAY = 13,
     FLUID_T1_BOOST = 14,
+    COMP_V3_SW_REPAY_ON_PRICE = 15,
+    COMP_V3_SW_BOOST_ON_PRICE = 16,
+    COMP_V3_SW_CLOSE = 17,
+    COMP_V3_EOA_REPAY_ON_PRICE = 18,
+    COMP_V3_EOA_BOOST_ON_PRICE = 19,
+    COMP_V3_EOA_CLOSE = 20,
+    COMP_V3_EOA_REPAY = 21,
+    COMP_V3_EOA_BOOST = 22,
   }
 
   export enum ArbitrumIds {
@@ -240,6 +259,14 @@ export namespace Bundles {
     AAVE_V3_REPAY_ON_PRICE = 7,
     FLUID_T1_REPAY = 8,
     FLUID_T1_BOOST = 9,
+    COMP_V3_SW_REPAY_ON_PRICE = 10,
+    COMP_V3_SW_BOOST_ON_PRICE = 11,
+    COMP_V3_SW_CLOSE = 12,
+    COMP_V3_EOA_REPAY_ON_PRICE = 13,
+    COMP_V3_EOA_BOOST_ON_PRICE = 14,
+    COMP_V3_EOA_CLOSE = 15,
+    COMP_V3_EOA_REPAY = 16,
+    COMP_V3_EOA_BOOST = 17,
   }
 }
 

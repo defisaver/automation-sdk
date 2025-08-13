@@ -15,6 +15,7 @@ import {
   chainlinkPriceTrigger,
   compoundV2RatioTrigger,
   compoundV3RatioTrigger,
+  compoundV3PriceTrigger,
   curveUsdBorrowRateTrigger,
   curveUsdSoftLiquidationTrigger,
   exchangeOffchainPriceTrigger,
@@ -29,6 +30,7 @@ import {
   crvUSDRatioTrigger,
   morphoBlueRatioTrigger,
   crvUsdHealthRatioTrigger, liquityV2DebtInFrontTrigger, liquityV2AdjustTimeTrigger,
+  compoundV3PriceRangeTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1123,6 +1125,108 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(morphoBlueRatioTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.compoundV3PriceTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [market: EthereumAddress, collToken: EthereumAddress, user: EthereumAddress, price: number, priceState: RatioState]]> = [
+        [
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f07775030000000000000000000000000000000000000000000000000000002e90edd0000000000000000000000000000000000000000000000000000000000000000001'],
+          [web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'), 2000, RatioState.UNDER]
+        ],
+        [
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f077750300000000000000000000000000000000000000000000000000000045d964b8000000000000000000000000000000000000000000000000000000000000000000'],
+          [web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'), 3000, RatioState.OVER]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(compoundV3PriceTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, user: EthereumAddress, price: string, priceState: RatioState }, TriggerData]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            user: web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+            price: '2000',
+            priceState: RatioState.UNDER,
+          },
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f07775030000000000000000000000000000000000000000000000000000002e90edd0000000000000000000000000000000000000000000000000000000000000000001'],
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            user: web3Utils.toChecksumAddress('0x9a959B9ee2847a66A5A3d43Fd1Ec38a4f0777503'),
+            price: '3000',
+            priceState: RatioState.OVER,
+          },
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000009a959b9ee2847a66a5a3d43fd1ec38a4f077750300000000000000000000000000000000000000000000000000000045d964b8000000000000000000000000000000000000000000000000000000000000000000'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(compoundV3PriceTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.compoundV3PriceRangeTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [market: EthereumAddress, collToken: EthereumAddress, lowerPrice: number, upperPrice: number]]> = [
+        [
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+          [web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 1500, 4000]
+        ],
+        [
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+          [web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 0, 5000]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(compoundV3PriceRangeTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, lowerPrice: string, upperPrice: string }, TriggerData]> = [
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            lowerPrice: '1500',
+            upperPrice: '4000',
+          },
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+        ],
+        [
+          {
+            market: web3Utils.toChecksumAddress('0xc3d688B66703497DAA19211EEdff47f25384cdc3'),
+            collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            lowerPrice: '0',
+            upperPrice: '5000',
+          },
+          ['0x000000000000000000000000c3d688b66703497daa19211eedff47f25384cdc3000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(compoundV3PriceRangeTrigger.decode(actual)).to.eql(expected);
         });
       });
     });
