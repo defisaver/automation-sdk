@@ -451,6 +451,32 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.CompoundV3,
   },
+  [Bundles.MainnetIds.AAVE_V3_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -484,6 +510,32 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.OptimismIds.AAVE_V3_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+
 };
 
 export const BASE_BUNDLES_INFO: BaseBundleInfo = {
@@ -592,6 +644,32 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.CompoundV3,
   },
+  [Bundles.BaseIds.AAVE_V3_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -684,6 +762,31 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.COMP_V3_EOA_BOOST,
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
