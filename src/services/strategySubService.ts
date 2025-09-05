@@ -337,6 +337,99 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  /**
+   * @dev Used for Aave EOA strategies. Should support later changes to SW strategies when we enable automation for other markets too.
+   *
+   * @param strategyOrBundleId
+   * @param triggerRatioRepay
+   * @param triggerRatioBoost
+   * @param targetRatioRepay
+   * @param targetRatioBoost
+   * @param ratioState
+  //  * @param useDefaultMarket
+   * @param marketAddr
+   * @param useOnBehalf In case of EOA strategies, this should be true, in SW strategies should be false
+   * @param onBehalfAddr EOA addr
+   */
+  leverageManagementGeneric(
+    strategyOrBundleId: number,
+    targetRatioRepay: number,
+    targetRatioBoost: number,
+    ratioState: RatioState,
+    // useDefaultMarket: boolean,
+    marketAddr: EthereumAddress,
+    useOnBehalf: boolean,
+    onBehalfAddr: EthereumAddress,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.aaveV3LeverageManagementGeneric.encode(
+      targetRatioRepay,
+      targetRatioBoost,
+      ratioState,
+      // useDefaultMarket,
+      marketAddr,
+      useOnBehalf,
+      onBehalfAddr,
+    );
+    // TODO -> How to fix this? compV3 just returns subData???
+    // const triggerData = triggerService.aaveV3RatioTrigger.encode(onBehalfAddr, marketAddr, triggerRatio, ratioState);
+    return [strategyOrBundleId, isBundle, /* triggerData, */ subData];
+  },
+
+  leverageManagementOnPriceGeneric(
+    strategyOrBundleId: number,
+    price: number,
+    ratioState: RatioState,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    // useDefaultMarket: boolean,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    useOnBehalf: boolean,
+    onBehalfAddr: EthereumAddress,
+  ) {
+    const isBundle = true;
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      // useDefaultMarket,
+      marketAddr,
+      targetRatio,
+      useOnBehalf,
+      onBehalfAddr,
+    );
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(debtAsset, collAsset, price, ratioState);
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+
+  closeOnPriceGeneric(
+    strategyOrBundleId: number,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+    marketAddr: EthereumAddress,
+    useOnBehalf: boolean,
+    onBehalfAddr: EthereumAddress,
+  ) {
+    const isBundle = true;
+    // TODO -> not sure if this is ok? Why hardcoding in params?
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, useOnBehalf, onBehalfAddr);
+    // TODO -> are prices ok? We are passing 0
+    const triggerDataEncoded = triggerService.aaveV3PriceRangeTrigger.encode(marketAddr, collAsset, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV2Encode = {
