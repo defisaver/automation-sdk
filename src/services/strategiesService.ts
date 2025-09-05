@@ -262,8 +262,9 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
     };
   }
 
-  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
-
+  // TODO -> check if this change breaks something?
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
   return _position;
 }
 
@@ -337,7 +338,13 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
     parseData.chainId,
   );
 
-  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
+  // TODO -> Should both be TakeProfit & StopLoss, or should be EoaCloseOnPrice ? Or should be as it is now?
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA
+    ? Strategies.Identifiers.EoaCloseOnPrice
+    : (_position.strategy.strategyId = isRatioStateOver(ratioState)
+      ? Strategies.IdOverrides.TakeProfit
+      : Strategies.IdOverrides.StopLoss);
 
   return _position;
 }
@@ -448,6 +455,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      // TODO -> Should this be Boost/EoaBoost?
       mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
@@ -456,6 +464,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      // TODO -> Is boost ok? Or should be Repay? Or EoaBoost or EoaRepay? Or mix?
       mergeId: Strategies.Identifiers.Boost,
     };
   }
@@ -938,6 +947,10 @@ function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, pars
     ratio: subData.targetRatio,
   };
 
+  // TODO -> check if this change breaks something?
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
+
   return _position;
 }
 
@@ -1109,6 +1122,11 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseToCollateralWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
     [Strategies.Identifiers.OpenOrderFromCollateral]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.RepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaRepay]: parseAaveV3LeverageManagement,
+    [Strategies.Identifiers.EoaBoost]: parseAaveV3LeverageManagement,
+    [Strategies.Identifiers.EoaRepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
