@@ -426,7 +426,7 @@ export const aaveV3Encode = {
 
     const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, useOnBehalf, onBehalfAddr);
     // TODO -> are prices ok? We are passing 0
-    const triggerDataEncoded = triggerService.aaveV3PriceRangeTrigger.encode(marketAddr, collAsset, stopLossPrice, takeProfitPrice);
+    const triggerDataEncoded = triggerService.aaveV3PriceRangeTrigger.encode(marketAddr, collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
