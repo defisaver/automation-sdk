@@ -353,6 +353,8 @@ export const aaveV3Encode = {
    */
   leverageManagementGeneric(
     strategyOrBundleId: number,
+    triggerRatioRepay: number,
+    triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
     ratioState: RatioState,
@@ -363,6 +365,8 @@ export const aaveV3Encode = {
   ) {
     const isBundle = true;
     const subData = subDataService.aaveV3LeverageManagementGeneric.encode(
+      triggerRatioRepay,
+      triggerRatioBoost,
       targetRatioRepay,
       targetRatioBoost,
       ratioState,

@@ -1543,4 +1543,166 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+
+  describe("When testing subDataService.aaveV3LeverageManagementGeneric", () => {
+    describe("encode()", () => {
+      const examples: Array<
+        [
+          SubData,
+          [
+            triggerRatioRepay: number,
+            triggerRatioBoost: number,
+            targetRatioRepay: number,
+            targetRatioBoost: number,
+            ratioState: RatioState,
+            marketAddr: EthereumAddress,
+            useOnBehalf: boolean,
+            onBehalfAddr: EthereumAddress
+          ]
+        ]
+      > = [
+        [
+          [
+            "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
+            "0x00000000000000000000000000000000000000000000000010a741a462780000",
+            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e",
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c",
+          ],
+          [
+            100, // triggerRatioRepay
+            220, // triggerRatioBoost
+            120, // targetRatioRepay
+            200, // targetRatioBoost
+            RatioState.UNDER, // ratioState
+            web3Utils.toChecksumAddress(
+              "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
+            ), // marketAddr
+            true, // useOnBehalf
+            web3Utils.toChecksumAddress(
+              "0x1031d218133afab8c2b819b1366c7e434ad91e9c"
+            ), // onBehalfAddr
+          ],
+        ],
+        [
+          [
+            "0x00000000000000000000000000000000000000000000000017979cfe362a0000",
+            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
+            "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
+            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0x0000000000000000000000007d2768de32b0b80b7a3454c06bdac94a69ddc7a9",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+          [
+            170, // triggerRatioRepay
+            220, // triggerRatioBoost
+            190, // targetRatioRepay
+            200, // targetRatioBoost
+            RatioState.OVER, // ratioState
+            web3Utils.toChecksumAddress(
+              "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
+            ), // marketAddr
+            false, // useOnBehalf
+            web3Utils.toChecksumAddress(
+              "0x0000000000000000000000000000000000000000"
+            ), // onBehalfAddr
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(
+            subDataService.aaveV3LeverageManagementGeneric.encode(...actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+
+    describe("decode()", () => {
+      const examples: Array<
+        [
+          {
+            triggerRatioRepay: number;
+            triggerRatioBoost: number;
+            targetRatioRepay: number;
+            targetRatioBoost: number;
+            ratioState: RatioState;
+            marketAddr: EthereumAddress;
+            useOnBehalf: boolean;
+            onBehalfAddr: EthereumAddress;
+          },
+          SubData
+        ]
+      > = [
+        [
+          {
+            triggerRatioRepay: 100,
+            triggerRatioBoost: 220,
+            targetRatioRepay: 120,
+            targetRatioBoost: 200,
+            ratioState: RatioState.UNDER,
+            marketAddr: web3Utils.toChecksumAddress(
+              "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
+            ),
+            useOnBehalf: true,
+            onBehalfAddr: web3Utils.toChecksumAddress(
+              "0x1031d218133afab8c2b819b1366c7e434ad91e9c"
+            ),
+          },
+          [
+            "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
+            "0x00000000000000000000000000000000000000000000000010a741a462780000",
+            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e",
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c",
+          ],
+        ],
+        [
+          {
+            triggerRatioRepay: 170,
+            triggerRatioBoost: 220,
+            targetRatioRepay: 190,
+            targetRatioBoost: 200,
+            ratioState: RatioState.OVER,
+            marketAddr: web3Utils.toChecksumAddress(
+              "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
+            ),
+            useOnBehalf: false,
+            onBehalfAddr: web3Utils.toChecksumAddress(
+              "0x0000000000000000000000000000000000000000"
+            ),
+          },
+          [
+            "0x00000000000000000000000000000000000000000000000017979cfe362a0000",
+            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
+            "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
+            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0x0000000000000000000000007d2768de32b0b80b7a3454c06bdac94a69ddc7a9",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(
+          expected
+        )}`, () => {
+          expect(
+            subDataService.aaveV3LeverageManagementGeneric.decode(actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+  });
 });

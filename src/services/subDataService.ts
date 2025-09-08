@@ -198,6 +198,8 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
  */
 export const aaveV3LeverageManagementGeneric = {
   encode(
+    triggerRatioRepay: number,
+    triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
     ratioState : RatioState,
@@ -207,6 +209,8 @@ export const aaveV3LeverageManagementGeneric = {
     onBehalfAddr: EthereumAddress,
   ): SubData {
     // TODO -> Should see if all params are needed or can remove something
+    const encodedTriggerRatioRepay = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(triggerRatioRepay));
+    const encodedTriggerRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(triggerRatioBoost));
     const encodedTargetRatioRepay = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioRepay));
     const encodedTargetRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioBoost));
     const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
@@ -216,6 +220,8 @@ export const aaveV3LeverageManagementGeneric = {
     const encodedOnBehalfAddr = AbiCoder.encodeParameter('address', onBehalfAddr);
 
     return [
+      encodedTriggerRatioRepay,
+      encodedTriggerRatioBoost,
       encodedTargetRatioRepay,
       encodedTargetRatioBoost,
       encodedRatioState,
@@ -227,6 +233,8 @@ export const aaveV3LeverageManagementGeneric = {
   },
 
   decode(subData: SubData) : {
+    triggerRatioRepay: number,
+    triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
     ratioState : RatioState,
@@ -236,17 +244,23 @@ export const aaveV3LeverageManagementGeneric = {
     onBehalfAddr: EthereumAddress,
   } {
     // TODO -> Should see what should be returned? Probably no need for all
-    const weiRatioRepay = AbiCoder.decodeParameter('uint256', subData[0]) as unknown as string;
-    const targetRatioRepay = weiToRatioPercentage(weiRatioRepay);
-    const weiRatioBoost = AbiCoder.decodeParameter('uint256', subData[1]) as unknown as string;
-    const targetRatioBoost = weiToRatioPercentage(weiRatioBoost);
-    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[2]));
+    const weiTriggerRatioRepay = AbiCoder.decodeParameter('uint256', subData[0]) as unknown as string;
+    const triggerRatioRepay = weiToRatioPercentage(weiTriggerRatioRepay);
+    const weiTriggerRatioBoost = AbiCoder.decodeParameter('uint256', subData[1]) as unknown as string;
+    const triggerRatioBoost = weiToRatioPercentage(weiTriggerRatioBoost);
+    const weiTargetRatioRepay = AbiCoder.decodeParameter('uint256', subData[2]) as unknown as string;
+    const targetRatioRepay = weiToRatioPercentage(weiTargetRatioRepay);
+    const weiTargetRatioBoost = AbiCoder.decodeParameter('uint256', subData[3]) as unknown as string;
+    const targetRatioBoost = weiToRatioPercentage(weiTargetRatioBoost);
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4]));
     // const useDefaultMarket = AbiCoder.decodeParameter('bool', subData[3]) as unknown as boolean;
-    const marketAddr = AbiCoder.decodeParameter('address', subData[3]) as unknown as EthereumAddress;
-    const useOnBehalf = AbiCoder.decodeParameter('bool', subData[4]) as unknown as boolean;
-    const onBehalfAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+    const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+    const useOnBehalf = AbiCoder.decodeParameter('bool', subData[6]) as unknown as boolean;
+    const onBehalfAddr = AbiCoder.decodeParameter('address', subData[7]) as unknown as EthereumAddress;
 
     return {
+      triggerRatioRepay,
+      triggerRatioBoost,
       targetRatioRepay,
       targetRatioBoost,
       ratioState,

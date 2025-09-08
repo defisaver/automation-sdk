@@ -242,7 +242,8 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
 
-  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+  // TODO -> check if this change breaks something?
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
     _position.specific = {
@@ -250,6 +251,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      // TODO -> Should this be Boost/EoaBoost?
       mergeWithId: Strategies.Identifiers.Boost,
     };
   } else {
@@ -258,6 +260,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      // TODO -> Is boost ok? Or should be Repay? Or EoaBoost or EoaRepay? Or mix?
       mergeId: Strategies.Identifiers.Boost,
     };
   }
