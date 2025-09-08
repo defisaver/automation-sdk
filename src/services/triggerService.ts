@@ -657,3 +657,25 @@ export const compoundV3PriceRangeTrigger = {
     };
   },
 };
+
+export const liquityV2InterestRateAdjustmentTrigger = {
+  encode(
+    market: EthereumAddress,
+    troveId: string,
+    criticalDebtInFrontLimit: string,
+    nonCriticalDebtInFrontLimit: string,
+  ) {
+    const criticalDebtInFrontLimitWei = web3Utils.toWei(new Dec(criticalDebtInFrontLimit).toString(), 'ether');
+    const nonCriticalDebtInFrontLimitWei = web3Utils.toWei(new Dec(nonCriticalDebtInFrontLimit).toString(), 'ether');
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256', 'uint256'], [market, troveId, criticalDebtInFrontLimitWei, nonCriticalDebtInFrontLimitWei])];
+  },
+  decode(triggerData: TriggerData): { market: EthereumAddress, troveId: string, criticalDebtInFrontLimit: string, nonCriticalDebtInFrontLimit: string } {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      market: decodedData[0] as EthereumAddress,
+      troveId: decodedData[1] as string,
+      criticalDebtInFrontLimit: new Dec(decodedData[2] as string).div(10 ** 18).toString(),
+      nonCriticalDebtInFrontLimit: new Dec(decodedData[3] as string).div(10 ** 18).toString(),
+    };
+  },
+};

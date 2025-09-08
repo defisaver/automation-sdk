@@ -665,6 +665,25 @@ export const liquityV2Encode = {
 
     return [strategyId, isBundle, triggerData, subData];
   },
+  interestRateAdjustment(
+    market: EthereumAddress,
+    troveId: string,
+    criticalDebtInFrontLimit: string,
+    nonCriticalDebtInFrontLimit: string,
+    interestRateChange: string,
+  ) {
+    const strategyId = Strategies.MainnetIds.LIQUITY_V2_INTEREST_RATE_ADJUSTMENT;
+    const isBundle = false;
+
+    const subData = subDataService.liquityV2InterestRateAdjustmentSubData.encode(
+      market,
+      troveId,
+      interestRateChange,
+    );
+    const triggerData = triggerService.liquityV2InterestRateAdjustmentTrigger.encode(market, troveId, criticalDebtInFrontLimit, nonCriticalDebtInFrontLimit);
+
+    return [strategyId, isBundle, triggerData, subData];
+  },
 };
 
 export const fluidEncode = {

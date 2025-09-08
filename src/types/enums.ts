@@ -96,6 +96,7 @@ export namespace Strategies {
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
     LIQUITY_V2_PAYBACK = 113,
+    LIQUITY_V2_INTEREST_RATE_ADJUSTMENT = 124,
   }
 
   export enum OptimismIds {
@@ -143,6 +144,7 @@ export namespace Strategies {
     RepayOnPrice = 'repay-on-price',
     EoaBoostOnPrice = 'eoa-boost-on-price',
     EoaRepayOnPrice = 'eoa-repay-on-price',
+    InterestRateAdjustment = 'interest-rate-adjustment',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',

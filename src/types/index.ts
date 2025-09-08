@@ -190,6 +190,14 @@ export declare namespace Position {
       triggerRatio: number;
     }
 
+    interface InterestRateAdjustmentLiquityV2 extends Base {
+      market: EthereumAddress,
+      troveId: string,
+      criticalDebtInFrontLimit: string,
+      nonCriticalDebtInFrontLimit: string,
+      interestRateChange: string,
+    }
+
     interface TrailingStop extends Base {
       roundId: number,
       triggerPercentage: number,
@@ -239,6 +247,7 @@ export declare namespace Position {
     | Specific.BoostOnPriceMorpho
     | Specific.BoostOnPriceLiquityV2
     | Specific.PaybackLiquityV2
+    | Specific.InterestRateAdjustmentLiquityV2
     | Specific.CompoundV3LeverageManagementOnPrice
     | Specific.CompoundV3CloseOnPrice;
 

@@ -1068,6 +1068,32 @@ function parseFluidT1LeverageManagement(position: Position.Automated, parseData:
   return _position;
 }
 
+function parseLiquityV2InterestRateAdjustment(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.liquityV2InterestRateAdjustmentTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.liquityV2InterestRateAdjustmentSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.troveId, triggerData.market,
+  );
+
+  _position.specific = {
+    market: subData.market,
+    troveId: subData.troveId,
+    criticalDebtInFrontLimit: triggerData.criticalDebtInFrontLimit,
+    nonCriticalDebtInFrontLimit: triggerData.nonCriticalDebtInFrontLimit,
+    interestRateChange: subData.interestRateChange,
+  };
+
+  return _position;
+}
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -1095,6 +1121,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.BoostOnPrice]: parseLiquityV2LeverageManagementOnPrice,
     [Strategies.Identifiers.RepayOnPrice]: parseLiquityV2LeverageManagementOnPrice,
     [Strategies.Identifiers.Payback]: parseLiquityV2Payback,
+    [Strategies.Identifiers.InterestRateAdjustment]: parseLiquityV2InterestRateAdjustment,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV2]: {
     [Strategies.Identifiers.Repay]: parseAaveV2LeverageManagement,

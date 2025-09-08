@@ -118,6 +118,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.LiquityV2,
   },
+  [Strategies.MainnetIds.LIQUITY_V2_INTEREST_RATE_ADJUSTMENT]: {
+    strategyOrBundleId: Strategies.MainnetIds.LIQUITY_V2_INTEREST_RATE_ADJUSTMENT,
+    strategyId: Strategies.Identifiers.InterestRateAdjustment,
+    protocol: PROTOCOLS.LiquityV2,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
