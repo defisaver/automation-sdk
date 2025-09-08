@@ -1554,7 +1554,7 @@ describe('Feature: subDataService.ts', () => {
             triggerRatioBoost: number,
             targetRatioRepay: number,
             targetRatioBoost: number,
-            ratioState: RatioState,
+            isBoostEnabled: boolean,
             marketAddr: EthereumAddress,
             useOnBehalf: boolean,
             onBehalfAddr: EthereumAddress
@@ -1577,7 +1577,7 @@ describe('Feature: subDataService.ts', () => {
             220, // triggerRatioBoost
             120, // targetRatioRepay
             200, // targetRatioBoost
-            RatioState.UNDER, // ratioState
+            true, // isBoostEnabled
             web3Utils.toChecksumAddress(
               "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
             ), // marketAddr
@@ -1603,7 +1603,7 @@ describe('Feature: subDataService.ts', () => {
             220, // triggerRatioBoost
             190, // targetRatioRepay
             200, // targetRatioBoost
-            RatioState.OVER, // ratioState
+            false, // isBoostEnabled
             web3Utils.toChecksumAddress(
               "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
             ), // marketAddr
@@ -1632,7 +1632,7 @@ describe('Feature: subDataService.ts', () => {
             triggerRatioBoost: number;
             targetRatioRepay: number;
             targetRatioBoost: number;
-            ratioState: RatioState;
+            isBoostEnabled: boolean;
             marketAddr: EthereumAddress;
             useOnBehalf: boolean;
             onBehalfAddr: EthereumAddress;
@@ -1646,7 +1646,7 @@ describe('Feature: subDataService.ts', () => {
             triggerRatioBoost: 220,
             targetRatioRepay: 120,
             targetRatioBoost: 200,
-            ratioState: RatioState.UNDER,
+            isBoostEnabled: true,
             marketAddr: web3Utils.toChecksumAddress(
               "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
             ),
@@ -1672,7 +1672,7 @@ describe('Feature: subDataService.ts', () => {
             triggerRatioBoost: 220,
             targetRatioRepay: 190,
             targetRatioBoost: 200,
-            ratioState: RatioState.OVER,
+            isBoostEnabled: false,
             marketAddr: web3Utils.toChecksumAddress(
               "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
             ),

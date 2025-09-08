@@ -202,7 +202,7 @@ export const aaveV3LeverageManagementGeneric = {
     triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
-    ratioState : RatioState,
+    isBoostEnabled: boolean,
     // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     useOnBehalf: boolean,
@@ -213,7 +213,7 @@ export const aaveV3LeverageManagementGeneric = {
     const encodedTriggerRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(triggerRatioBoost));
     const encodedTargetRatioRepay = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioRepay));
     const encodedTargetRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioBoost));
-    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+    const encodedIsBoostEnabled = AbiCoder.encodeParameter('bool', isBoostEnabled);
     // const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', useDefaultMarket);
     const encodedDefaultMarketAddr = AbiCoder.encodeParameter('address', marketAddr);
     const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', useOnBehalf);
@@ -224,7 +224,7 @@ export const aaveV3LeverageManagementGeneric = {
       encodedTriggerRatioBoost,
       encodedTargetRatioRepay,
       encodedTargetRatioBoost,
-      encodedRatioState,
+      encodedIsBoostEnabled,
       // encodedUseDefaultMarket,
       encodedDefaultMarketAddr,
       encodedUseOnBehalf,
@@ -237,7 +237,7 @@ export const aaveV3LeverageManagementGeneric = {
     triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
-    ratioState : RatioState,
+    isBoostEnabled: boolean,
     // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     useOnBehalf: boolean,
@@ -252,7 +252,7 @@ export const aaveV3LeverageManagementGeneric = {
     const targetRatioRepay = weiToRatioPercentage(weiTargetRatioRepay);
     const weiTargetRatioBoost = AbiCoder.decodeParameter('uint256', subData[3]) as unknown as string;
     const targetRatioBoost = weiToRatioPercentage(weiTargetRatioBoost);
-    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[4]));
+    const isBoostEnabled = AbiCoder.decodeParameter('bool', subData[4]) as unknown as boolean;
     // const useDefaultMarket = AbiCoder.decodeParameter('bool', subData[3]) as unknown as boolean;
     const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
     const useOnBehalf = AbiCoder.decodeParameter('bool', subData[6]) as unknown as boolean;
@@ -263,7 +263,7 @@ export const aaveV3LeverageManagementGeneric = {
       triggerRatioBoost,
       targetRatioRepay,
       targetRatioBoost,
-      ratioState,
+      isBoostEnabled,
       // useDefaultMarket,
       marketAddr,
       useOnBehalf,

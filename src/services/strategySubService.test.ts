@@ -628,13 +628,13 @@ describe('Feature: strategySubService.ts', () => {
           triggerRatioBoost: number,
           targetRatioRepay: number,
           targetRatioBoost: number,
-          ratioState: RatioState,
+          isBoostEnabled: boolean,
           marketAddr: EthereumAddress,
           useOnBehalf: boolean,
           onBehalfAddr: EthereumAddress
         ]
       ]> = [
-        // Test case 1: EOA strategy with REPAY state
+        // Test case 1: EOA strategy without boost enabled
         [
           [
             Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
@@ -644,7 +644,7 @@ describe('Feature: strategySubService.ts', () => {
               '0x00000000000000000000000000000000000000000000000018fae27693b40000',
               '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
               '0x00000000000000000000000000000000000000000000000016345785d8a00000',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000001234567890123456789012345678901234567890',
@@ -656,13 +656,13 @@ describe('Feature: strategySubService.ts', () => {
             180, // triggerRatioBoost
             140, // targetRatioRepay
             160, // targetRatioBoost
-            RatioState.UNDER,
+            false, // isBoostEnabled
             web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             true,
             web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
-        // Test case 2: EOA strategy with BOOST state
+        // Test case 2: EOA strategy with BOOST enabled
         [
           [
             Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
@@ -672,7 +672,7 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
               '0x00000000000000000000000000000000000000000000000016345785d8a00000',
               '0x00000000000000000000000000000000000000000000000018fae27693b40000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000009876543210987654321098765432109876543210',
@@ -684,7 +684,7 @@ describe('Feature: strategySubService.ts', () => {
             200, // triggerRatioBoost
             160, // targetRatioRepay
             180, // targetRatioBoost
-            RatioState.OVER,
+            true, // isBoostEnabled
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             true,
             web3Utils.toChecksumAddress('0x9876543210987654321098765432109876543210'),
@@ -700,7 +700,7 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
               '0x00000000000000000000000000000000000000000000000014d1120d7b160000',
               '0x00000000000000000000000000000000000000000000000017979cfe362a0000',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -712,7 +712,7 @@ describe('Feature: strategySubService.ts', () => {
             190, // triggerRatioBoost
             150, // targetRatioRepay
             170, // targetRatioBoost
-            RatioState.UNDER,
+            false, // isBoostEnabled
             web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),

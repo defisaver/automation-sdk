@@ -345,7 +345,7 @@ export const aaveV3Encode = {
    * @param triggerRatioBoost
    * @param targetRatioRepay
    * @param targetRatioBoost
-   * @param ratioState
+   * @param isBoostEnabled
   //  * @param useDefaultMarket
    * @param marketAddr
    * @param useOnBehalf In case of EOA strategies, this should be true, in SW strategies should be false
@@ -357,7 +357,7 @@ export const aaveV3Encode = {
     triggerRatioBoost: number,
     targetRatioRepay: number,
     targetRatioBoost: number,
-    ratioState: RatioState,
+    isBoostEnabled: boolean,
     // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     useOnBehalf: boolean,
@@ -369,7 +369,7 @@ export const aaveV3Encode = {
       triggerRatioBoost,
       targetRatioRepay,
       targetRatioBoost,
-      ratioState,
+      isBoostEnabled,
       // useDefaultMarket,
       marketAddr,
       useOnBehalf,
