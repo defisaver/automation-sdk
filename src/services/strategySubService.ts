@@ -360,8 +360,7 @@ export const aaveV3Encode = {
     isBoostEnabled: boolean,
     // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    isEOA: boolean,
   ) {
     const isBundle = true;
     const subData = subDataService.aaveV3LeverageManagementGeneric.encode(
@@ -372,8 +371,7 @@ export const aaveV3Encode = {
       isBoostEnabled,
       // useDefaultMarket,
       marketAddr,
-      useOnBehalf,
-      onBehalfAddr,
+      isEOA,
     );
     // TODO -> How to fix this? compV3 just returns subData???
     // const triggerData = triggerService.aaveV3RatioTrigger.encode(onBehalfAddr, marketAddr, triggerRatio, ratioState);
@@ -454,6 +452,7 @@ export const compoundV3Encode = {
     baseToken: EthereumAddress,
     triggerRepayRatio: number,
     triggerBoostRatio: number,
+    // TODO -> Shouldn't repay go first?
     targetBoostRatio: number,
     targetRepayRatio: number,
     boostEnabled: boolean,
