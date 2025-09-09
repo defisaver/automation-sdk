@@ -621,7 +621,7 @@ describe('Feature: strategySubService.ts', () => {
 
     describe('leverageManagementGeneric()', () => {
       const examples: Array<[
-        [StrategyOrBundleIds, boolean, SubData],
+        [StrategyOrBundleIds, boolean, string],
         [
           strategyOrBundleId: number,
           triggerRatioRepay: number,
@@ -630,8 +630,7 @@ describe('Feature: strategySubService.ts', () => {
           targetRatioBoost: number,
           isBoostEnabled: boolean,
           marketAddr: EthereumAddress,
-          useOnBehalf: boolean,
-          onBehalfAddr: EthereumAddress
+          isEOA: boolean,
         ]
       ]> = [
         // Test case 1: EOA strategy without boost enabled
@@ -639,16 +638,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
             true,
-            [
-              '0x00000000000000000000000000000000000000000000000010a741a462780000',
-              '0x00000000000000000000000000000000000000000000000018fae27693b40000',
-              '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
-              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
-              '0x0000000000000000000000001234567890123456789012345678901234567890',
-            ],
+            "0x000000000000000010a741a462780000000000000000000018fae27693b400000000000000000000136dcc951d8c0000000000000000000016345785d8a00000002f39d218133AFaB8F2B819B1066c7E434Ad94E9e01",
           ],
           [
             Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
@@ -659,7 +649,6 @@ describe('Feature: strategySubService.ts', () => {
             false, // isBoostEnabled
             web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             true,
-            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
         // Test case 2: EOA strategy with BOOST enabled
@@ -667,16 +656,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
             true,
-            [
-              '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
-              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
-              '0x00000000000000000000000000000000000000000000000018fae27693b40000',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
-              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
-              '0x0000000000000000000000009876543210987654321098765432109876543210',
-            ],
+            "0x0000000000000000136dcc951d8c000000000000000000001bc16d674ec80000000000000000000016345785d8a00000000000000000000018fae27693b400000187870bCa3F3fd6335c3f4ce8392d69d0b4161d3901",
           ],
           [
             Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
@@ -687,7 +667,6 @@ describe('Feature: strategySubService.ts', () => {
             true, // isBoostEnabled
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             true,
-            web3Utils.toChecksumAddress('0x9876543210987654321098765432109876543210'),
           ]
         ],
         // Test case 3: Smart wallet strategy (useOnBehalf = false)
@@ -695,16 +674,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_REPAY,
             true,
-            [
-              '0x000000000000000000000000000000000000000000000000120a871cc0020000',
-              '0x0000000000000000000000000000000000000000000000001a5e27eef13e0000',
-              '0x00000000000000000000000000000000000000000000000014d1120d7b160000',
-              '0x00000000000000000000000000000000000000000000000017979cfe362a0000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-            ],
+            "0x0000000000000000120a871cc002000000000000000000001a5e27eef13e0000000000000000000014d1120d7b160000000000000000000017979cfe362a0000002f39d218133AFaB8F2B819B1066c7E434Ad94E9e00",
           ],
           [
             Bundles.MainnetIds.AAVE_V3_REPAY,
@@ -715,7 +685,6 @@ describe('Feature: strategySubService.ts', () => {
             false, // isBoostEnabled
             web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
       ];

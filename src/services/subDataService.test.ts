@@ -1548,7 +1548,7 @@ describe('Feature: subDataService.ts', () => {
     describe("encode()", () => {
       const examples: Array<
         [
-          SubData,
+          string,
           [
             triggerRatioRepay: number,
             triggerRatioBoost: number,
@@ -1556,22 +1556,12 @@ describe('Feature: subDataService.ts', () => {
             targetRatioBoost: number,
             isBoostEnabled: boolean,
             marketAddr: EthereumAddress,
-            useOnBehalf: boolean,
-            onBehalfAddr: EthereumAddress
+            isEOA: boolean,
           ]
         ]
       > = [
         [
-          [
-            "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
-            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
-            "0x00000000000000000000000000000000000000000000000010a741a462780000",
-            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
-            "0x0000000000000000000000000000000000000000000000000000000000000001",
-            "0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e",
-            "0x0000000000000000000000000000000000000000000000000000000000000001",
-            "0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c",
-          ],
+          "0x00000000000000000de0b6b3a764000000000000000000001e87f85809dc0000000000000000000010a741a46278000000000000000000001bc16d674ec80000012f39d218133AFaB8F2B819B1066c7E434Ad94E9e01",
           [
             100, // triggerRatioRepay
             220, // triggerRatioBoost
@@ -1581,23 +1571,11 @@ describe('Feature: subDataService.ts', () => {
             web3Utils.toChecksumAddress(
               "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
             ), // marketAddr
-            true, // useOnBehalf
-            web3Utils.toChecksumAddress(
-              "0x1031d218133afab8c2b819b1366c7e434ad91e9c"
-            ), // onBehalfAddr
+            true, // isEOA
           ],
         ],
         [
-          [
-            "0x00000000000000000000000000000000000000000000000017979cfe362a0000",
-            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
-            "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
-            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000007d2768de32b0b80b7a3454c06bdac94a69ddc7a9",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-          ],
+          "0x000000000000000017979cfe362a000000000000000000001e87f85809dc000000000000000000001a5e27eef13e000000000000000000001bc16d674ec80000007d2768dE32b0b80b7a3454c06BdAc94A69DDc7A900",
           [
             170, // triggerRatioRepay
             220, // triggerRatioBoost
@@ -1607,10 +1585,7 @@ describe('Feature: subDataService.ts', () => {
             web3Utils.toChecksumAddress(
               "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
             ), // marketAddr
-            false, // useOnBehalf
-            web3Utils.toChecksumAddress(
-              "0x0000000000000000000000000000000000000000"
-            ), // onBehalfAddr
+            false, // isEOA
           ],
         ],
       ];
@@ -1628,68 +1603,25 @@ describe('Feature: subDataService.ts', () => {
       const examples: Array<
         [
           {
-            triggerRatioRepay: number;
-            triggerRatioBoost: number;
-            targetRatioRepay: number;
-            targetRatioBoost: number;
-            isBoostEnabled: boolean;
-            marketAddr: EthereumAddress;
-            useOnBehalf: boolean;
-            onBehalfAddr: EthereumAddress;
+            targetRatio: number;
           },
           SubData
         ]
       > = [
         [
           {
-            triggerRatioRepay: 100,
-            triggerRatioBoost: 220,
-            targetRatioRepay: 120,
-            targetRatioBoost: 200,
-            isBoostEnabled: true,
-            marketAddr: web3Utils.toChecksumAddress(
-              "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
-            ),
-            useOnBehalf: true,
-            onBehalfAddr: web3Utils.toChecksumAddress(
-              "0x1031d218133afab8c2b819b1366c7e434ad91e9c"
-            ),
+            targetRatio: 120,
           },
           [
-            "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
-            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
             "0x00000000000000000000000000000000000000000000000010a741a462780000",
-            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
-            "0x0000000000000000000000000000000000000000000000000000000000000001",
-            "0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e",
-            "0x0000000000000000000000000000000000000000000000000000000000000001",
-            "0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c",
           ],
         ],
         [
           {
-            triggerRatioRepay: 170,
-            triggerRatioBoost: 220,
-            targetRatioRepay: 190,
-            targetRatioBoost: 200,
-            isBoostEnabled: false,
-            marketAddr: web3Utils.toChecksumAddress(
-              "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
-            ),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress(
-              "0x0000000000000000000000000000000000000000"
-            ),
+            targetRatio: 190,
           },
           [
-            "0x00000000000000000000000000000000000000000000000017979cfe362a0000",
-            "0x0000000000000000000000000000000000000000000000001e87f85809dc0000",
             "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
-            "0x0000000000000000000000000000000000000000000000001bc16d674ec80000",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000007d2768de32b0b80b7a3454c06bdac94a69ddc7a9",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
           ],
         ],
       ];
