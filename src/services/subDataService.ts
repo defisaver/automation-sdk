@@ -1022,3 +1022,34 @@ export const compoundV3CloseSubData = {
     };
   },
 };
+
+export const liquityV2InterestRateAdjustmentSubData = {
+  encode: (
+    market: EthereumAddress,
+    troveId: string,
+    interestRateChange: string,
+  ) => {
+    const marketEncoded = AbiCoder.encodeParameter('address', market);
+    const troveIdEncoded = AbiCoder.encodeParameter('uint256', troveId);
+    const interestRateChangeWei = new Dec(interestRateChange).mul(1e16).toString();
+    const interestRateChangeEncoded = AbiCoder.encodeParameter('uint256', interestRateChangeWei.toString());
+
+    return [
+      marketEncoded,
+      troveIdEncoded,
+      interestRateChangeEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const market = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const troveId = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
+    const interestRateChangeWei = AbiCoder.decodeParameter('uint256', subData[2]) as any as string;
+    const interestRateChange = new Dec(interestRateChangeWei).div(10 ** 16).toString();
+
+    return {
+      market,
+      troveId,
+      interestRateChange,
+    };
+  },
+};
