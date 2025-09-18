@@ -330,52 +330,20 @@ export const aaveV3Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
+    isGeneric: boolean = false, // added later, isGeneric should be `false` for old strategies, for EOA should be `true`. If we switch new SW subs to new strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
   ) {
     const isBundle = true;
-    const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+
+    const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+      isGeneric,
+    );
     const triggerData = triggerService.aaveV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
-  },
-  /**
-   * @dev Used for Aave EOA strategies. Should support later changes to SW strategies when we enable automation for other markets too.
-   *
-   * @param strategyOrBundleId
-   * @param triggerRatioRepay
-   * @param triggerRatioBoost
-   * @param targetRatioRepay
-   * @param targetRatioBoost
-   * @param isBoostEnabled
-  //  * @param useDefaultMarket
-   * @param marketAddr
-   * @param useOnBehalf In case of EOA strategies, this should be true, in SW strategies should be false
-   * @param onBehalfAddr EOA addr
-   */
-  leverageManagementGeneric(
-    strategyOrBundleId: number,
-    triggerRatioRepay: number,
-    triggerRatioBoost: number,
-    targetRatioRepay: number,
-    targetRatioBoost: number,
-    isBoostEnabled: boolean,
-    // useDefaultMarket: boolean,
-    marketAddr: EthereumAddress,
-    isEOA: boolean,
-  ) {
-    const isBundle = true;
-    const subData = subDataService.aaveV3LeverageManagementGeneric.encode(
-      triggerRatioRepay,
-      triggerRatioBoost,
-      targetRatioRepay,
-      targetRatioBoost,
-      isBoostEnabled,
-      // useDefaultMarket,
-      marketAddr,
-      isEOA,
-    );
-    // TODO -> How to fix this? compV3 just returns subData???
-    // const triggerData = triggerService.aaveV3RatioTrigger.encode(onBehalfAddr, marketAddr, triggerRatio, ratioState);
-    return [strategyOrBundleId, isBundle, /* triggerData, */ subData];
   },
 
   leverageManagementOnPriceGeneric(
@@ -389,8 +357,7 @@ export const aaveV3Encode = {
     // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    user: EthereumAddress,
   ) {
     const isBundle = true;
     const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(
@@ -401,8 +368,7 @@ export const aaveV3Encode = {
       // useDefaultMarket,
       marketAddr,
       targetRatio,
-      useOnBehalf,
-      onBehalfAddr,
+      user,
     );
     const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(debtAsset, collAsset, price, ratioState);
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
@@ -414,21 +380,18 @@ export const aaveV3Encode = {
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
     stopLossPrice: number = 0,
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
     takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
-    marketAddr: EthereumAddress,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
   ) {
     const isBundle = true;
-    // TODO -> not sure if this is ok? Why hardcoding in params?
     const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, useOnBehalf, onBehalfAddr);
-    // TODO -> are prices ok? We are passing 0
-    const triggerDataEncoded = triggerService.aaveV3PriceRangeTrigger.encode(marketAddr, collAsset, debtAsset, stopLossPrice, takeProfitPrice);
+    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -452,7 +415,6 @@ export const compoundV3Encode = {
     baseToken: EthereumAddress,
     triggerRepayRatio: number,
     triggerBoostRatio: number,
-    // TODO -> Shouldn't repay go first?
     targetBoostRatio: number,
     targetRepayRatio: number,
     boostEnabled: boolean,

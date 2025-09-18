@@ -177,12 +177,20 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    isGeneric: boolean,
   ): SubData {
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+
+    if (isGeneric) {
+      const encodedMarket = AbiCoder.encodeParameter('address', market);
+      const encodedUser = AbiCoder.encodeParameter('address', user);
+      return [encodedTargetRatio, encodedRatioState, encodedMarket, encodedUser];
+    }
     const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', true);
     const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', false);
-
     return [encodedTargetRatio, encodedRatioState, encodedUseDefaultMarket, encodedUseOnBehalf];
   },
   decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
@@ -193,132 +201,32 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   },
 };
 
-/**
- * @dev This will use SubProxy, that's why we send both Repay and Boost ratios. // TODO Is this ok?
- */
-export const aaveV3LeverageManagementGeneric = {
-  encode(
-    triggerRatioRepay: number,
-    triggerRatioBoost: number,
-    targetRatioRepay: number,
-    targetRatioBoost: number,
-    isBoostEnabled: boolean,
-    // useDefaultMarket: boolean,
-    marketAddr: EthereumAddress,
-    isEOA: boolean,
-  ): string {
-    let subInput = '0x';
-    subInput = subInput.concat(new Dec(triggerRatioRepay).mul(1e16).toHex().slice(2)
-      .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(triggerRatioBoost).mul(1e16).toHex().slice(2)
-      .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(targetRatioRepay).mul(1e16).toHex().slice(2)
-      .padStart(32, '0'));
-    subInput = subInput.concat(new Dec(targetRatioBoost).mul(1e16).toHex().slice(2)
-      .padStart(32, '0'));
-    subInput = subInput.concat(isBoostEnabled ? '01' : '00');
-    subInput = subInput.concat(marketAddr.slice(2));
-    subInput = subInput.concat(isEOA ? '01' : '00');
-    return subInput;
-
-    // const encodedTriggerRatioRepay = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(triggerRatioRepay));
-    // const encodedTriggerRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(triggerRatioBoost));
-    // const encodedTargetRatioRepay = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioRepay));
-    // const encodedTargetRatioBoost = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatioBoost));
-    // const encodedIsBoostEnabled = AbiCoder.encodeParameter('bool', isBoostEnabled);
-    // // const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', useDefaultMarket);
-    // const encodedDefaultMarketAddr = AbiCoder.encodeParameter('address', marketAddr);
-    // const encodedIsEOA = AbiCoder.encodeParameter('bool', isEOA);
-
-    // return [
-    //   encodedTriggerRatioRepay,
-    //   encodedTriggerRatioBoost,
-    //   encodedTargetRatioRepay,
-    //   encodedTargetRatioBoost,
-    //   encodedIsBoostEnabled,
-    //   // encodedUseDefaultMarket,
-    //   encodedDefaultMarketAddr,
-    //   encodedIsEOA,
-    // ];
-  },
-
-  decode(subData: SubData) : {
-    // triggerRatioRepay: number,
-    // triggerRatioBoost: number,
-    // targetRatioRepay: number,
-    // targetRatioBoost: number,
-    // isBoostEnabled: boolean,
-    // // useDefaultMarket: boolean,
-    // marketAddr: EthereumAddress,
-    // useOnBehalf: boolean,
-    // onBehalfAddr: EthereumAddress,
-    targetRatio: number,
-  } {
-    // // TODO -> Should see what should be returned? Probably no need for all
-    // const weiTriggerRatioRepay = AbiCoder.decodeParameter('uint256', subData[0]) as unknown as string;
-    // const triggerRatioRepay = weiToRatioPercentage(weiTriggerRatioRepay);
-    // const weiTriggerRatioBoost = AbiCoder.decodeParameter('uint256', subData[1]) as unknown as string;
-    // const triggerRatioBoost = weiToRatioPercentage(weiTriggerRatioBoost);
-    // const weiTargetRatioRepay = AbiCoder.decodeParameter('uint256', subData[2]) as unknown as string;
-    // const targetRatioRepay = weiToRatioPercentage(weiTargetRatioRepay);
-    // const weiTargetRatioBoost = AbiCoder.decodeParameter('uint256', subData[3]) as unknown as string;
-    // const targetRatioBoost = weiToRatioPercentage(weiTargetRatioBoost);
-    // const isBoostEnabled = AbiCoder.decodeParameter('bool', subData[4]) as unknown as boolean;
-    // // const useDefaultMarket = AbiCoder.decodeParameter('bool', subData[3]) as unknown as boolean;
-    // const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
-    // const useOnBehalf = AbiCoder.decodeParameter('bool', subData[6]) as unknown as boolean;
-    // const onBehalfAddr = AbiCoder.decodeParameter('address', subData[7]) as unknown as EthereumAddress;
-
-    // return {
-    //   triggerRatioRepay,
-    //   triggerRatioBoost,
-    //   targetRatioRepay,
-    //   targetRatioBoost,
-    //   isBoostEnabled,
-    //   // useDefaultMarket,
-    //   marketAddr,
-    //   useOnBehalf,
-    //   onBehalfAddr,
-    // };
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-    return { targetRatio };
-  },
-};
-
-
 export const aaveV3LeverageManagementOnPriceGeneric = {
   encode(
     collAsset: EthereumAddress,
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
-    // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    user: EthereumAddress,
   ): SubData {
     const encodedColl = AbiCoder.encodeParameter('address', collAsset);
     const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
     const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
     const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
-    // const useDefaultMarketEncoded = AbiCoder.encodeParameter('bool', useDefaultMarket);
     const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const useOnBehalfEncoded = AbiCoder.encodeParameter('bool', useOnBehalf);
-    const onBehalfAddrEncoded = AbiCoder.encodeParameter('address', onBehalfAddr);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
 
     return [
       encodedColl,
       encodedCollId,
       encodedDebt,
       encodedDebtId,
-      // useDefaultMarketEncoded,
       encodedMarket,
       encodedTargetRatio,
-      useOnBehalfEncoded,
-      onBehalfAddrEncoded,
+      userEncoded,
     ];
   },
   decode(subData: SubData): {
@@ -326,35 +234,29 @@ export const aaveV3LeverageManagementOnPriceGeneric = {
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
-    // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    user: EthereumAddress,
   } {
     const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
     const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
-    // const useDefaultMarket = AbiCoder.decodeParameter('bool', subData[4]) as unknown as boolean;
     const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
 
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
 
-    const useOnBehalf = AbiCoder.decodeParameter('bool', subData[6]) as unknown as boolean;
-    const onBehalfAddr = AbiCoder.decodeParameter('address', subData[7]) as unknown as EthereumAddress;
+    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
 
     return {
       collAsset,
       collAssetId,
       debtAsset,
       debtAssetId,
-      // useDefaultMarket,
       marketAddr,
       targetRatio,
-      useOnBehalf,
-      onBehalfAddr,
+      user,
     };
   },
 };
@@ -366,20 +268,16 @@ export const aaveV3CloseGenericSubData = {
     debtAsset: EthereumAddress,
     debtAssetId: number,
     closeType: CloseStrategyType,
-    // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    user: EthereumAddress,
   ): SubData {
     const encodedColl = AbiCoder.encodeParameter('address', collAsset);
     const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
     const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
     const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
     const encodedCloseType = AbiCoder.encodeParameter('uint8', closeType);
-    // const useDefaultMarketEncoded = AbiCoder.encodeParameter('bool', useDefaultMarket);
     const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
-    const useOnBehalfEncoded = AbiCoder.encodeParameter('bool', useOnBehalf);
-    const onBehalfAddrEncoded = AbiCoder.encodeParameter('address', onBehalfAddr);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
 
     return [
       encodedColl,
@@ -387,10 +285,8 @@ export const aaveV3CloseGenericSubData = {
       encodedDebt,
       encodedDebtId,
       encodedCloseType,
-      // useDefaultMarketEncoded,
       encodedMarket,
-      useOnBehalfEncoded,
-      onBehalfAddrEncoded,
+      userEncoded,
     ];
   },
 
@@ -400,24 +296,19 @@ export const aaveV3CloseGenericSubData = {
     debtAsset: EthereumAddress,
     debtAssetId: number,
     closeType: CloseStrategyType,
-    // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
-    useOnBehalf: boolean,
-    onBehalfAddr: EthereumAddress,
+    user: EthereumAddress,
   } {
     const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
     const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
     const closeType = Number(AbiCoder.decodeParameter('uint8', subData[4])) as CloseStrategyType;
-    // const useDefaultMarket = AbiCoder.decodeParameter('bool', subData[4]) as unknown as boolean;
     const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
-
-    const useOnBehalf = AbiCoder.decodeParameter('bool', subData[6]) as unknown as boolean;
-    const onBehalfAddr = AbiCoder.decodeParameter('address', subData[7]) as unknown as EthereumAddress;
+    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
 
     return {
-      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, useOnBehalf, onBehalfAddr,
+      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user,
     };
   },
 };
@@ -494,7 +385,6 @@ export const compoundV3LeverageManagementSubData = {
       baseToken,
       new Dec(triggerRepayRatio).mul(1e16).toString(),
       new Dec(triggerBoostRatio).mul(1e16).toString(),
-      // TODO -> Shouldn't repay go first?
       new Dec(targetBoostRatio).mul(1e16).toString(),
       new Dec(targetRepayRatio).mul(1e16).toString(),
       // @ts-ignore // TODO

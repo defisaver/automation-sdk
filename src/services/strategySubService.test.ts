@@ -619,83 +619,6 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('leverageManagementGeneric()', () => {
-      const examples: Array<[
-        [StrategyOrBundleIds, boolean, string],
-        [
-          strategyOrBundleId: number,
-          triggerRatioRepay: number,
-          triggerRatioBoost: number,
-          targetRatioRepay: number,
-          targetRatioBoost: number,
-          isBoostEnabled: boolean,
-          marketAddr: EthereumAddress,
-          isEOA: boolean,
-        ]
-      ]> = [
-        // Test case 1: EOA strategy without boost enabled
-        [
-          [
-            Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
-            true,
-            "0x000000000000000010a741a462780000000000000000000018fae27693b400000000000000000000136dcc951d8c0000000000000000000016345785d8a00000002f39d218133AFaB8F2B819B1066c7E434Ad94E9e01",
-          ],
-          [
-            Bundles.MainnetIds.AAVE_V3_EOA_REPAY,
-            120, // triggerRatioRepay
-            180, // triggerRatioBoost
-            140, // targetRatioRepay
-            160, // targetRatioBoost
-            false, // isBoostEnabled
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            true,
-          ]
-        ],
-        // Test case 2: EOA strategy with BOOST enabled
-        [
-          [
-            Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
-            true,
-            "0x0000000000000000136dcc951d8c000000000000000000001bc16d674ec80000000000000000000016345785d8a00000000000000000000018fae27693b400000187870bCa3F3fd6335c3f4ce8392d69d0b4161d3901",
-          ],
-          [
-            Bundles.MainnetIds.AAVE_V3_EOA_BOOST,
-            140, // triggerRatioRepay
-            200, // triggerRatioBoost
-            160, // targetRatioRepay
-            180, // targetRatioBoost
-            true, // isBoostEnabled
-            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            true,
-          ]
-        ],
-        // Test case 3: Smart wallet strategy (useOnBehalf = false)
-        [
-          [
-            Bundles.MainnetIds.AAVE_V3_REPAY,
-            true,
-            "0x0000000000000000120a871cc002000000000000000000001a5e27eef13e0000000000000000000014d1120d7b160000000000000000000017979cfe362a0000002f39d218133AFaB8F2B819B1066c7E434Ad94E9e00",
-          ],
-          [
-            Bundles.MainnetIds.AAVE_V3_REPAY,
-            130, // triggerRatioRepay
-            190, // triggerRatioBoost
-            150, // targetRatioRepay
-            170, // targetRatioBoost
-            false, // isBoostEnabled
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3Encode.leverageManagementGeneric(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('leverageManagementOnPriceGeneric()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -709,8 +632,7 @@ describe('Feature: strategySubService.ts', () => {
           debtAssetId: number,
           marketAddr: EthereumAddress,
           targetRatio: number,
-          useOnBehalf: boolean,
-          onBehalfAddr: EthereumAddress
+          user: EthereumAddress
         ]
       ]> = [
         [
@@ -726,7 +648,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
               '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
           [
@@ -739,7 +660,6 @@ describe('Feature: strategySubService.ts', () => {
             1,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             200,
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -755,7 +675,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
               '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000001234567890123456789012345678901234567890',
             ],
           ],
@@ -769,7 +688,6 @@ describe('Feature: strategySubService.ts', () => {
             1,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             200,
-            true,
             web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
@@ -791,13 +709,12 @@ describe('Feature: strategySubService.ts', () => {
           collAssetId: number,
           debtAsset: EthereumAddress,
           debtAssetId: number,
+          marketAddr: EthereumAddress,
+          user: EthereumAddress,
           stopLossPrice: number,
           stopLossType: CloseToAssetType,
           takeProfitPrice: number,
-          takeProfitType: CloseToAssetType,
-          marketAddr: EthereumAddress,
-          useOnBehalf: boolean,
-          onBehalfAddr: EthereumAddress
+          takeProfitType: CloseToAssetType
         ]
       ]> = [
         // Stop loss only (to debt)
@@ -805,7 +722,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -814,7 +731,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000003',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
           [
@@ -823,13 +739,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
             1500, // stopLossPrice
             CloseToAssetType.DEBT, // stopLossType
             0, // takeProfitPrice
             CloseToAssetType.COLLATERAL, // takeProfitType (not used since price is 0)
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
         // Take profit only (to collateral)
@@ -837,7 +752,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -845,7 +760,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
@@ -855,13 +769,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
             0, // stopLossPrice
             CloseToAssetType.DEBT, // stopLossType (not used since price is 0)
             5000, // takeProfitPrice
             CloseToAssetType.COLLATERAL, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
         // Both stop loss and take profit with useOnBehalf
@@ -869,7 +782,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+             ['0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
             [
               '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
               '0x0000000000000000000000000000000000000000000000000000000000000002',
@@ -877,7 +790,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000004',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000001234567890123456789012345678901234567890',
             ],
           ],
@@ -887,13 +799,12 @@ describe('Feature: strategySubService.ts', () => {
             2,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
             1500, // stopLossPrice
             CloseToAssetType.COLLATERAL, // stopLossType
             4000, // takeProfitPrice
             CloseToAssetType.COLLATERAL, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            true,
-            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
         // Stop loss only (to collateral) - CloseStrategyType.STOP_LOSS_IN_COLLATERAL
@@ -901,7 +812,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -909,7 +820,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
@@ -919,13 +829,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
             1500, // stopLossPrice
             CloseToAssetType.COLLATERAL, // stopLossType
             0, // takeProfitPrice
             CloseToAssetType.DEBT, // takeProfitType (not used since price is 0)
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
         // Take profit only (to debt) - CloseStrategyType.TAKE_PROFIT_IN_DEBT
@@ -933,7 +842,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -941,7 +850,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000002',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
@@ -951,13 +859,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
             0, // stopLossPrice
             CloseToAssetType.COLLATERAL, // stopLossType (not used since price is 0)
             5000, // takeProfitPrice
             CloseToAssetType.DEBT, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
         // Take profit in collateral and stop loss in debt - CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT
@@ -965,7 +872,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+             ['0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
             [
               '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
               '0x0000000000000000000000000000000000000000000000000000000000000002',
@@ -973,7 +880,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000005',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000001234567890123456789012345678901234567890',
             ],
           ],
@@ -983,13 +889,12 @@ describe('Feature: strategySubService.ts', () => {
             2,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
             1500, // stopLossPrice
             CloseToAssetType.DEBT, // stopLossType
             4000, // takeProfitPrice
             CloseToAssetType.COLLATERAL, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            true,
-            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
         // Both stop loss and take profit in debt - CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT
@@ -997,7 +902,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1006,7 +911,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000006',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
             ],
           ],
           [
@@ -1015,13 +919,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
             1500, // stopLossPrice
             CloseToAssetType.DEBT, // stopLossType
             4000, // takeProfitPrice
             CloseToAssetType.DEBT, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            false,
-            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
         // Take profit in debt and stop loss in collateral - CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL
@@ -1029,7 +932,7 @@ describe('Feature: strategySubService.ts', () => {
           [
             Bundles.MainnetIds.AAVE_V3_EOA_CLOSE,
             true,
-            ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
             [
               '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
               '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1037,7 +940,6 @@ describe('Feature: strategySubService.ts', () => {
               '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000000000000000000000000000000000000000000007',
               '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
-              '0x0000000000000000000000000000000000000000000000000000000000000001',
               '0x0000000000000000000000009876543210987654321098765432109876543210',
             ],
           ],
@@ -1047,13 +949,12 @@ describe('Feature: strategySubService.ts', () => {
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
             1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x9876543210987654321098765432109876543210'),
             1500, // stopLossPrice
             CloseToAssetType.COLLATERAL, // stopLossType
             4000, // takeProfitPrice
             CloseToAssetType.DEBT, // takeProfitType
-            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
-            true,
-            web3Utils.toChecksumAddress('0x9876543210987654321098765432109876543210'),
           ]
         ],
       ];

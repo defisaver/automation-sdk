@@ -658,9 +658,8 @@ export const compoundV3PriceRangeTrigger = {
   },
 };
 
-export const aaveV3PriceRangeTrigger = {
+export const aaveV3QuotePriceRangeTrigger = {
   encode(
-    market: EthereumAddress,
     collToken: EthereumAddress,
     debtToken: EthereumAddress,
     lowerPrice: number,
@@ -671,20 +670,19 @@ export const aaveV3PriceRangeTrigger = {
     const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
     return [
       AbiCoder.encodeParameters(
-        ['address', 'address', 'address', 'uint256', 'uint256'],
-        [market, collToken, debtToken, lowerPriceFormatted, upperPriceFormatted]),
+        ['address', 'address', 'uint256', 'uint256'],
+        [collToken, debtToken, lowerPriceFormatted, upperPriceFormatted]),
     ];
   },
   decode(
     triggerData: TriggerData,
   ) {
-    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'address', 'uint256', 'uint256'], triggerData[0]);
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint256'], triggerData[0]);
     return {
-      market: decodedData[0] as EthereumAddress,
-      collToken: decodedData[1] as EthereumAddress,
-      debtToken: decodedData[2] as EthereumAddress,
-      lowerPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
-      upperPrice: new Dec(decodedData[4] as string).div(1e8).toString(),
+      collToken: decodedData[0] as EthereumAddress,
+      debtToken: decodedData[1] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[2] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
     };
   },
 };

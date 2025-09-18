@@ -31,7 +31,7 @@ import {
   morphoBlueRatioTrigger,
   crvUsdHealthRatioTrigger, liquityV2DebtInFrontTrigger, liquityV2AdjustTimeTrigger,
   compoundV3PriceRangeTrigger,
-  aaveV3PriceRangeTrigger,
+  aaveV3QuotePriceRangeTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1234,51 +1234,49 @@ describe('Feature: triggerService.ts', () => {
   });
   describe('When testing triggerService.aaveV3PriceRangeTrigger', () => {
     describe('encode()', () => {
-      const examples: Array<[[string], [market: EthereumAddress, collToken: EthereumAddress, debtToken: EthereumAddress, lowerPrice: number, upperPrice: number]]> = [
+      const examples: Array<[[string], [collToken: EthereumAddress, debtToken: EthereumAddress, lowerPrice: number, upperPrice: number]]> = [
         [
-          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
-          [web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 1500, 4000]
+          ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+          [web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 1500, 4000]
         ],
         [
-          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
-          [web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 0, 5000]
+          ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+          [web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 0, 5000]
         ],
       ];
 
         examples.forEach(([expected, actual]) => {
           it(`Given ${actual} should return expected value: ${expected}`, () => {
-            expect(aaveV3PriceRangeTrigger.encode(...actual)).to.eql(expected);
+            expect(aaveV3QuotePriceRangeTrigger.encode(...actual)).to.eql(expected);
           });
       });
     });
 
     describe('decode()', () => {
-      const examples: Array<[{ market: EthereumAddress, collToken: EthereumAddress, debtToken: EthereumAddress, lowerPrice: string, upperPrice: string }, TriggerData]> = [
+      const examples: Array<[{ collToken: EthereumAddress, debtToken: EthereumAddress, lowerPrice: string, upperPrice: string }, TriggerData]> = [
         [
           {
-            market: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             debtToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             lowerPrice: '1500',
             upperPrice: '4000',
           },
-          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+          ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
         ],
         [
           {
-            market: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
             collToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
             debtToken: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
             lowerPrice: '0',
             upperPrice: '5000',
           },
-          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+          ['000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
         ],
       ];
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3PriceRangeTrigger.decode(actual)).to.eql(expected);
+          expect(aaveV3QuotePriceRangeTrigger.decode(actual)).to.eql(expected);
         });
       });
     });

@@ -1544,100 +1544,6 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe("When testing subDataService.aaveV3LeverageManagementGeneric", () => {
-    describe("encode()", () => {
-      const examples: Array<
-        [
-          string,
-          [
-            triggerRatioRepay: number,
-            triggerRatioBoost: number,
-            targetRatioRepay: number,
-            targetRatioBoost: number,
-            isBoostEnabled: boolean,
-            marketAddr: EthereumAddress,
-            isEOA: boolean,
-          ]
-        ]
-      > = [
-        [
-          "0x00000000000000000de0b6b3a764000000000000000000001e87f85809dc0000000000000000000010a741a46278000000000000000000001bc16d674ec80000012f39d218133AFaB8F2B819B1066c7E434Ad94E9e01",
-          [
-            100, // triggerRatioRepay
-            220, // triggerRatioBoost
-            120, // targetRatioRepay
-            200, // targetRatioBoost
-            true, // isBoostEnabled
-            web3Utils.toChecksumAddress(
-              "0x2f39d218133afab8f2b819b1066c7e434ad94e9e"
-            ), // marketAddr
-            true, // isEOA
-          ],
-        ],
-        [
-          "0x000000000000000017979cfe362a000000000000000000001e87f85809dc000000000000000000001a5e27eef13e000000000000000000001bc16d674ec80000007d2768dE32b0b80b7a3454c06BdAc94A69DDc7A900",
-          [
-            170, // triggerRatioRepay
-            220, // triggerRatioBoost
-            190, // targetRatioRepay
-            200, // targetRatioBoost
-            false, // isBoostEnabled
-            web3Utils.toChecksumAddress(
-              "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
-            ), // marketAddr
-            false, // isEOA
-          ],
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(
-            subDataService.aaveV3LeverageManagementGeneric.encode(...actual)
-          ).to.eql(expected);
-        });
-      });
-    });
-
-    describe("decode()", () => {
-      const examples: Array<
-        [
-          {
-            targetRatio: number;
-          },
-          SubData
-        ]
-      > = [
-        [
-          {
-            targetRatio: 120,
-          },
-          [
-            "0x00000000000000000000000000000000000000000000000010a741a462780000",
-          ],
-        ],
-        [
-          {
-            targetRatio: 190,
-          },
-          [
-            "0x0000000000000000000000000000000000000000000000001a5e27eef13e0000",
-          ],
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(
-          expected
-        )}`, () => {
-          expect(
-            subDataService.aaveV3LeverageManagementGeneric.decode(actual)
-          ).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe("When testing subDataService.aaveV3LeverageManagementOnPriceGeneric", () => {
     describe("encode()", () => {
       const examples: Array<
@@ -1650,8 +1556,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             marketAddr: EthereumAddress,
             targetRatio: number,
-            useOnBehalf: boolean,
-            onBehalfAddr: EthereumAddress
+            user: EthereumAddress
           ]
         ]
       > = [
@@ -1664,7 +1569,6 @@ describe('Feature: subDataService.ts', () => {
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1673,7 +1577,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             200,
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1685,7 +1588,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000001234567890123456789012345678901234567890',
           ],
           [
@@ -1695,7 +1597,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             200,
-            true,
             web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
@@ -1722,8 +1623,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             marketAddr: EthereumAddress,
             targetRatio: number,
-            useOnBehalf: boolean,
-            onBehalfAddr: EthereumAddress,
+            user: EthereumAddress,
           },
           string[]
         ]
@@ -1736,8 +1636,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             targetRatio: 200,
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -1746,7 +1645,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -1758,8 +1656,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             targetRatio: 200,
-            useOnBehalf: true,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -1768,7 +1665,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000001234567890123456789012345678901234567890',
           ]
         ],
@@ -1798,8 +1694,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             closeType: CloseStrategyType,
             marketAddr: EthereumAddress,
-            useOnBehalf: boolean,
-            onBehalfAddr: EthereumAddress
+            user: EthereumAddress
           ]
         ]
       > = [
@@ -1813,7 +1708,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1822,7 +1716,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1836,7 +1729,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1845,7 +1737,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1859,7 +1750,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000002',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1868,7 +1758,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_IN_DEBT,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1882,7 +1771,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000003',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
@@ -1891,7 +1779,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.STOP_LOSS_IN_DEBT,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1904,7 +1791,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000004',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000001234567890123456789012345678901234567890',
           ],
           [
@@ -1914,7 +1800,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            true,
             web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           ]
         ],
@@ -1928,7 +1813,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000005',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
@@ -1937,7 +1821,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1951,7 +1834,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000006',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
@@ -1960,7 +1842,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -1974,7 +1855,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000007',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
           ],
           [
             web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
@@ -1983,7 +1863,6 @@ describe('Feature: subDataService.ts', () => {
             1,
             CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL,
             web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            false,
             web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           ]
         ],
@@ -2010,8 +1889,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             closeType: CloseStrategyType,
             marketAddr: EthereumAddress,
-            useOnBehalf: boolean,
-            onBehalfAddr: EthereumAddress,
+            user: EthereumAddress,
           },
           string[]
         ]
@@ -2025,8 +1903,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2035,7 +1912,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2048,8 +1924,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2058,7 +1933,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2071,8 +1945,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2081,7 +1954,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000002',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2094,8 +1966,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2104,7 +1975,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000003',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2117,8 +1987,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: true,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2127,7 +1996,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000004',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000001234567890123456789012345678901234567890',
           ]
         ],
@@ -2140,8 +2008,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -2150,7 +2017,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000005',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2163,8 +2029,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -2173,7 +2038,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000006',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],
@@ -2186,8 +2050,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            useOnBehalf: false,
-            onBehalfAddr: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -2196,7 +2059,6 @@ describe('Feature: subDataService.ts', () => {
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x0000000000000000000000000000000000000000000000000000000000000007',
             '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
           ]
         ],

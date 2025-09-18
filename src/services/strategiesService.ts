@@ -243,6 +243,9 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
 
   // TODO -> check if this change breaks something?
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
+  // TODO -> check if this change breaks something?
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
@@ -251,8 +254,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
-      // TODO -> Should this be Boost/EoaBoost?
-      mergeWithId: Strategies.Identifiers.Boost,
+      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -260,13 +262,10 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
-      // TODO -> Is boost ok? Or should be Repay? Or EoaBoost or EoaRepay? Or mix?
-      mergeId: Strategies.Identifiers.Boost,
+      mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   }
 
-  // TODO -> check if this change breaks something?
-  const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
   return _position;
 }
@@ -341,7 +340,7 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
     parseData.chainId,
   );
 
-  // TODO -> Should both be TakeProfit & StopLoss, or should be EoaCloseOnPrice ? Or should be as it is now?
+  // TODO -> Check if those changes break something?
   const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA
     ? Strategies.Identifiers.EoaCloseOnPrice
@@ -452,14 +451,15 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
   if (isRepay) {
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
-      // TODO -> Should this be Boost/EoaBoost?
-      mergeWithId: Strategies.Identifiers.Boost,
+      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -467,12 +467,10 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
-      // TODO -> Is boost ok? Or should be Repay? Or EoaBoost or EoaRepay? Or mix?
-      mergeId: Strategies.Identifiers.Boost,
+      mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   }
 
-  const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
   return _position;

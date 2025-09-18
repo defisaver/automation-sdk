@@ -23,10 +23,12 @@ import * as constants from './constants';
 import * as enums from './types/enums';
 import type * as types from './types';
 
-import { getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId } from './services/utils';
+import {
+  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId, getCloseStrategyType,
+} from './services/utils';
 
 const utils = {
-  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId,
+  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId, getCloseStrategyType,
 };
 
 export {
