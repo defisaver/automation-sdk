@@ -164,7 +164,7 @@ export const aaveV2LeverageManagementSubData = {
   },
 };
 
-export const aaveV3LeverageManagementSubData = { // TODO encode?
+export const aaveV3LeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);

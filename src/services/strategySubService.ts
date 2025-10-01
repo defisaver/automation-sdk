@@ -330,7 +330,7 @@ export const aaveV3Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
-    isGeneric: boolean = false, // added later, isGeneric should be `false` for old strategies, for EOA should be `true`. If we switch new SW subs to new strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
+    isGeneric: boolean = false, // added later, isGeneric should be `false` for old strategies (if some are using this). For EOA should be `TRUE` !!! In the future, if we switch new SW subs to generic strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
   ) {
     const isBundle = true;
 
@@ -354,7 +354,6 @@ export const aaveV3Encode = {
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
-    // useDefaultMarket: boolean,
     marketAddr: EthereumAddress,
     targetRatio: number,
     user: EthereumAddress,
@@ -365,7 +364,6 @@ export const aaveV3Encode = {
       collAssetId,
       debtAsset,
       debtAssetId,
-      // useDefaultMarket,
       marketAddr,
       targetRatio,
       user,
