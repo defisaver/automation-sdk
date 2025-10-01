@@ -368,7 +368,7 @@ export const aaveV3Encode = {
       targetRatio,
       user,
     );
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(debtAsset, collAsset, price, ratioState);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(collAsset, debtAsset, price, ratioState);
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 
