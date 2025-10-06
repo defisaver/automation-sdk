@@ -231,7 +231,7 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
 function parseAaveV3LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
@@ -254,6 +254,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
+      subHashRepay: subHash,
       mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   } else {
@@ -262,6 +263,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
+      subHashBoost: subHash,
       mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   }
