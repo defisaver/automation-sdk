@@ -950,9 +950,9 @@ function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, pars
     ratio: subData.targetRatio,
   };
 
-  // TODO -> check if this change breaks something?
-  const isEOA = _position.strategy.strategyId.includes('eoa');
-  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
+  // // TODO -> check if this change breaks something?
+  // const isEOA = _position.strategy.strategyId.includes('eoa');
+  // _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
 
   return _position;
 }
