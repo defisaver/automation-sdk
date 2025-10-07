@@ -235,6 +235,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
+  // TODO -> should change this?
   const subData = subDataService.aaveV3LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
@@ -316,7 +317,9 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
 
   const { subStruct } = parseData.subscriptionEventData;
 
+  // TODO -> should prob be quote price range trigger?
   const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+  // TODO -> should change this?
   const subData = subDataService.aaveV3QuotePriceSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
@@ -932,7 +935,7 @@ function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, pars
   const { subStruct } = parseData.subscriptionEventData;
 
   const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV3LeverageManagementOnPriceSubData.decode(subStruct.subData);
+  const subData = subDataService.aaveV3LeverageManagementOnPriceGeneric.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
