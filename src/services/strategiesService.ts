@@ -269,8 +269,9 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       subHashBoost: subHash,
     };
   }
-
-  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  if (!isEOA) {
+    _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  }
 
   return _position;
 }
