@@ -235,57 +235,12 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
-  // TODO -> should change this?
   const subData = subDataService.aaveV3LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
-
-  // TODO -> check if this change breaks something?
-  const isEOA = _position.strategy.strategyId.includes('eoa');
-
-  // TODO -> check if this change breaks something?
-  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
-
-  if (isRepay) {
-    _position.specific = {
-      triggerRepayRatio: triggerData.ratio,
-      targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
-      subId1: Number(subId),
-      subHashRepay: subHash,
-      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
-    };
-  } else {
-    _position.specific = {
-      triggerBoostRatio: triggerData.ratio,
-      targetBoostRatio: subData.targetRatio,
-      boostEnabled: isEnabled,
-      subId2: Number(subId),
-      subHashBoost: subHash,
-      mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
-    };
-  }
-
-  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
-  return _position;
-}
-
-function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
-  const _position = cloneDeep(position);
-
-  const { subStruct, subId } = parseData.subscriptionEventData;
-  const { isEnabled } = parseData.strategiesSubsData;
-
-  const triggerData = triggerService.morphoAaveV2RatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.morphoAaveV2LeverageManagementSubData.decode(subStruct.subData);
-
-  _position.strategyData.decoded.triggerData = triggerData;
-  _position.strategyData.decoded.subData = subData;
-
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
 
   const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
 
@@ -296,6 +251,7 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
       repayEnabled: true,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -304,6 +260,7 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -312,6 +269,80 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
   return _position;
 }
 
+function parseAaveV3LeverageManagementGeneric(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.EoaRepay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+      subHashRepay: subHash,
+      mergeWithId: Strategies.Identifiers.EoaBoost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      subHashBoost: subHash,
+      mergeId: Strategies.Identifiers.EoaBoost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.EoaLeverageManagement;
+  return _position;
+}
+// TODO -> Split this
+function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+  let subData;
+  if (isEOA) {
+    subData = subDataService.aaveV3LeverageManagementOnPriceGeneric.decode(subStruct.subData);
+  } else {
+    subData = subDataService.aaveV3LeverageManagementOnPriceSubData.decode(subStruct.subData);
+  }
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  _position.specific = {
+    collAsset: subData.collAsset,
+    debtAsset: subData.debtAsset,
+    baseToken: triggerData.baseTokenAddress,
+    quoteToken: triggerData.quoteTokenAddress,
+    price: triggerData.price,
+    ratioState: triggerData.ratioState,
+    debtAssetId: subData.debtAssetId,
+    collAssetId: subData.collAssetId,
+    ratio: subData.targetRatio,
+  };
+
+  // _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
+
+  return _position;
+}
+// TODO -> Split this
 function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -352,6 +383,45 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
     : (_position.strategy.strategyId = isRatioStateOver(ratioState)
       ? Strategies.IdOverrides.TakeProfit
       : Strategies.IdOverrides.StopLoss);
+
+  return _position;
+}
+
+function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.morphoAaveV2RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoAaveV2LeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
+  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: true,
+      subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
+    };
+  }
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
 
   return _position;
 }
@@ -929,37 +999,6 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
   return _position;
 }
 
-function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
-  const _position = cloneDeep(position);
-
-  const { subStruct } = parseData.subscriptionEventData;
-
-  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV3LeverageManagementOnPriceGeneric.decode(subStruct.subData);
-
-  _position.strategyData.decoded.triggerData = triggerData;
-  _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
-
-  _position.specific = {
-    collAsset: subData.collAsset,
-    debtAsset: subData.debtAsset,
-    baseToken: triggerData.baseTokenAddress,
-    quoteToken: triggerData.quoteTokenAddress,
-    price: triggerData.price,
-    ratioState: triggerData.ratioState,
-    debtAssetId: subData.debtAssetId,
-    collAssetId: subData.collAssetId,
-    ratio: subData.targetRatio,
-  };
-
-  // // TODO -> check if this change breaks something?
-  // const isEOA = _position.strategy.strategyId.includes('eoa');
-  // _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
-
-  return _position;
-}
-
 function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -1128,8 +1167,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CloseToCollateralWithGasPrice]: parseAaveV3CloseOnPriceWithMaximumGasPrice,
     [Strategies.Identifiers.OpenOrderFromCollateral]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.RepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
-    [Strategies.Identifiers.EoaRepay]: parseAaveV3LeverageManagement,
-    [Strategies.Identifiers.EoaBoost]: parseAaveV3LeverageManagement,
+    [Strategies.Identifiers.EoaRepay]: parseAaveV3LeverageManagementGeneric,
+    [Strategies.Identifiers.EoaBoost]: parseAaveV3LeverageManagementGeneric,
     [Strategies.Identifiers.EoaRepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
