@@ -271,6 +271,8 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   }
   if (!isEOA) {
     _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  } else {
+    _position.strategy.strategyId = Strategies.IdOverrides.EoaLeverageManagement;
   }
 
   return _position;
