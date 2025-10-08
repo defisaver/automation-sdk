@@ -306,47 +306,64 @@ function parseAaveV3LeverageManagementOnPrice(position: Position.Automated, pars
 
   return _position;
 }
-// TODO -> Split this
+
 function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  // TODO -> should prob be quote price range trigger?
-  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  // TODO -> should change this?
-  const subData = subDataService.aaveV3QuotePriceSubData.decode(subStruct.subData);
-
-  _position.strategyData.decoded.triggerData = triggerData;
-  _position.strategyData.decoded.subData = subData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, AAVE_V3_MARKET_ADDRESSES[_position.chainId]);
 
-  _position.specific = {
-    collAsset: subData.collAsset,
-    collAssetId: subData.collAssetId,
-    debtAsset: subData.debtAsset,
-    debtAssetId: subData.debtAssetId,
-    baseToken: triggerData.baseTokenAddress,
-    quoteToken: triggerData.quoteTokenAddress,
-    price: triggerData.price,
-    ratioState: triggerData.ratioState,
-  };
+  if (isEOA) {
+    const triggerData = triggerService.aaveV3QuotePriceRangeTrigger.decode(subStruct.triggerData);
+    const subData = subDataService.aaveV3CloseGenericSubData.decode(subStruct.subData);
 
-  const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
-    _position.specific.ratioState,
-    wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
-    wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
-    parseData.chainId,
-  );
+    _position.strategyData.decoded.triggerData = triggerData;
+    _position.strategyData.decoded.subData = subData;
 
-  // TODO -> Check if those changes break something?
-  const isEOA = _position.strategy.strategyId.includes('eoa');
-  _position.strategy.strategyId = isEOA
-    ? Strategies.Identifiers.EoaCloseOnPrice
-    : (_position.strategy.strategyId = isRatioStateOver(ratioState)
+    _position.specific = {
+      collAsset: subData.collAsset,
+      collAssetId: subData.collAssetId,
+      debtAsset: subData.debtAsset,
+      debtAssetId: subData.debtAssetId,
+      baseToken: triggerData.collToken,
+      quoteToken: triggerData.debtToken,
+      stopLossPrice: triggerData.lowerPrice,
+      takeProfitPrice: triggerData.upperPrice,
+    };
+
+    _position.strategy.strategyId = Strategies.Identifiers.EoaCloseOnPrice;
+  } else {
+    const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+    const subData = subDataService.aaveV3QuotePriceSubData.decode(subStruct.subData);
+
+    _position.strategyData.decoded.triggerData = triggerData;
+    _position.strategyData.decoded.subData = subData;
+
+    _position.specific = {
+      collAsset: subData.collAsset,
+      collAssetId: subData.collAssetId,
+      debtAsset: subData.debtAsset,
+      debtAssetId: subData.debtAssetId,
+      baseToken: triggerData.baseTokenAddress,
+      quoteToken: triggerData.quoteTokenAddress,
+      price: triggerData.price,
+      ratioState: triggerData.ratioState,
+    };
+
+    const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
+      _position.specific.ratioState,
+      wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
+      wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
+      parseData.chainId,
+    );
+
+    _position.strategy.strategyId = isRatioStateOver(ratioState)
       ? Strategies.IdOverrides.TakeProfit
-      : Strategies.IdOverrides.StopLoss);
+      : Strategies.IdOverrides.StopLoss;
+  }
 
   return _position;
 }
