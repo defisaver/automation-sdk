@@ -236,7 +236,7 @@ export const aaveV3LeverageManagementOnPriceGeneric = {
     debtAssetId: number,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    user: EthereumAddress,
+    owner: EthereumAddress,
   } {
     const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
@@ -247,7 +247,7 @@ export const aaveV3LeverageManagementOnPriceGeneric = {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
 
-    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
 
     return {
       collAsset,
@@ -256,7 +256,7 @@ export const aaveV3LeverageManagementOnPriceGeneric = {
       debtAssetId,
       marketAddr,
       targetRatio,
-      user,
+      owner,
     };
   },
 };
@@ -297,7 +297,7 @@ export const aaveV3CloseGenericSubData = {
     debtAssetId: number,
     closeType: CloseStrategyType,
     marketAddr: EthereumAddress,
-    user: EthereumAddress,
+    owner: EthereumAddress,
   } {
     const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
@@ -305,10 +305,10 @@ export const aaveV3CloseGenericSubData = {
     const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
     const closeType = Number(AbiCoder.decodeParameter('uint8', subData[4])) as CloseStrategyType;
     const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
-    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
 
     return {
-      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user,
+      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, owner,
     };
   },
 };
