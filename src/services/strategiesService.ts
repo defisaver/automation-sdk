@@ -256,7 +256,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
       targetRepayRatio: subData.targetRatio,
       repayEnabled: true,
       subId1: Number(subId),
-      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.EoaBoost,
+      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
       subHashRepay: subHash,
     };
   } else {
