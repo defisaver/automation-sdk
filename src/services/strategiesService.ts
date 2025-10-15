@@ -323,6 +323,8 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
     const triggerData = triggerService.aaveV3QuotePriceRangeTrigger.decode(subStruct.triggerData);
     const subData = subDataService.aaveV3CloseGenericSubData.decode(subStruct.subData);
 
+    const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+
     _position.strategyData.decoded.triggerData = triggerData;
     _position.strategyData.decoded.subData = subData;
 
@@ -335,6 +337,8 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
       quoteToken: triggerData.debtToken,
       stopLossPrice: triggerData.lowerPrice,
       takeProfitPrice: triggerData.upperPrice,
+      stopLossType,
+      takeProfitType,
     };
 
     _position.strategy.strategyId = Strategies.Identifiers.EoaCloseOnPrice;
