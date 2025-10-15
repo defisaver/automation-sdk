@@ -254,7 +254,7 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
       subHashRepay: subHash,
