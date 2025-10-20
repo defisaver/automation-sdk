@@ -213,7 +213,6 @@ export namespace Bundles {
     COMP_V3_EOA_REPAY_ON_PRICE = 49,
     COMP_V3_EOA_BOOST_ON_PRICE = 50,
     COMP_V3_EOA_CLOSE = 51,
-    // TODO -> Watch out for Liquity V2 Strategy deploy, should change IDs or here or there !!!
     AAVE_V3_EOA_REPAY = 52,
     AAVE_V3_EOA_BOOST = 53,
     AAVE_V3_EOA_REPAY_ON_PRICE = 54,

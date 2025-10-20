@@ -124,26 +124,6 @@ export declare namespace Position {
       mergeWithId?: Strategies.Identifiers,
       mergeId?: Strategies.Identifiers
     }
-    // TODO -> Prob should be better to type it something like this
-    // type RatioProtection =
-    // | (Base & {
-    //   triggerRepayRatio: number
-    //   targetRepayRatio: number
-    //   repayEnabled: boolean
-
-    //   triggerBoostRatio?: never
-    //   targetBoostRatio?: never
-    //   boostEnabled?: never
-    // })
-    // | (Base & {
-    //   triggerBoostRatio: number
-    //   targetBoostRatio: number
-    //   boostEnabled: boolean
-
-    //   triggerRepayRatio?: never
-    //   targetRepayRatio?: never
-    //   repayEnabled?: never
-    // });
     interface RatioProtection extends Base {
       triggerRepayRatio?: number,
       targetRepayRatio?: number,
