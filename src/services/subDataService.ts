@@ -164,7 +164,7 @@ export const aaveV2LeverageManagementSubData = {
   },
 };
 
-export const aaveV3LeverageManagementSubData = { // TODO encode?
+export const aaveV3LeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -177,12 +177,20 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    isGeneric: boolean,
   ): SubData {
     const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+
+    if (isGeneric) {
+      const encodedMarket = AbiCoder.encodeParameter('address', market);
+      const encodedUser = AbiCoder.encodeParameter('address', user);
+      return [encodedTargetRatio, encodedRatioState, encodedMarket, encodedUser];
+    }
     const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', true);
     const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', false);
-
     return [encodedTargetRatio, encodedRatioState, encodedUseDefaultMarket, encodedUseOnBehalf];
   },
   decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
@@ -190,6 +198,118 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
     const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
 
     return { targetRatio, ratioState };
+  },
+};
+
+export const aaveV3LeverageManagementOnPriceGeneric = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const userEncoded = AbiCoder.encodeParameter('address', user);
+
+    return [
+      encodedColl,
+      encodedCollId,
+      encodedDebt,
+      encodedDebtId,
+      encodedMarket,
+      encodedTargetRatio,
+      userEncoded,
+    ];
+  },
+  decode(subData: SubData): {
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    owner: EthereumAddress,
+  } {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
+
+    const owner = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+
+    return {
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      marketAddr,
+      targetRatio,
+      owner,
+    };
+  },
+};
+
+export const aaveV3CloseGenericSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    closeType: CloseStrategyType,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
+    const encodedCloseType = AbiCoder.encodeParameter('uint8', closeType);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
+
+    return [
+      encodedColl,
+      encodedCollId,
+      encodedDebt,
+      encodedDebtId,
+      encodedCloseType,
+      encodedMarket,
+      userEncoded,
+    ];
+  },
+
+  decode(subData: SubData): {
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    closeType: CloseStrategyType,
+    marketAddr: EthereumAddress,
+    owner: EthereumAddress,
+  } {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[4])) as CloseStrategyType;
+    const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, owner,
+    };
   },
 };
 

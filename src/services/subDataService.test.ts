@@ -1543,4 +1543,536 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+
+  describe("When testing subDataService.aaveV3LeverageManagementOnPriceGeneric", () => {
+    describe("encode()", () => {
+      const examples: Array<
+        [
+          string[],
+          [
+            collAsset: EthereumAddress,
+            collAssetId: number,
+            debtAsset: EthereumAddress,
+            debtAssetId: number,
+            marketAddr: EthereumAddress,
+            targetRatio: number,
+            user: EthereumAddress
+          ]
+        ]
+      > = [
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            200,
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        [
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            200,
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(...actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+
+    describe("decode()", () => {
+      const examples: Array<
+        [
+          {
+            collAsset: EthereumAddress,
+            collAssetId: number,
+            debtAsset: EthereumAddress,
+            debtAssetId: number,
+            marketAddr: EthereumAddress,
+            targetRatio: number,
+            user: EthereumAddress,
+          },
+          string[]
+        ]
+      > = [
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            targetRatio: 200,
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            collAssetId: 2,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            targetRatio: 200,
+            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          },
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3LeverageManagementOnPriceGeneric.decode(actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe("When testing subDataService.aaveV3CloseGenericSubData", () => {
+    describe("encode()", () => {
+      const examples: Array<
+        [
+          string[],
+          [
+            collAsset: EthereumAddress,
+            collAssetId: number,
+            debtAsset: EthereumAddress,
+            debtAssetId: number,
+            closeType: CloseStrategyType,
+            marketAddr: EthereumAddress,
+            user: EthereumAddress
+          ]
+        ]
+      > = [
+        // TAKE_PROFIT_IN_COLLATERAL
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // STOP_LOSS_IN_COLLATERAL
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // TAKE_PROFIT_IN_DEBT
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_IN_DEBT,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // STOP_LOSS_IN_DEBT
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.STOP_LOSS_IN_DEBT,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000004',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ]
+        ],
+        // TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT
+        [
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000005',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT
+        [
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000006',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+        // TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL
+        [
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3CloseGenericSubData.encode(...actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+
+    describe("decode()", () => {
+      const examples: Array<
+        [
+          {
+            collAsset: EthereumAddress,
+            collAssetId: number,
+            debtAsset: EthereumAddress,
+            debtAssetId: number,
+            closeType: CloseStrategyType,
+            marketAddr: EthereumAddress,
+            user: EthereumAddress,
+          },
+          string[]
+        ]
+      > = [
+        // TAKE_PROFIT_IN_COLLATERAL
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // STOP_LOSS_IN_COLLATERAL
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // TAKE_PROFIT_IN_DEBT
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // STOP_LOSS_IN_DEBT
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.STOP_LOSS_IN_DEBT,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000004',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ]
+        ],
+        // TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            collAssetId: 2,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000005',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            collAssetId: 2,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000006',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+        // TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            collAssetId: 2,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+          },
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3CloseGenericSubData.decode(actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+  });
 });

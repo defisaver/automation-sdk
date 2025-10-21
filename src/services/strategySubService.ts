@@ -330,12 +330,68 @@ export const aaveV3Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
+    isGeneric: boolean = false, // added later, isGeneric should be `false` for old strategies (if some are using this). For EOA should be `TRUE` !!! In the future, if we switch new SW subs to generic strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
   ) {
     const isBundle = true;
-    const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+
+    const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+      isGeneric,
+    );
     const triggerData = triggerService.aaveV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
+  leverageManagementOnPriceGeneric(
+    strategyOrBundleId: number,
+    price: number,
+    ratioState: RatioState,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ) {
+    const isBundle = true;
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      marketAddr,
+      targetRatio,
+      user,
+    );
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(collAsset, debtAsset, price, ratioState);
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+
+  closeOnPriceGeneric(
+    strategyOrBundleId: number,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 };
 

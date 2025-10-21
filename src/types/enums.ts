@@ -213,6 +213,11 @@ export namespace Bundles {
     COMP_V3_EOA_REPAY_ON_PRICE = 49,
     COMP_V3_EOA_BOOST_ON_PRICE = 50,
     COMP_V3_EOA_CLOSE = 51,
+    AAVE_V3_EOA_REPAY = 52,
+    AAVE_V3_EOA_BOOST = 53,
+    AAVE_V3_EOA_REPAY_ON_PRICE = 54,
+    AAVE_V3_EOA_BOOST_ON_PRICE = 55,
+    AAVE_V3_EOA_CLOSE = 56,
   }
 
   export enum OptimismIds {
@@ -222,6 +227,11 @@ export namespace Bundles {
     AAVE_V3_CLOSE_TO_COLLATERAL = 3,
     AAVE_V3_OPEN_ORDER_FROM_COLLATERAL = 4,
     AAVE_V3_REPAY_ON_PRICE = 5,
+    AAVE_V3_EOA_REPAY = 6,
+    AAVE_V3_EOA_BOOST = 7,
+    AAVE_V3_EOA_REPAY_ON_PRICE = 8,
+    AAVE_V3_EOA_BOOST_ON_PRICE = 9,
+    AAVE_V3_EOA_CLOSE = 10,
   }
 
   export enum BaseIds {
@@ -246,6 +256,11 @@ export namespace Bundles {
     COMP_V3_EOA_CLOSE = 20,
     COMP_V3_EOA_REPAY = 21,
     COMP_V3_EOA_BOOST = 22,
+    AAVE_V3_EOA_REPAY = 23,
+    AAVE_V3_EOA_BOOST = 24,
+    AAVE_V3_EOA_REPAY_ON_PRICE = 25,
+    AAVE_V3_EOA_BOOST_ON_PRICE = 26,
+    AAVE_V3_EOA_CLOSE = 27,
   }
 
   export enum ArbitrumIds {
@@ -267,6 +282,11 @@ export namespace Bundles {
     COMP_V3_EOA_CLOSE = 15,
     COMP_V3_EOA_REPAY = 16,
     COMP_V3_EOA_BOOST = 17,
+    AAVE_V3_EOA_REPAY = 18,
+    AAVE_V3_EOA_BOOST = 19,
+    AAVE_V3_EOA_REPAY_ON_PRICE = 20,
+    AAVE_V3_EOA_BOOST_ON_PRICE = 21,
+    AAVE_V3_EOA_CLOSE = 22,
   }
 }
 

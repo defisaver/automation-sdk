@@ -146,6 +146,18 @@ export declare namespace Position {
       price: string,
       ratioState: RatioState,
     }
+
+    interface AaveV3CloseOnPriceGeneric extends Base {
+      collAsset: EthereumAddress,
+      collAssetId: number,
+      debtAsset: EthereumAddress,
+      debtAssetId: number,
+      baseToken: EthereumAddress,
+      quoteToken: EthereumAddress,
+      stopLossPrice: string,
+      takeProfitPrice: string,
+    }
+
     interface BoostOnPriceAave extends CloseOnPriceAave {
       ratio: number,
     }
@@ -240,7 +252,8 @@ export declare namespace Position {
     | Specific.BoostOnPriceLiquityV2
     | Specific.PaybackLiquityV2
     | Specific.CompoundV3LeverageManagementOnPrice
-    | Specific.CompoundV3CloseOnPrice;
+    | Specific.CompoundV3CloseOnPrice
+    | Specific.AaveV3CloseOnPriceGeneric;
 
   export interface Automated {
     chainId: ChainId,
