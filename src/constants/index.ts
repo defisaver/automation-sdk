@@ -803,6 +803,16 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const BUNDLES_INFO: BundlesInfo = {

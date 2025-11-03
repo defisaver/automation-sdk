@@ -290,6 +290,8 @@ export namespace Bundles {
     MORPHO_BLUE_REPAY = 23,
     MORPHO_BLUE_BOOST = 24,
     MORPHO_BLUE_BOOST_ON_PRICE = 25,
+    MORPHO_BLUE_EOA_REPAY = 26,
+    MORPHO_BLUE_EOA_BOOST = 27,
   }
 }
 
