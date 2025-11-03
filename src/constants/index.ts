@@ -118,6 +118,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.Payback,
     protocol: PROTOCOLS.LiquityV2,
   },
+  [Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
@@ -130,6 +135,11 @@ export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
     strategyOrBundleId: Strategies.OptimismIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.OptimismIds.AAVE_V3_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.OptimismIds.AAVE_V3_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
@@ -144,6 +154,11 @@ export const BASE_STRATEGIES_INFO: BaseStrategiesInfo = {
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
   },
+  [Strategies.BaseIds.AAVE_V3_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.BaseIds.AAVE_V3_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const ARBITRUM_STRATEGIES_INFO: ArbitrumStrategiesInfo = {
@@ -156,6 +171,11 @@ export const ARBITRUM_STRATEGIES_INFO: ArbitrumStrategiesInfo = {
     strategyOrBundleId: Strategies.ArbitrumIds.EXCHANGE_LIMIT_ORDER,
     strategyId: Strategies.Identifiers.LimitOrder,
     protocol: PROTOCOLS.Exchange,
+  },
+  [Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
