@@ -625,8 +625,10 @@ export const morphoBlueEncode = {
       return [isBoost ? Bundles.BaseIds.MORPHO_BLUE_BOOST : Bundles.BaseIds.MORPHO_BLUE_REPAY, true, triggerData, subData];
     }
 
-    if (isBoost) strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST : Bundles.MainnetIds.MORPHO_BLUE_BOOST;
-    else strategyOrBundleId = isEOA ? Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY : Bundles.MainnetIds.MORPHO_BLUE_REPAY;
+    const bundlesIds = network === ChainId.Arbitrum ? Bundles.ArbitrumIds : Bundles.MainnetIds;
+
+    if (isBoost) strategyOrBundleId = isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST : bundlesIds.MORPHO_BLUE_BOOST;
+    else strategyOrBundleId = isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY : bundlesIds.MORPHO_BLUE_REPAY;
     const isBundle = true;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
