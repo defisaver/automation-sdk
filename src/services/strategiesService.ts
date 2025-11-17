@@ -371,6 +371,18 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
   return _position;
 }
 
+function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV3CollateralSwitchSubData.decode(subStruct.subData);
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+
+  return _position;
+}
+
 function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -1120,6 +1132,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaRepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
+    [Strategies.Identifiers.CollateralSwitch]: parseAaveV3CollateralSwitch,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
