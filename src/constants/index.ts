@@ -311,16 +311,6 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.Spark,
   },
-  [Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT]: {
-    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT,
-    strategyId: Strategies.Identifiers.CloseToDebt,
-    protocol: PROTOCOLS.Spark,
-  },
-  [Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL]: {
-    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL,
-    strategyId: Strategies.Identifiers.CloseToCollateral,
-    protocol: PROTOCOLS.Spark,
-  },
   [Bundles.MainnetIds.AAVE_V2_REPAY]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V2_REPAY,
     strategyId: Strategies.Identifiers.Repay,

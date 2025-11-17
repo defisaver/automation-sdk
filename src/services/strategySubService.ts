@@ -536,28 +536,6 @@ export const sparkEncode = {
 
     return subInput;
   },
-  closeToAsset(
-    strategyOrBundleId: number,
-    isBundle: boolean = true,
-    triggerData: {
-      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState
-    },
-    subData: {
-      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
-    },
-  ) {
-    const {
-      collAsset, collAssetId, debtAsset, debtAssetId,
-    } = subData;
-    const subDataEncoded = subDataService.sparkQuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
-
-    const {
-      baseTokenAddress, quoteTokenAddress, price, ratioState,
-    } = triggerData;
-    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState);
-
-    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
-  },
 };
 
 export const crvUSDEncode = {

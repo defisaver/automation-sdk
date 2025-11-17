@@ -328,32 +328,6 @@ export const sparkRatioTrigger = {
   },
 };
 
-export const sparkQuotePriceTrigger = {
-  encode(
-    baseTokenAddress: EthereumAddress,
-    quoteTokenAddress: EthereumAddress,
-    price: number,
-    ratioState: RatioState,
-  ) {
-    // Price is always in 8 decimals
-    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
-    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddress, quoteTokenAddress, _price, ratioState])];
-  },
-  decode(
-    triggerData: TriggerData,
-  ): { baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: string, ratioState: RatioState } {
-    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
-    // Price is always in 8 decimals
-    const price = new Dec(decodedData[2] as string).div(10 ** 8).toDP(8).toString();
-    return {
-      price,
-      baseTokenAddress: decodedData[0] as EthereumAddress,
-      quoteTokenAddress: decodedData[1] as EthereumAddress,
-      ratioState: +decodedData[3]!,
-    };
-  },
-};
-
 export const curveUsdBorrowRateTrigger = {
   encode(
     market: EthereumAddress,

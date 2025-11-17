@@ -3,12 +3,11 @@ import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
-import { ChainId, CloseStrategyType, CloseToAssetType, OrderType, RatioState } from '../types/enums';
+import { ChainId, CloseStrategyType, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
 import '../configuration';
 import * as subDataService from './subDataService';
-import { AAVE_V3_VARIABLE_BORROW_RATE } from '../constants';
 
 describe('Feature: subDataService.ts', () => {
 
@@ -790,82 +789,6 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(subDataService.sparkLeverageManagementSubData.decode(actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
-  describe('When testing subDataService.sparkQuotePriceSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, nullAddress?: EthereumAddress]]> = [
-        [
-          [
-            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x0000000000000000000000000000000000000000000000000000000000000002',
-            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f', '0x0000000000000000000000000000000000000000000000000000000000000004',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            2,
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            4,
-          ]
-        ],
-        [
-          [
-            '0x0000000000000000000000005979d7b546e38e414f7e9822514be443a4800529', '0x0000000000000000000000000000000000000000000000000000000000000006',
-            '0x000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831', '0x0000000000000000000000000000000000000000000000000000000000000002',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('wstETH', ChainId.Arbitrum).address),
-            6,
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            2,
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.sparkQuotePriceSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('decode()', () => {
-      const examples: Array<[{ collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number }, SubData]> = [
-        [
-          {
-            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            collAssetId: 2,
-            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            debtAssetId: 4,
-          },
-          [
-            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x0000000000000000000000000000000000000000000000000000000000000002',
-            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f', '0x0000000000000000000000000000000000000000000000000000000000000004',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ],
-        ],
-        [
-          {
-            collAsset: web3Utils.toChecksumAddress(getAssetInfo('wstETH', ChainId.Arbitrum).address),
-            collAssetId: 6,
-            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            debtAssetId: 2,
-          },
-          [
-            '0x0000000000000000000000005979d7b546e38e414f7e9822514be443a4800529', '0x0000000000000000000000000000000000000000000000000000000000000006',
-            '0x000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831', '0x0000000000000000000000000000000000000000000000000000000000000002',
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-          ],
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.sparkQuotePriceSubData.decode(actual)).to.eql(expected);
         });
       });
     });

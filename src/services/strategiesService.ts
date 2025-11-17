@@ -17,10 +17,6 @@ import * as triggerService from './triggerService';
 
 const web3 = new Web3();
 
-const SPARK_MARKET_ADDRESSES = {
-  [ChainId.Ethereum]: '0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE',
-};
-
 const AAVE_V3_MARKET_ADDRESSES = {
   [ChainId.Ethereum]: '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e',
   [ChainId.Optimism]: '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
@@ -774,42 +770,6 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   return _position;
 }
 
-function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
-  const _position = cloneDeep(position);
-
-  const { subStruct } = parseData.subscriptionEventData;
-
-  const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkQuotePriceSubData.decode(subStruct.subData);
-
-  _position.strategyData.decoded.triggerData = triggerData;
-  _position.strategyData.decoded.subData = subData;
-
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, SPARK_MARKET_ADDRESSES[_position.chainId as ChainId.Ethereum]);
-
-  _position.specific = {
-    collAsset: subData.collAsset,
-    collAssetId: subData.collAssetId,
-    debtAsset: subData.debtAsset,
-    debtAssetId: subData.debtAssetId,
-    baseToken: triggerData.baseTokenAddress,
-    quoteToken: triggerData.quoteTokenAddress,
-    price: triggerData.price,
-    ratioState: triggerData.ratioState,
-  };
-
-  const { ratioState } = getRatioStateInfoForAaveCloseStrategy(
-    _position.specific.ratioState,
-    wethToEthByAddress(_position.specific.collAsset, parseData.chainId),
-    wethToEthByAddress(_position.specific.debtAsset, parseData.chainId),
-    parseData.chainId,
-  );
-
-  _position.strategy.strategyId = isRatioStateOver(ratioState) ? Strategies.IdOverrides.TakeProfit : Strategies.IdOverrides.StopLoss;
-
-  return _position;
-}
-
 function parseLiquitySavingsLiqProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -1191,8 +1151,6 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.Spark]: {
     [Strategies.Identifiers.Repay]: parseSparkLeverageManagement,
     [Strategies.Identifiers.Boost]: parseSparkLeverageManagement,
-    [Strategies.Identifiers.CloseToDebt]: parseSparkCloseOnPrice,
-    [Strategies.Identifiers.CloseToCollateral]: parseSparkCloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,

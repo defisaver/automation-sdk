@@ -1,19 +1,14 @@
 import { expect } from 'chai';
-import * as web3Utils from 'web3-utils';
-import AbiCoder from 'web3-eth-abi';
 import { getAssetInfo } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
 import { ChainId, ProtocolIdentifiers, RatioState } from '../types/enums';
-
-import { sparkEncode } from './strategySubService';
 
 import '../configuration';
 import {
   addToArrayIf,
   addToObjectIf,
   compareAddresses,
-  compareSubHashes,
   encodeSubId,
   ethToWeth,
   getRatioStateInfoForAaveCloseStrategy,
@@ -195,60 +190,6 @@ describe('Feature: utils.ts', () => {
     examples.forEach(([expected, actual]) => {
       it(`Given ${actual} should return expected value: ${expected}`, () => {
         expect(wethToEthByAddress(...actual)).to.equal(expected);
-      });
-    });
-  });
-
-  describe('When testing utils.compareSubHashes()', () => {
-
-    const subDataToEncodeOne = [
-      12,
-      false,
-      {
-        baseTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        quoteTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        price: 100,
-        ratioState: 1,
-      },
-      {
-        collAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        collAssetId: 2,
-        debtAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        debtAssetId: 3,
-      },
-    ]
-
-    const subDataToEncodeTwo = [
-      13,
-      true,
-      {
-        baseTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        quoteTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        price: 100,
-        ratioState: 2,
-      },
-      {
-        collAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        collAssetId: 2,
-        debtAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        debtAssetId: 3,
-      },
-    ]
-
-    // @ts-ignore
-    const encodedSubDataOne = sparkEncode.closeToAsset(...subDataToEncodeOne);
-    // @ts-ignore
-    const encodedSubDataTwo = sparkEncode.closeToAsset(...subDataToEncodeTwo);
-    const encodedParams = web3Utils.keccak256(AbiCoder.encodeParameter('(uint64,bool,bytes[],bytes32[])', encodedSubDataOne));
-
-    const examples: Array<[boolean, [string, any[]]]> = [
-      [true, [encodedParams, encodedSubDataOne]],
-      [false, [encodedParams, encodedSubDataTwo]],
-    ];
-
-    examples.forEach(([expected, actual]) => {
-      it(`Given ${actual} should return expected value: ${expected}`, () => {
-        expect(compareSubHashes(...actual)).to.equal(expected);
       });
     });
   });

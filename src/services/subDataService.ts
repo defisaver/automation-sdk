@@ -544,37 +544,6 @@ export const sparkLeverageManagementSubData = { // TODO encode?
   },
 };
 
-export const sparkQuotePriceSubData = {
-  encode(
-    collAsset: EthereumAddress,
-    collAssetId: number,
-    debtAsset: EthereumAddress,
-    debtAssetId: number,
-    nullAddress: EthereumAddress = ZERO_ADDRESS,
-  ): SubData {
-    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
-    const encodedCollId = AbiCoder.encodeParameter('uint8', collAssetId);
-
-    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
-    const encodedDebtId = AbiCoder.encodeParameter('uint8', debtAssetId);
-
-    const encodedNullAddress = AbiCoder.encodeParameter('address', nullAddress);
-
-    return [encodedColl, encodedCollId, encodedDebt, encodedDebtId, encodedNullAddress];
-  },
-  decode(subData: SubData): { collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number } {
-    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
-    const collAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
-
-    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
-    const debtAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
-
-    return {
-      collAsset, collAssetId, debtAsset, debtAssetId,
-    };
-  },
-};
-
 export const liquityDsrPaybackSubData = {
   encode: (targetRatio: number) => {
     const daiAddress = getAssetInfo('DAI').address;
