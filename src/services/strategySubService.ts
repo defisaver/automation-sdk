@@ -393,6 +393,27 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+
+  collateralSwitch(
+    strategyOrBundleId: number,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    state: RatioState,
+  ) {
+    const isBundle = false;
+
+    const subDataEncoded = subDataService.aaveV3CollateralSwitchSubData.encode(fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV2Encode = {

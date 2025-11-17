@@ -96,21 +96,25 @@ export namespace Strategies {
     LIQUITY_DEBT_IN_FRONT_REPAY = 75,
     CURVEUSD_PAYBACK = 92,
     LIQUITY_V2_PAYBACK = 113,
+    AAVE_V3_COLLATERAL_SWITCH = 135,
   }
 
   export enum OptimismIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    AAVE_V3_COLLATERAL_SWITCH = 24,
   }
 
   export enum BaseIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    AAVE_V3_COLLATERAL_SWITCH = 56,
   }
 
   export enum ArbitrumIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
+    AAVE_V3_COLLATERAL_SWITCH = 50,
   }
 
   export enum Identifiers {
@@ -143,6 +147,7 @@ export namespace Strategies {
     RepayOnPrice = 'repay-on-price',
     EoaBoostOnPrice = 'eoa-boost-on-price',
     EoaRepayOnPrice = 'eoa-repay-on-price',
+    CollateralSwitch = 'collateral-switch',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',

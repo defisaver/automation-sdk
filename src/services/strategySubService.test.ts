@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import Dec from 'decimal.js';
 import { otherAddresses } from '@defisaver/sdk';
-import { getAssetInfo } from '@defisaver/tokens';
+import { getAssetInfo, MAXUINT } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 
 import { Bundles, ChainId, CloseToAssetType, OrderType, RatioState, Strategies } from '../types/enums';
@@ -962,6 +962,122 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(aaveV3Encode.closeOnPriceGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('collateralSwitch()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          fromAsset: EthereumAddress,
+          fromAssetId: number,
+          toAsset: EthereumAddress,
+          toAssetId: number,
+          marketAddr: EthereumAddress,
+          amountToSwitch: string,
+          baseTokenAddress: EthereumAddress,
+          quoteTokenAddress: EthereumAddress,
+          price: number,
+          state: RatioState,
+        ]
+      ]> = [
+        // WETH -> USDC, price 100000, state UNDER
+        [
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000009184e72a0000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+              '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '10000000000000000000', // 10 WETH
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            100000,
+            RatioState.UNDER,
+          ]
+        ],
+        // USDC -> WETH, price 0.00001, state OVER
+        [
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+              '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            MAXUINT, // MaxUint256
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0.00001,
+            RatioState.OVER,
+          ]
+        ],
+        // WETH -> WBTC, price 1, state UNDER
+        [
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+              '0x0000000000000000000000000000000000000000000000000000000000000002',
+              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+              '0x0000000000000000000000000000000000000000000000004563918244f40000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '5000000000000000000', // 5 WETH
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            1,
+            RatioState.UNDER,
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3Encode.collateralSwitch(...actual)).to.eql(expected);
         });
       });
     });

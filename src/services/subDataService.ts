@@ -313,6 +313,55 @@ export const aaveV3CloseGenericSubData = {
   },
 };
 
+export const aaveV3CollateralSwitchSubData = {
+  encode(
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    useOnBehalf: boolean = false,
+  ): SubData {
+    const encodedFromAsset = AbiCoder.encodeParameter('address', fromAsset);
+    const encodedFromAssetId = AbiCoder.encodeParameter('uint8', fromAssetId);
+    const encodedToAsset = AbiCoder.encodeParameter('address', toAsset);
+    const encodedToAssetId = AbiCoder.encodeParameter('uint8', toAssetId);
+    const encodedMarketAddr = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedAmountToSwitch = AbiCoder.encodeParameter('uint256', amountToSwitch);
+    const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', useOnBehalf);
+
+    return [
+      encodedFromAsset,
+      encodedFromAssetId,
+      encodedToAsset,
+      encodedToAssetId,
+      encodedMarketAddr,
+      encodedAmountToSwitch,
+      encodedUseOnBehalf,
+    ];
+  },
+  decode(subData: SubData): {
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+  } {
+    const fromAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const fromAssetId = Number(AbiCoder.decodeParameter('uint8', subData[1]));
+    const toAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const toAssetId = Number(AbiCoder.decodeParameter('uint8', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const amountToSwitch = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
+
+    return {
+      fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch,
+    };
+  },
+};
+
 export const aaveV3QuotePriceSubData = {
   encode(
     collAsset: EthereumAddress,
