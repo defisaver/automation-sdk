@@ -557,6 +557,27 @@ export const sparkEncode = {
 
     return subInput;
   },
+  closeOnPriceGeneric(
+    strategyOrBundleId: number,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.sparkCloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.sparkQuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const crvUSDEncode = {

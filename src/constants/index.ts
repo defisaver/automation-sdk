@@ -486,7 +486,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-
+  [Bundles.MainnetIds.SPARK_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -679,7 +683,6 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {

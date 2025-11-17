@@ -660,3 +660,32 @@ export const aaveV3QuotePriceRangeTrigger = {
     };
   },
 };
+
+export const sparkQuotePriceRangeTrigger = {
+  encode(
+    collToken: EthereumAddress,
+    debtToken: EthereumAddress,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    // Price is scaled to 1e8
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'address', 'uint256', 'uint256'],
+        [collToken, debtToken, lowerPriceFormatted, upperPriceFormatted]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      collToken: decodedData[0] as EthereumAddress,
+      debtToken: decodedData[1] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[2] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
+    };
+  },
+};
