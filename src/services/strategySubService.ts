@@ -557,25 +557,24 @@ export const sparkEncode = {
 
     return subInput;
   },
-  closeToAsset(
+  closeOnPriceGeneric(
     strategyOrBundleId: number,
-    isBundle: boolean = true,
-    triggerData: {
-      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState
-    },
-    subData: {
-      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
-    },
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
-    const {
-      collAsset, collAssetId, debtAsset, debtAssetId,
-    } = subData;
-    const subDataEncoded = subDataService.sparkQuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const {
-      baseTokenAddress, quoteTokenAddress, price, ratioState,
-    } = triggerData;
-    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState);
+    const subDataEncoded = subDataService.sparkCloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.sparkQuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
