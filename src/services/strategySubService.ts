@@ -670,6 +670,27 @@ export const morphoBlueEncode = {
     const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  closeOnPrice(
+    strategyOrBundleId: number,
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    user: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, user, closeType);
+    const triggerDataEncoded = triggerService.morphoBluePriceRangeTrigger.encode(oracle, collToken, loanToken, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const liquityV2Encode = {
