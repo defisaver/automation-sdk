@@ -1239,7 +1239,7 @@ export const morphoBlueCloseOnPriceSubData = {
     const irm = AbiCoder.decodeParameter('address', subData[3]) as any as EthereumAddress;
     const lltv = AbiCoder.decodeParameter('uint256', subData[4]) as any as EthereumAddress;
     const user = AbiCoder.decodeParameter('address', subData[5]) as any as EthereumAddress;
-    const closeType = AbiCoder.decodeParameter('uint8', subData[6]) as any as CloseStrategyType;
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[6])) as CloseStrategyType;
 
     return {
       loanToken,
