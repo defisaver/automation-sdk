@@ -222,6 +222,7 @@ export namespace Bundles {
     AAVE_V3_EOA_BOOST_ON_PRICE = 55,
     AAVE_V3_EOA_CLOSE = 56,
     SPARK_CLOSE = 57,
+    MORPHO_BLUE_CLOSE = 58,
   }
 
   export enum OptimismIds {
@@ -265,6 +266,7 @@ export namespace Bundles {
     AAVE_V3_EOA_REPAY_ON_PRICE = 25,
     AAVE_V3_EOA_BOOST_ON_PRICE = 26,
     AAVE_V3_EOA_CLOSE = 27,
+    MORPHO_BLUE_CLOSE = 28,
   }
 
   export enum ArbitrumIds {
@@ -296,6 +298,7 @@ export namespace Bundles {
     MORPHO_BLUE_BOOST_ON_PRICE = 25,
     MORPHO_BLUE_EOA_REPAY = 26,
     MORPHO_BLUE_EOA_BOOST = 27,
+    MORPHO_BLUE_CLOSE = 28,
   }
 }
 
