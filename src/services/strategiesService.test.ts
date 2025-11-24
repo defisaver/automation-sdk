@@ -66,6 +66,7 @@ describe('Feature: strategiesService.ts', () => {
             repayEnabled: true,
             subId1: 379,
             mergeWithId: Strategies.Identifiers.Boost,
+            subHashRepay: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
           }
         },
         {
