@@ -115,6 +115,7 @@ describe('Feature: ethereumService.ts', () => {
             'address': '0x5f98805A4E8be255a32880FDeC7F6728C6568bA0',
             'blockHash': '0xb92cab2569456dbfbdb853d2c67d72c9a7580543dbcb55d483a77322b40755a4',
             'blockNumber': 15166163,
+            'blockTimestamp': '0x62d53ad8',
             'event': 'Transfer',
             'id': 'log_e2258e3a',
             'logIndex': 385,
