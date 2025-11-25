@@ -2,6 +2,7 @@ import Dec from 'decimal.js';
 import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
+import { MAXUINT } from '@defisaver/tokens';
 
 import { ChainId, CloseStrategyType, CloseToAssetType, OrderType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
@@ -359,6 +360,151 @@ describe('Feature: subDataService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(subDataService.aaveV3QuotePriceSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.aaveV3CollateralSwitchSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string, useOnBehalf?: boolean]]> = [
+        // WETH -> USDC
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '10000000000000000000', // 10 WETH
+            false,
+          ]
+        ],
+        // USDC -> WETH (MaxUint256)
+        [
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            MAXUINT, // MaxUint256
+          ]
+        ],
+        // WETH -> WBTC
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000004563918244f40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '5000000000000000000', // 5 WETH
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV3CollateralSwitchSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string }, SubData]> = [
+        // WETH -> USDC
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            fromAssetId: 0,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            toAssetId: 1,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            amountToSwitch: '10000000000000000000',
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        // USDC -> WETH (MaxUint256)
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            fromAssetId: 1,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            toAssetId: 0,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            amountToSwitch: MAXUINT,
+          },
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        // WETH -> WBTC
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            fromAssetId: 0,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            toAssetId: 2,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            amountToSwitch: '5000000000000000000',
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000004563918244f40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV3CollateralSwitchSubData.decode(actual)).to.eql(expected);
         });
       });
     });
