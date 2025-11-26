@@ -18,8 +18,9 @@ import {
   compoundV3Encode,
   morphoAaveV2Encode,
   exchangeEncode,
-  sparkEncode,
-  crvUSDEncode, compoundV3L2Encode, morphoBlueEncode,
+  crvUSDEncode,
+  compoundV3L2Encode,
+  morphoBlueEncode,
 } from './strategySubService';
 
 describe('Feature: strategySubService.ts', () => {
@@ -1387,97 +1388,6 @@ describe('Feature: strategySubService.ts', () => {
     });
   });
 
-  describe('When testing strategySubService.sparkEncode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        string,
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          '0x000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
-          [160, 220, 180, 190, true]
-        ],
-        [
-          '0x000000000000000016345785d8a0000000000000000000001bc16d674ec80000000000000000000018fae27693b4000000000000000000001a5e27eef13e000000',
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkEncode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('closeToAsset()', () => {
-      const examples: Array<[
-        [StrategyOrBundleIds, boolean, TriggerData, SubData],
-        [
-          strategyOrBundleId: number,
-          isBundle: boolean,
-          triggerData: {
-            baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState
-          },
-          subData: {
-            collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
-          },
-        ]
-      ]> = [
-        [
-          [
-            Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL,
-            true,
-            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000006b175474e89094c44da98b954eedeac495271d0f00000000000000000000000000000000000000000000000000000026e1f9c6000000000000000000000000000000000000000000000000000000000000000000'],
-            [
-              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x0000000000000000000000000000000000000000000000000000000000000015',
-              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f', '0x0000000000000000000000000000000000000000000000000000000000000020',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-            ],
-          ],
-          [
-            Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL,
-            true,
-            {
-              baseTokenAddress: getAssetInfo('WETH').address, quoteTokenAddress: getAssetInfo('DAI').address, price: 1670, ratioState: RatioState.OVER
-            },
-            {
-              collAsset: getAssetInfo('WETH').address, collAssetId: 21, debtAsset: getAssetInfo('DAI').address, debtAssetId: 32,
-            },
-          ]
-        ],
-        [
-          [
-            Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT,
-            true,
-            ['0x000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000000084d000000000000000000000000000000000000000000000000000000000000000001'],
-            [
-              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f', '0x0000000000000000000000000000000000000000000000000000000000000015',
-              '0x000000000000000000000000514910771af9ca656af840dff83e8264ecf986ca', '0x0000000000000000000000000000000000000000000000000000000000000020',
-              '0x0000000000000000000000000000000000000000000000000000000000000000',
-            ],
-          ],
-          [
-            Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT,
-            true,
-            {
-              baseTokenAddress: getAssetInfo('LINK').address, quoteTokenAddress: getAssetInfo('DAI').address, price: 0.00544, ratioState: RatioState.UNDER
-            },
-            {
-              collAsset: getAssetInfo('DAI').address, collAssetId: 21, debtAsset: getAssetInfo('LINK').address, debtAssetId: 32,
-            },
-          ]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkEncode.closeToAsset(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe('When testing strategySubService.crvUSDEncode', () => {
     describe('leverageManagement()', () => {
       const examples: Array<[
@@ -1581,6 +1491,7 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
   });
+
   describe('When testing strategySubService.morphoBlueEncode', () => {
     describe('leverageManagement()', () => {
       const examples: Array<[
@@ -1709,5 +1620,4 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
   });
-
 });
