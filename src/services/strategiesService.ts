@@ -990,6 +990,48 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
   return _position;
 }
 
+function parseMorphoBlueCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.morphoBluePriceRangeTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoBlueCloseOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, Math.random());
+
+  const marketIdEncodedData = web3.eth.abi.encodeParameters(
+    ['address', 'address', 'address', 'address', 'uint256'],
+    [
+      subData.loanToken,
+      subData.collToken,
+      subData.oracle,
+      subData.irm,
+      subData.lltv,
+    ],
+  );
+
+  const marketId = web3.utils.keccak256(marketIdEncodedData);
+
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+
+  _position.specific = {
+    subHash: _position.subHash,
+    marketId,
+    collAsset: subData.collToken,
+    debtAsset: subData.loanToken,
+    stopLossPrice: triggerData.lowerPrice,
+    takeProfitPrice: triggerData.upperPrice,
+    stopLossType,
+    takeProfitType,
+  };
+
+  return _position;
+}
+
 function parseLiquityV2CloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -1208,6 +1250,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
+    [Strategies.Identifiers.CloseOnPrice]: parseMorphoBlueCloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
     [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,

@@ -31,6 +31,7 @@ import {
   crvUsdHealthRatioTrigger, liquityV2DebtInFrontTrigger, liquityV2AdjustTimeTrigger,
   compoundV3PriceRangeTrigger,
   aaveV3QuotePriceRangeTrigger,
+  morphoBluePriceRangeTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1226,6 +1227,58 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(aaveV3QuotePriceRangeTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.morphoBluePriceRangeTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [oracle: EthereumAddress, collateralToken: EthereumAddress, loanToken: EthereumAddress, lowerPrice: number, upperPrice: number]]> = [
+        [
+          ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+          [web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'), web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 1500, 4000]
+        ],
+        [
+          ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+          [web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'), web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'), web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 0, 5000]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(morphoBluePriceRangeTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ oracle: EthereumAddress, collateralToken: EthereumAddress, loanToken: EthereumAddress, lowerPrice: string, upperPrice: string }, TriggerData]> = [
+        [
+          {
+            oracle: web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            collateralToken: web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            loanToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            lowerPrice: '1500',
+            upperPrice: '4000',
+          },
+          ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+        ],
+        [
+          {
+            oracle: web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            collateralToken: web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            loanToken: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            lowerPrice: '0',
+            upperPrice: '5000',
+          },
+          ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8dA6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBluePriceRangeTrigger.decode(actual)).to.eql(expected);
         });
       });
     });

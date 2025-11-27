@@ -491,6 +491,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.CloseOnPrice,
     protocol: PROTOCOLS.Spark,
   },
+  [Bundles.MainnetIds.MORPHO_BLUE_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -683,6 +688,11 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -824,6 +834,11 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST]: {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST,
     strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
 };
