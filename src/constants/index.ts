@@ -331,16 +331,6 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.Boost,
     protocol: PROTOCOLS.Spark,
   },
-  [Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT]: {
-    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE_TO_DEBT,
-    strategyId: Strategies.Identifiers.CloseToDebt,
-    protocol: PROTOCOLS.Spark,
-  },
-  [Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL]: {
-    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE_TO_COLLATERAL,
-    strategyId: Strategies.Identifiers.CloseToCollateral,
-    protocol: PROTOCOLS.Spark,
-  },
   [Bundles.MainnetIds.AAVE_V2_REPAY]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V2_REPAY,
     strategyId: Strategies.Identifiers.Repay,
@@ -496,7 +486,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-
+  [Bundles.MainnetIds.SPARK_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -689,7 +683,6 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {

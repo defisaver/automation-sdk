@@ -186,8 +186,6 @@ export namespace Bundles {
     LIQUITY_BOOST = 17,
     SPARK_REPAY = 18,
     SPARK_BOOST = 19,
-    SPARK_CLOSE_TO_DEBT = -21231230, // @dev This was never deployed
-    SPARK_CLOSE_TO_COLLATERAL = -21231231, // @dev This was never deployed
     AAVE_V2_REPAY = 22,
     AAVE_V2_BOOST = 23,
     COMP_V2_REPAY = 20,
@@ -223,6 +221,7 @@ export namespace Bundles {
     AAVE_V3_EOA_REPAY_ON_PRICE = 54,
     AAVE_V3_EOA_BOOST_ON_PRICE = 55,
     AAVE_V3_EOA_CLOSE = 56,
+    SPARK_CLOSE = 57,
   }
 
   export enum OptimismIds {
