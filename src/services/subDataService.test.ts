@@ -1625,7 +1625,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             marketAddr: EthereumAddress,
             targetRatio: number,
-            user: EthereumAddress
+            owner: EthereumAddress
           ]
         ]
       > = [
@@ -1692,7 +1692,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             marketAddr: EthereumAddress,
             targetRatio: number,
-            user: EthereumAddress,
+            owner: EthereumAddress,
           },
           string[]
         ]
@@ -1705,7 +1705,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             targetRatio: 200,
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -1725,7 +1725,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
             targetRatio: 200,
-            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            owner: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -1763,7 +1763,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             closeType: CloseStrategyType,
             marketAddr: EthereumAddress,
-            user: EthereumAddress
+            owner: EthereumAddress
           ]
         ]
       > = [
@@ -1958,7 +1958,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: number,
             closeType: CloseStrategyType,
             marketAddr: EthereumAddress,
-            user: EthereumAddress,
+            owner: EthereumAddress,
           },
           string[]
         ]
@@ -1972,7 +1972,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -1993,7 +1993,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2014,7 +2014,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2035,7 +2035,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2056,7 +2056,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            owner: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
           },
           [
             '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -2077,7 +2077,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -2098,7 +2098,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_AND_STOP_LOSS_IN_DEBT,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -2119,7 +2119,7 @@ describe('Feature: subDataService.ts', () => {
             debtAssetId: 1,
             closeType: CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL,
             marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
-            user: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            owner: web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
           },
           [
             '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
