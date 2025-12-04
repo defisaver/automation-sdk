@@ -689,3 +689,35 @@ export const sparkQuotePriceRangeTrigger = {
     };
   },
 };
+
+export const morphoBluePriceRangeTrigger = {
+  encode(
+    oracle: EthereumAddress,
+    collateralToken: EthereumAddress,
+    loanToken: EthereumAddress,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    // Price is scaled to 1e8
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'address', 'address', 'uint256', 'uint256'],
+        [oracle, collateralToken, loanToken, lowerPriceFormatted, upperPriceFormatted],
+      ),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'address', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      oracle: decodedData[0] as EthereumAddress,
+      collateralToken: decodedData[1] as EthereumAddress,
+      loanToken: decodedData[2] as EthereumAddress,
+      lowerPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[4] as string).div(1e8).toString(),
+    };
+  },
+};

@@ -1212,3 +1212,43 @@ export const sparkCloseGenericSubData = {
     };
   },
 };
+
+export const morphoBlueCloseOnPriceSubData = {
+  encode(
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    user: EthereumAddress,
+    closeType: CloseStrategyType,
+  ): SubData {
+    const loanTokenEncoded = AbiCoder.encodeParameter('address', loanToken);
+    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
+    const oracleEncoded = AbiCoder.encodeParameter('address', oracle);
+    const irmEncoded = AbiCoder.encodeParameter('address', irm);
+    const lltvEncoded = AbiCoder.encodeParameter('uint256', lltv);
+    const userEncoded = AbiCoder.encodeParameter('address', user);
+    const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+    return [loanTokenEncoded, collTokenEncoded, oracleEncoded, irmEncoded, lltvEncoded, userEncoded, closeTypeEncoded];
+  },
+  decode(subData: SubData) {
+    const loanToken = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collToken = AbiCoder.decodeParameter('address', subData[1]) as any as EthereumAddress;
+    const oracle = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const irm = AbiCoder.decodeParameter('address', subData[3]) as any as EthereumAddress;
+    const lltv = AbiCoder.decodeParameter('uint256', subData[4]) as any as EthereumAddress;
+    const user = AbiCoder.decodeParameter('address', subData[5]) as any as EthereumAddress;
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[6])) as CloseStrategyType;
+
+    return {
+      loanToken,
+      collToken,
+      oracle,
+      irm,
+      lltv,
+      user,
+      closeType,
+    };
+  },
+};
