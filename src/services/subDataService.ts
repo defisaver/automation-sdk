@@ -774,6 +774,162 @@ export const aaveV3LeverageManagementOnPriceSubData = {
 };
 
 /**
+ *      ___           ___   ____    ____  _______    ____    ____  _  _
+    /   \         /   \  \   \  /   / |   ____|   \   \  /   / | || |
+   /  ^  \       /  ^  \  \   \/   /  |  |__       \   \/   /  | || |_
+  /  /_\  \     /  /_\  \  \      /   |   __|       \      /   |__   _|
+ /  _____  \   /  _____  \  \    /    |  |____       \    /       | |
+/__/     \__\ /__/     \__\  \__/     |_______|       \__/        |_|
+ */
+export const aaveV4LeverageManagementSubData = {
+  encode: (
+    spoke: EthereumAddress,
+    owner: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const spokeEncoded = AbiCoder.encodeParameter('address', spoke);
+    const ownerEncoded = AbiCoder.encodeParameter('address', owner);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    return [spokeEncoded, ownerEncoded, ratioStateEncoded, targetRatioEncoded];
+  },
+  decode: (subData: SubData) => {
+    const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[3]) as any as string);
+    return {
+      spoke, owner, ratioState, targetRatio,
+    };
+  },
+};
+export const aaveV4LeverageManagementOnPriceSubData = {
+  encode: (
+    spoke: EthereumAddress,
+    owner: EthereumAddress,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    ratioState: RatioState,
+    targetRatio: number,
+  ) => {
+    const spokeEncoded = AbiCoder.encodeParameter('address', spoke);
+    const ownerEncoded = AbiCoder.encodeParameter('address', owner);
+    const collAssetEncoded = AbiCoder.encodeParameter('address', collAsset);
+    const collAssetIdEncoded = AbiCoder.encodeParameter('uint256', collAssetId);
+    const debtAssetEncoded = AbiCoder.encodeParameter('address', debtAsset);
+    const debtAssetIdEncoded = AbiCoder.encodeParameter('uint256', debtAssetId);
+    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
+    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    return [
+      spokeEncoded,
+      ownerEncoded,
+      collAssetEncoded,
+      collAssetIdEncoded,
+      debtAssetEncoded,
+      debtAssetIdEncoded,
+      ratioStateEncoded,
+      targetRatioEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const collAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint256', subData[3]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint256', subData[5]));
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[6]) as any as RatioState;
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[7]) as any as string);
+    return {
+      spoke, owner, collAsset, collAssetId, debtAsset, debtAssetId, ratioState, targetRatio,
+    };
+  },
+};
+export const aaveV4CloseSubData = {
+  encode: (
+    spoke: EthereumAddress,
+    owner: EthereumAddress,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    closeType: CloseStrategyType,
+  ) => {
+    const spokeEncoded = AbiCoder.encodeParameter('address', spoke);
+    const ownerEncoded = AbiCoder.encodeParameter('address', owner);
+    const collAssetEncoded = AbiCoder.encodeParameter('address', collAsset);
+    const collAssetIdEncoded = AbiCoder.encodeParameter('uint256', collAssetId);
+    const debtAssetEncoded = AbiCoder.encodeParameter('address', debtAsset);
+    const debtAssetIdEncoded = AbiCoder.encodeParameter('uint256', debtAssetId);
+    const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+    return [
+      spokeEncoded,
+      ownerEncoded,
+      collAssetEncoded,
+      collAssetIdEncoded,
+      debtAssetEncoded,
+      debtAssetIdEncoded,
+      closeTypeEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const collAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint256', subData[3]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint256', subData[5]));
+    const closeType = AbiCoder.decodeParameter('uint8', subData[6]) as any as CloseStrategyType;
+    return {
+      spoke, owner, collAsset, collAssetId, debtAsset, debtAssetId, closeType,
+    };
+  },
+};
+export const aaveV4CollateralSwitchSubData = {
+  encode: (
+    spoke: EthereumAddress,
+    owner: EthereumAddress,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    amountToSwitch: string,
+  ) => {
+    const spokeEncoded = AbiCoder.encodeParameter('address', spoke);
+    const ownerEncoded = AbiCoder.encodeParameter('address', owner);
+    const fromAssetEncoded = AbiCoder.encodeParameter('address', fromAsset);
+    const fromAssetIdEncoded = AbiCoder.encodeParameter('uint256', fromAssetId);
+    const toAssetEncoded = AbiCoder.encodeParameter('address', toAsset);
+    const toAssetIdEncoded = AbiCoder.encodeParameter('uint256', toAssetId);
+    const amountToSwitchEncoded = AbiCoder.encodeParameter('uint256', amountToSwitch);
+    return [
+      spokeEncoded,
+      ownerEncoded,
+      fromAssetEncoded,
+      fromAssetIdEncoded,
+      toAssetEncoded,
+      toAssetIdEncoded,
+      amountToSwitchEncoded,
+    ];
+  },
+  decode: (subData: SubData) => {
+    const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
+    const fromAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const fromAssetId = Number(AbiCoder.decodeParameter('uint256', subData[3]));
+    const toAsset = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const toAssetId = Number(AbiCoder.decodeParameter('uint256', subData[5]));
+    const amountToSwitch = AbiCoder.decodeParameter('uint256', subData[6]) as any as string;
+    return {
+      spoke, owner, fromAsset, fromAssetId, toAsset, toAssetId, amountToSwitch,
+    };
+  },
+};
+
+/**
   ______   ______   .___  ___. .______      ____    ____  ___
  /      | /  __  \  |   \/   | |   _  \     \   \  /   / |__ \
 |  ,----'|  |  |  | |  \  /  | |  |_)  |     \   \/   /     ) |
