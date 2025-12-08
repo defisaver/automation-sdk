@@ -797,7 +797,7 @@ export const aaveV4LeverageManagementSubData = {
   decode: (subData: SubData) => {
     const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
     const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[2])) as RatioState;
     const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[3]) as any as string);
     return {
       spoke, owner, ratioState, targetRatio,
@@ -841,7 +841,7 @@ export const aaveV4LeverageManagementOnPriceSubData = {
     const collAssetId = Number(AbiCoder.decodeParameter('uint256', subData[3]));
     const debtAsset = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
     const debtAssetId = Number(AbiCoder.decodeParameter('uint256', subData[5]));
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[6]) as any as RatioState;
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[6])) as RatioState;
     const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[7]) as any as string);
     return {
       spoke, owner, collAsset, collAssetId, debtAsset, debtAssetId, ratioState, targetRatio,
@@ -882,7 +882,7 @@ export const aaveV4CloseSubData = {
     const collAssetId = Number(AbiCoder.decodeParameter('uint256', subData[3]));
     const debtAsset = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
     const debtAssetId = Number(AbiCoder.decodeParameter('uint256', subData[5]));
-    const closeType = AbiCoder.decodeParameter('uint8', subData[6]) as any as CloseStrategyType;
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[6])) as CloseStrategyType;
     return {
       spoke, owner, collAsset, collAssetId, debtAsset, debtAssetId, closeType,
     };
