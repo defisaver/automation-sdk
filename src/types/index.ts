@@ -237,14 +237,14 @@ export declare namespace Position {
       takeProfitType: CloseToAssetType | undefined,
     }
 
-    interface CloseBase {
+    interface CloseBase extends Base {
       stopLossPrice: string,
       takeProfitPrice: string,
       stopLossType: CloseToAssetType | undefined,
       takeProfitType: CloseToAssetType | undefined,
     }
 
-    interface AaveV4LeverageManagementOnPrice {
+    interface AaveV4LeverageManagementOnPrice extends Base {
       collAsset: EthereumAddress,
       collAssetId: number,
       debtAsset: EthereumAddress,

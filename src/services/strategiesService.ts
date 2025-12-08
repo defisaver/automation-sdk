@@ -7,7 +7,9 @@ import type {
   Position, ParseData, StrategiesToProtocolVersionMapping, BundleOrStrategy, StrategyOrBundleIds,
   BundleInfoUnion, StrategyInfoUnion,
 } from '../types';
-import { ChainId, ProtocolIdentifiers, RatioState, Strategies } from '../types/enums';
+import {
+  ChainId, ProtocolIdentifiers, RatioState, Strategies,
+} from '../types/enums';
 
 import {
   getPositionId, getRatioStateInfoForAaveCloseStrategy, getStopLossAndTakeProfitTypeByCloseStrategyType, isRatioStateOver, wethToEthByAddress,
@@ -394,7 +396,7 @@ function parseAaveV4LeverageManagement(position: Position.Automated, parseData: 
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke, Math.random());
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
   if (isRepay) {
@@ -429,7 +431,7 @@ function parseAaveV4LeverageManagementOnPrice(position: Position.Automated, pars
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke, Math.random());
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagementOnPrice : Strategies.IdOverrides.LeverageManagementOnPrice;
 
   _position.specific = {
@@ -455,7 +457,7 @@ function parseAaveV4CloseOnPrice(position: Position.Automated, parseData: ParseD
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke, Math.random());
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
   _position.strategy.strategyId = isEOA ? Strategies.Identifiers.EoaCloseOnPrice : Strategies.Identifiers.CloseOnPrice;
 
   _position.specific = {
@@ -479,7 +481,7 @@ function parseAaveV4CollateralSwitch(position: Position.Automated, parseData: Pa
   const subData = subDataService.aaveV4CollateralSwitchSubData.decode(subStruct.subData);
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke, Math.random());
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
   return _position;
 }
 
