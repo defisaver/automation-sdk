@@ -123,6 +123,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV4,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
@@ -495,6 +500,56 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_CLOSE,
     strategyId: Strategies.Identifiers.CloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.AAVE_V4_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV4,
   },
 };
 

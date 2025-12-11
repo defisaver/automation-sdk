@@ -64,6 +64,7 @@ export namespace ProtocolIdentifiers {
     CompoundV3 = 'Compound__V3',
     AaveV2 = 'Aave__V2',
     AaveV3 = 'Aave__V3',
+    AaveV4 = 'Aave__V4',
     MorphoAaveV2 = 'Morpho-Aave__V2',
     Exchange = 'Exchange',
     Spark = 'Spark',
@@ -97,6 +98,7 @@ export namespace Strategies {
     CURVEUSD_PAYBACK = 92,
     LIQUITY_V2_PAYBACK = 113,
     AAVE_V3_COLLATERAL_SWITCH = 135,
+    AAVE_V4_COLLATERAL_SWITCH = 136,
   }
 
   export enum OptimismIds {
@@ -223,6 +225,16 @@ export namespace Bundles {
     AAVE_V3_EOA_CLOSE = 56,
     SPARK_CLOSE = 57,
     MORPHO_BLUE_CLOSE = 58,
+    AAVE_V4_REPAY = 59,
+    AAVE_V4_BOOST = 60,
+    AAVE_V4_REPAY_ON_PRICE = 61,
+    AAVE_V4_BOOST_ON_PRICE = 62,
+    AAVE_V4_CLOSE = 63,
+    AAVE_V4_EOA_REPAY = 64,
+    AAVE_V4_EOA_BOOST = 65,
+    AAVE_V4_EOA_REPAY_ON_PRICE = 66,
+    AAVE_V4_EOA_BOOST_ON_PRICE = 67,
+    AAVE_V4_EOA_CLOSE = 68,
   }
 
   export enum OptimismIds {
