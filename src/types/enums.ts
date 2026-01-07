@@ -223,6 +223,8 @@ export namespace Bundles {
     AAVE_V3_EOA_CLOSE = 56,
     SPARK_CLOSE = 57,
     MORPHO_BLUE_CLOSE = 58,
+    SPARK_REPAY_ON_PRICE = 59,
+    SPARK_BOOST_ON_PRICE = 60,
   }
 
   export enum OptimismIds {

@@ -782,9 +782,37 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   return _position;
 }
 
+function parseSparkLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkLeverageManagementOnPriceSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+
+  _position.specific = {
+    //subData 
+    collAsset: subData.collAsset,
+    collAssetId: subData.collAssetId,
+    debtAsset: subData.debtAsset,
+    debtAssetId: subData.debtAssetId,
+    ratio: subData.targetRatio,
+    //triggerData 
+    baseToken: triggerData.baseTokenAddr,
+    quoteToken: triggerData.quoteTokenAddr,
+    price: triggerData.price,
+    ratioState: triggerData.ratioState,
+  };
+
+  return _position;
+}
+
 function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
-
   const { subStruct } = parseData.subscriptionEventData;
 
   const triggerData = triggerService.sparkQuotePriceRangeTrigger.decode(subStruct.triggerData);
@@ -1237,6 +1265,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.Spark]: {
     [Strategies.Identifiers.Repay]: parseSparkLeverageManagement,
     [Strategies.Identifiers.Boost]: parseSparkLeverageManagement,
+    [Strategies.Identifiers.RepayOnPrice]: parseSparkLeverageManagementOnPrice,
+    [Strategies.Identifiers.BoostOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseSparkCloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {

@@ -236,6 +236,18 @@ export declare namespace Position {
       stopLossType: CloseToAssetType | undefined,
       takeProfitType: CloseToAssetType | undefined,
     }
+
+    interface SparkOnPrice extends Base {
+      collAsset: EthereumAddress,
+      collAssetId: number,
+      debtAsset: EthereumAddress,
+      debtAssetId: number,
+      baseToken: EthereumAddress,
+      quoteToken: EthereumAddress,
+      price: string,
+      ratioState: RatioState,
+      ratio: number,
+    }
   }
 
   type SpecificAny =
@@ -253,7 +265,8 @@ export declare namespace Position {
     | Specific.PaybackLiquityV2
     | Specific.CompoundV3LeverageManagementOnPrice
     | Specific.CompoundV3CloseOnPrice
-    | Specific.AaveV3CloseOnPriceGeneric;
+    | Specific.AaveV3CloseOnPriceGeneric
+    | Specific.SparkOnPrice;
 
   export interface Automated {
     chainId: ChainId,

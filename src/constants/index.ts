@@ -496,6 +496,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.CloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.SPARK_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
