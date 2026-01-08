@@ -721,3 +721,26 @@ export const morphoBluePriceRangeTrigger = {
     };
   },
 };
+
+export const sparkQuotePriceTrigger = {
+  encode(
+    baseTokenAddr: EthereumAddress,
+    quoteTokenAddr: EthereumAddress,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    const _price = new Dec(price.toString()).mul(1e8).floor().toString();
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [baseTokenAddr, quoteTokenAddr, _price, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      baseTokenAddr: decodedData[0] as EthereumAddress,
+      quoteTokenAddr: decodedData[1] as EthereumAddress,
+      price: new Dec(decodedData[2] as string).div(1e8).toString(),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};

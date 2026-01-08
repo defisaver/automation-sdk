@@ -795,13 +795,13 @@ function parseSparkLeverageManagementOnPrice(position: Position.Automated, parse
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
 
   _position.specific = {
-    //subData 
+    // subData
     collAsset: subData.collAsset,
     collAssetId: subData.collAssetId,
     debtAsset: subData.debtAsset,
     debtAssetId: subData.debtAssetId,
     ratio: subData.targetRatio,
-    //triggerData 
+    // triggerData
     baseToken: triggerData.baseTokenAddr,
     quoteToken: triggerData.quoteTokenAddr,
     price: triggerData.price,
