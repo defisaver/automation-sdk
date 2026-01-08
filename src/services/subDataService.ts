@@ -1283,7 +1283,8 @@ export const sparkLeverageManagementOnPriceSubData = {
     const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
     const debtAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
     const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
-    const targetRatio = AbiCoder.decodeParameter('uint256', subData[5]) as any as number;
+    const weiRatio = AbiCoder.decodeParameter('uint256', subData[5]) as any as string;
+    const targetRatio = weiToRatioPercentage(weiRatio);
     return {
       collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     };
