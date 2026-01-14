@@ -104,12 +104,13 @@ export const makerEncode = {
     targetRatio: number,
     ratioState: RatioState,
     isBoost: boolean,
+    daiAddr?: EthereumAddress,
   ) {
     const bundleId = isBoost ? Bundles.MainnetIds.MAKER_BOOST : Bundles.MainnetIds.MAKER_REPAY;
 
     const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRatio, ratioState);
 
-    const subData = subDataService.makerLeverageManagementWithoutSubProxy.encode(vaultId, targetRatio, ratioState);
+    const subData = subDataService.makerLeverageManagementWithoutSubProxy.encode(vaultId, targetRatio, daiAddr);
 
     return [
       bundleId,
