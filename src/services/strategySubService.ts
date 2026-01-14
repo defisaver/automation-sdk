@@ -578,7 +578,6 @@ export const sparkEncode = {
     const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddr, quoteTokenAddr, price, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
-  
   },
   closeOnPriceGeneric(
     strategyOrBundleId: number,

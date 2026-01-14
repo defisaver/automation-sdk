@@ -1289,4 +1289,4 @@ export const sparkLeverageManagementOnPriceSubData = {
       collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     };
   },
-};  
+};
