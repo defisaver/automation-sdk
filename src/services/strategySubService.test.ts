@@ -170,6 +170,61 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+
+    describe('leverageManagementWithoutSubProxy()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          vaultId: number, triggerRatio: number, targetRatio: number, ratioState: RatioState,
+          isBoost: boolean, daiAddr?: EthereumAddress,
+        ]
+      ]> = [
+        // Repay scenario (isBoost=false, RatioState.UNDER)
+        [
+          [
+            Bundles.MainnetIds.MAKER_REPAY,
+            true,
+            ['0x00000000000000000000000000000000000000000000000000000000000000de000000000000000000000000000000000000000000000000136dcc951d8c00000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x00000000000000000000000000000000000000000000000000000000000000de', '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            ],
+          ],
+          [
+            222, // vaultId
+            140, // triggerRatio
+            180, // targetRatio
+            RatioState.UNDER, // ratioState
+            false, // isBoost
+          ]
+        ],
+        // Boost scenario (isBoost=true, RatioState.OVER)
+        [
+          [
+            Bundles.MainnetIds.MAKER_BOOST,
+            true,
+            ['0x000000000000000000000000000000000000000000000000000000000000014d00000000000000000000000000000000000000000000000026db992a3b1800000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000000000000000000000000000000000000000014d', '0x00000000000000000000000000000000000000000000000022b1c8c1227a0000',
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            ],
+          ],
+          [
+            333, // vaultId
+            280, // triggerRatio
+            250, // targetRatio
+            RatioState.OVER, // ratioState
+            true, // isBoost
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(makerEncode.leverageManagementWithoutSubProxy(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
 
   describe('When testing strategySubService.liquityEncode', () => {
