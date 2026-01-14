@@ -153,6 +153,66 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
+  describe('When testing subDataService.makerLeverageManagementWithoutSubProxy', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [vaultId: number, targetRatio: number, daiAddr?: EthereumAddress]]> = [
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000000000000000000de', '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+          ],
+          [222, 180], // Uses default DAI address
+        ],
+        [
+          [
+            '0x000000000000000000000000000000000000000000000000000000000000014d', '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          ],
+          [333, 200, web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address)], // Custom address
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(subDataService.makerLeverageManagementWithoutSubProxy.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ vaultId: number, targetRatio: number, daiAddr: string }, SubData]> = [
+        [
+          {
+            vaultId: 222,
+            targetRatio: 180,
+            daiAddr: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+          },
+          [
+            '0x00000000000000000000000000000000000000000000000000000000000000de', '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+          ],
+        ],
+        [
+          {
+            vaultId: 333,
+            targetRatio: 200,
+            daiAddr: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+          },
+          [
+            '0x000000000000000000000000000000000000000000000000000000000000014d', '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.makerLeverageManagementWithoutSubProxy.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
   describe('When testing subDataService.liquityLeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
