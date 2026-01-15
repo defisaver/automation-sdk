@@ -3,8 +3,11 @@ import { getAssetInfo } from '@defisaver/tokens';
 
 import type { OrderType } from '../types/enums';
 import {
-  CloseStrategyType, CloseToAssetType,
-  Bundles, ChainId, RatioState, Strategies,
+  CloseToAssetType,
+  Bundles,
+  ChainId,
+  RatioState,
+  Strategies,
 } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds } from '../types';
 
@@ -93,6 +96,27 @@ export const makerEncode = {
       new Dec(targetBoostRatio).mul(1e16).toString(),
       new Dec(targetRepayRatio).mul(1e16).toString(),
       boostEnabled,
+    ];
+  },
+  leverageManagementWithoutSubProxy(
+    vaultId: number,
+    triggerRatio: number,
+    targetRatio: number,
+    ratioState: RatioState,
+    isBoost: boolean,
+    daiAddr?: EthereumAddress,
+  ) {
+    const bundleId = isBoost ? Bundles.MainnetIds.MAKER_BOOST : Bundles.MainnetIds.MAKER_REPAY;
+
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRatio, ratioState);
+
+    const subData = subDataService.makerLeverageManagementWithoutSubProxy.encode(vaultId, targetRatio, daiAddr);
+
+    return [
+      bundleId,
+      true,
+      triggerData,
+      subData,
     ];
   },
 };
@@ -577,6 +601,24 @@ export const sparkEncode = {
     const triggerDataEncoded = triggerService.sparkQuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+  leverageManagementWithoutSubProxy(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkLeverageManagementSubDataWithoutSubProxy.encode(
+      targetRatio,
+      ratioState,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
 
