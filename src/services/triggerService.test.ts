@@ -32,6 +32,9 @@ import {
   compoundV3PriceRangeTrigger,
   aaveV3QuotePriceRangeTrigger,
   morphoBluePriceRangeTrigger,
+  aaveV4RatioTrigger,
+  aaveV4QuotePriceTrigger,
+  aaveV4QuotePriceRangeTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1279,6 +1282,102 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(morphoBluePriceRangeTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.aaveV4RatioTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [owner: EthereumAddress, spoke: EthereumAddress, ratioPercentage: number, ratioState: RatioState]]> = [
+        [
+          ['0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+          [web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), 120, RatioState.UNDER]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(aaveV4RatioTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ owner: EthereumAddress, spoke: EthereumAddress, ratio: number, ratioState: RatioState }, TriggerData]> = [
+        [
+          { owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), ratio: 120, ratioState: RatioState.UNDER },
+          ['0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4RatioTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.aaveV4QuotePriceTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [spoke: EthereumAddress, baseTokenId: number, quoteTokenId: number, price: number, ratioState: RatioState]]> = [
+        [
+          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
+          [web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), 10, 20, 1500, RatioState.OVER]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(aaveV4QuotePriceTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, baseTokenId: number, quoteTokenId: number, price: string, ratioState: RatioState }, TriggerData]> = [
+        [
+          { spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), baseTokenId: 10, quoteTokenId: 20, price: '1500', ratioState: RatioState.OVER },
+          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4QuotePriceTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.aaveV4QuotePriceRangeTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [spoke: EthereumAddress, baseTokenId: number, quoteTokenId: number, lowerPrice: number, upperPrice: number]]> = [
+        [
+          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000002098a678000000000000000000000000000000000000000000000000000000002540be4000'],
+          [web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), 10, 20, 1400, 1600]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(aaveV4QuotePriceRangeTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, baseTokenId: number, quoteTokenId: number, lowerPrice: string, upperPrice: string }, TriggerData]> = [
+        [
+          { spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), baseTokenId: 10, quoteTokenId: 20, lowerPrice: '1400', upperPrice: '1600' },
+          ['0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000002098a678000000000000000000000000000000000000000000000000000000002540be4000'],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4QuotePriceRangeTrigger.decode(actual)).to.eql(expected);
         });
       });
     });

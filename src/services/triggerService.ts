@@ -721,3 +721,78 @@ export const morphoBluePriceRangeTrigger = {
     };
   },
 };
+
+export const aaveV4RatioTrigger = {
+  encode(owner: EthereumAddress, spoke: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['address', 'address', 'uint256', 'uint8'], [owner, spoke, ratioWei, ratioState])];
+  },
+  decode(triggerData: TriggerData) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      owner: decodedData[0] as EthereumAddress,
+      spoke: decodedData[1] as EthereumAddress,
+      ratio: weiToRatioPercentage(decodedData[2] as string),
+      ratioState: Number(decodedData[3]),
+    };
+  },
+};
+
+export const aaveV4QuotePriceTrigger = {
+  encode(
+    spoke: EthereumAddress,
+    baseTokenId: number,
+    quoteTokenId: number,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    // Price is always in 8 decimals
+    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256', 'uint256', 'uint8'], [spoke, baseTokenId, quoteTokenId, _price, ratioState])];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint256', 'uint8'], triggerData[0]);
+    // Price is always in 8 decimals
+    const price = new Dec(decodedData[3] as string).div(10 ** 8).toDP(8).toString();
+    return {
+      spoke: decodedData[0] as EthereumAddress,
+      baseTokenId: Number(decodedData[1]),
+      quoteTokenId: Number(decodedData[2]),
+      price,
+      ratioState: Number(decodedData[4]),
+    };
+  },
+};
+
+export const aaveV4QuotePriceRangeTrigger = {
+  encode(
+    spoke: EthereumAddress,
+    baseTokenId: number,
+    quoteTokenId: number,
+    lowerPrice: number,
+    upperPrice: number,
+  ) {
+    // Price is scaled to 1e8
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+    return [
+      AbiCoder.encodeParameters(
+        ['address', 'uint256', 'uint256', 'uint256', 'uint256'],
+        [spoke, baseTokenId, quoteTokenId, lowerPriceFormatted, upperPriceFormatted]),
+    ];
+  },
+  decode(
+    triggerData: TriggerData,
+  ) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint256', 'uint256'], triggerData[0]);
+    return {
+      spoke: decodedData[0] as EthereumAddress,
+      baseTokenId: Number(decodedData[1]),
+      quoteTokenId: Number(decodedData[2]),
+      lowerPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
+      upperPrice: new Dec(decodedData[4] as string).div(1e8).toString(),
+    };
+  },
+};
