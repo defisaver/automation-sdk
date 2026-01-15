@@ -98,7 +98,7 @@ export namespace Strategies {
     CURVEUSD_PAYBACK = 92,
     LIQUITY_V2_PAYBACK = 113,
     AAVE_V3_COLLATERAL_SWITCH = 135,
-    AAVE_V4_COLLATERAL_SWITCH = 136,
+    AAVE_V4_COLLATERAL_SWITCH = 151,
   }
 
   export enum OptimismIds {
