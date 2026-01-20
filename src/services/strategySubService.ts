@@ -581,6 +581,28 @@ export const sparkEncode = {
 
     return subInput;
   },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    isBundle: boolean = true,
+    triggerData: {
+      baseTokenAddr: EthereumAddress, quoteTokenAddr: EthereumAddress, price: number, ratioState: RatioState
+    },
+    subData: {
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
+    },
+  ) {
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
+    } = subData;
+    const subDataEncoded = subDataService.sparkLeverageManagementOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
+
+    const {
+      baseTokenAddr, quoteTokenAddr, price, ratioState,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddr, quoteTokenAddr, price, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
   closeOnPriceGeneric(
     strategyOrBundleId: number,
     collAsset: EthereumAddress,

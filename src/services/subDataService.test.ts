@@ -2263,4 +2263,71 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+  describe('When testing subDataService.sparkLeverageManagementOnPriceSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]] > = 
+      [
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            200,
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number}, SubData]> = 
+      [
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            collAssetId: 2,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            debtAssetId: 4,
+            marketAddr: web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            targetRatio: 175
+          }
+        , 
+          [
+            '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            '0x0000000000000000000000000000000000000000000000000000000000000002',
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            '0x0000000000000000000000000000000000000000000000000000000000000004',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x00000000000000000000000000000000000000000000000018493fba64ef0000'
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
 });
