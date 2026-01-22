@@ -850,7 +850,8 @@ export const aaveV4Encode = {
     debtAssetId: number,
     targetRatio: number,
     price: number,
-    ratioState: RatioState,
+    priceState: RatioState,
+    ratioState: RatioState, // UNDER for repay, OVER for boost
   ) {
     const isBundle = true;
     const subData = subDataService.aaveV4LeverageManagementOnPriceSubData.encode(
@@ -868,7 +869,7 @@ export const aaveV4Encode = {
       collAssetId,
       debtAssetId,
       price,
-      ratioState,
+      priceState,
     );
 
     return [strategyOrBundleId, isBundle, triggerData, subData];

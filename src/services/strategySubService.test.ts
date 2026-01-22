@@ -1764,7 +1764,7 @@ describe('Feature: strategySubService.ts', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
         [
-          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, targetRatio: number, price: number, ratioState: RatioState
+          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, targetRatio: number, price: number, priceState: RatioState, ratioState: RatioState
         ]
       ]> = [
         [
@@ -1779,7 +1779,8 @@ describe('Feature: strategySubService.ts', () => {
             20,
             160,
             1500,
-            RatioState.OVER,
+            RatioState.OVER, // priceState - goes to trigger
+            RatioState.OVER, // ratioState - UNDER for repay, OVER for boost
           ]
         ]
       ];
