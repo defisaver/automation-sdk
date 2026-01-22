@@ -21,6 +21,7 @@ import {
   crvUSDEncode,
   compoundV3L2Encode,
   morphoBlueEncode,
+  aaveV4Encode,
 } from './strategySubService';
 
 describe('Feature: strategySubService.ts', () => {
@@ -1726,6 +1727,130 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(compoundV3L2Encode.leverageManagement(...actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing strategySubService.aaveV4Encode', () => {
+    describe('leverageManagement()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, ratioState: RatioState, targetRatio: number, triggerRatio: number
+        ]
+      ]> = [
+        [
+          [1,true,["0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001"],["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x0000000000000000000000000000000000000000000000000000000000000001","0x00000000000000000000000000000000000000000000000014d1120d7b160000"]],
+          [
+            1,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            RatioState.UNDER,
+            150,
+            120,
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4Encode.leverageManagement(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('leverageManagementOnPrice()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, targetRatio: number, price: number, priceState: RatioState, ratioState: RatioState
+        ]
+      ]> = [
+        [
+          [2,true,["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000"],["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000000","0x00000000000000000000000000000000000000000000000016345785d8a00000"]],
+          [
+            2,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            20,
+            160,
+            1500,
+            RatioState.OVER, // priceState - goes to trigger
+            RatioState.OVER, // ratioState - UNDER for repay, OVER for boost
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4Encode.leverageManagementOnPrice(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('closeOnPrice()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, stopLossPrice: number, stopLossType: CloseToAssetType, takeProfitPrice: number, takeProfitType: CloseToAssetType
+        ]
+      ]> = [
+        [
+          [3,true,["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000002098a678000000000000000000000000000000000000000000000000000000000000000000"],["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000003"]],
+          [
+            3,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            20,
+            1400,
+            CloseToAssetType.DEBT,
+            0,
+            CloseToAssetType.COLLATERAL
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4Encode.closeOnPrice(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('collateralSwitch()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number, owner: EthereumAddress, spoke: EthereumAddress, fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, amountToSwitch: string, price: number, ratioState: RatioState
+        ]
+      ]> = [
+        [
+          [4,false,["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000001"],["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000de0b6b3a7640000"]],
+          [
+            4,
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            20,
+            '1000000000000000000',
+            1500,
+            RatioState.UNDER,
+          ]
+        ]
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV4Encode.collateralSwitch(...actual)).to.eql(expected);
         });
       });
     });

@@ -2263,4 +2263,177 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+
+  describe('When testing subDataService.aaveV4LeverageManagementSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [spoke: EthereumAddress, owner: EthereumAddress, ratioState: RatioState, targetRatio: number]]> = [
+        [
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x0000000000000000000000000000000000000000000000000000000000000001","0x00000000000000000000000000000000000000000000000014d1120d7b160000"],
+          [web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'), RatioState.UNDER, 150]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(subDataService.aaveV4LeverageManagementSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, owner: EthereumAddress, ratioState: RatioState, targetRatio: number }, SubData]> = [
+        [
+          {
+            spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            ratioState: RatioState.UNDER,
+            targetRatio: 150,
+          },
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x0000000000000000000000000000000000000000000000000000000000000001","0x00000000000000000000000000000000000000000000000014d1120d7b160000"],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV4LeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.aaveV4LeverageManagementOnPriceSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [spoke: EthereumAddress, owner: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, ratioState: RatioState, targetRatio: number]]> = [
+        [
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000000","0x00000000000000000000000000000000000000000000000016345785d8a00000"],
+          [
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 20,
+            RatioState.OVER, 160
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(subDataService.aaveV4LeverageManagementOnPriceSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, owner: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, ratioState: RatioState, targetRatio: number }, SubData]> = [
+        [
+          {
+            spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            collAsset: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            collAssetId: 10,
+            debtAsset: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            debtAssetId: 20,
+            ratioState: RatioState.OVER,
+            targetRatio: 160,
+          },
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000000","0x00000000000000000000000000000000000000000000000016345785d8a00000"],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV4LeverageManagementOnPriceSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.aaveV4CloseSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [spoke: EthereumAddress, owner: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, closeType: CloseStrategyType]]> = [
+        [
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000001"],
+          [
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 20,
+            CloseStrategyType.STOP_LOSS_IN_COLLATERAL
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(subDataService.aaveV4CloseSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, owner: EthereumAddress, collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, closeType: CloseStrategyType }, SubData]> = [
+        [
+          {
+            spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            collAsset: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            collAssetId: 10,
+            debtAsset: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            debtAssetId: 20,
+            closeType: CloseStrategyType.STOP_LOSS_IN_COLLATERAL,
+          },
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000000001"],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV4CloseSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.aaveV4CollateralSwitchSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [spoke: EthereumAddress, owner: EthereumAddress, fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, amountToSwitch: string]]> = [
+        [
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000de0b6b3a7640000"],
+          [
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'), web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'), 10,
+            web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'), 20,
+            '1000000000000000000'
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(subDataService.aaveV4CollateralSwitchSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ spoke: EthereumAddress, owner: EthereumAddress, fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, amountToSwitch: string }, SubData]> = [
+        [
+          {
+            spoke: web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            owner: web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            fromAsset: web3Utils.toChecksumAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+            fromAssetId: 10,
+            toAsset: web3Utils.toChecksumAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'),
+            toAssetId: 20,
+            amountToSwitch: '1000000000000000000'
+          },
+          ["0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e","0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c","0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","0x000000000000000000000000000000000000000000000000000000000000000a","0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000de0b6b3a7640000"],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV4CollateralSwitchSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
 });

@@ -824,3 +824,121 @@ export const fluidEncode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
+
+export const aaveV4Encode = {
+  leverageManagement(
+    strategyOrBundleId: number,
+    owner: EthereumAddress,
+    spoke: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.aaveV4LeverageManagementSubData.encode(spoke, owner, ratioState, targetRatio);
+    const triggerData = triggerService.aaveV4RatioTrigger.encode(owner, spoke, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  leverageManagementOnPrice(
+    strategyOrBundleId: number,
+    owner: EthereumAddress,
+    spoke: EthereumAddress,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    targetRatio: number,
+    price: number,
+    priceState: RatioState,
+    ratioState: RatioState, // UNDER for repay, OVER for boost
+  ) {
+    const isBundle = true;
+    const subData = subDataService.aaveV4LeverageManagementOnPriceSubData.encode(
+      spoke,
+      owner,
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      ratioState,
+      targetRatio,
+    );
+    const triggerData = triggerService.aaveV4QuotePriceTrigger.encode(
+      spoke,
+      collAssetId,
+      debtAssetId,
+      price,
+      priceState,
+    );
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  closeOnPrice(
+    strategyOrBundleId: number,
+    owner: EthereumAddress,
+    spoke: EthereumAddress,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subData = subDataService.aaveV4CloseSubData.encode(
+      spoke,
+      owner,
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      closeType,
+    );
+    const triggerData = triggerService.aaveV4QuotePriceRangeTrigger.encode(
+      spoke,
+      collAssetId,
+      debtAssetId,
+      stopLossPrice,
+      takeProfitPrice,
+    );
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+  collateralSwitch(
+    strategyOrBundleId: number,
+    owner: EthereumAddress,
+    spoke: EthereumAddress,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    amountToSwitch: string,
+    price: number,
+    ratioState: RatioState,
+  ) {
+    const isBundle = false;
+    const subData = subDataService.aaveV4CollateralSwitchSubData.encode(
+      spoke,
+      owner,
+      fromAsset,
+      fromAssetId,
+      toAsset,
+      toAssetId,
+      amountToSwitch,
+    );
+    const triggerData = triggerService.aaveV4QuotePriceTrigger.encode(
+      spoke,
+      fromAssetId, // baseTokenId
+      toAssetId, // quoteTokenId
+      price,
+      ratioState,
+    );
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+};
