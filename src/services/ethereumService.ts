@@ -31,36 +31,18 @@ export async function multicall(
       gasLimit: call.gasLimit || 1e6,
     }));
 
-    // Track which calls are valid (non-zero target) to map results back correctly
-    const validCallsIndices: number[] = [];
-    const validCalls = formattedCalls.filter((item, index) => {
-      if (item.target !== '0x0') {
-        validCallsIndices.push(index);
-        return true;
-      }
-      return false;
+    const callResult = await multicallContract.methods.multicall(
+      formattedCalls.filter(item => item.target !== '0x0'),
+    ).call({}, block);
+
+    let formattedResult: Multicall.Payload = [];
+    callResult.returnData.forEach(([success,, result], j) => {
+      const formattedRes = (success && result !== '0x'
+        ? AbiCoder.decodeParameters(chunk[j].abiItem.outputs!, result)
+        : undefined);
+      formattedResult = [...formattedResult, formattedRes];
     });
-
-    const callResult = await multicallContract.methods.multicall(validCalls).call({}, block);
-
-    // Decode results for this chunk, mapping back to original call indices
-    let validCallResultIndex = 0;
-    for (let j = 0; j < chunk.length; j++) {
-      if (validCallsIndices.includes(j)) {
-        // This call was included in the multicall
-        const originalCall = chunk[j];
-        // @ts-ignore
-        const [success, gasUsed, result] = callResult.returnData[validCallResultIndex];
-        const formattedRes = (result !== '0x'
-          ? AbiCoder.decodeParameters(originalCall.abiItem.outputs!, result)
-          : undefined);
-        allResults.push(formattedRes);
-        validCallResultIndex++;
-      } else {
-        // This call was filtered out (target was '0x0'), add undefined
-        allResults.push(undefined);
-      }
-    }
+    allResults.push(...formattedResult);
   }
 
   return allResults;
