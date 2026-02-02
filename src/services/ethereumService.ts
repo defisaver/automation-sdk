@@ -18,27 +18,52 @@ export async function multicall(
   block: BlockNumber = 'latest',
 ): Promise<Multicall.Payload> {
   const multicallContract = makeUniMulticallContract(web3, chainId).contract;
+  const MAX_CALLS_PER_BATCH = 1000;
 
-  const formattedCalls: Multicall.FormattedCalls[] = calls.map((call) => ({
-    callData: AbiCoder.encodeFunctionCall(call.abiItem, call.params),
-    target: call.target || '0x0',
-    gasLimit: call.gasLimit || 1e6,
-  }));
+  const allResults: Multicall.Payload = [];
 
-  const callResult = await multicallContract.methods.multicall(
-    formattedCalls.filter(item => item.target !== '0x0'),
-  ).call({}, block);
+  // Process each chunk
+  for (let i = 0; i < calls.length; i += MAX_CALLS_PER_BATCH) {
+    const chunk = calls.slice(i, i + MAX_CALLS_PER_BATCH);
+    const formattedCalls: Multicall.FormattedCalls[] = chunk.map((call) => ({
+      callData: AbiCoder.encodeFunctionCall(call.abiItem, call.params),
+      target: call.target || '0x0',
+      gasLimit: call.gasLimit || 1e6,
+    }));
 
-  let formattedResult: Multicall.Payload = [];
+    // Track which calls are valid (non-zero target) to map results back correctly
+    const validCallsIndices: number[] = [];
+    const validCalls = formattedCalls.filter((item, index) => {
+      if (item.target !== '0x0') {
+        validCallsIndices.push(index);
+        return true;
+      }
+      return false;
+    });
 
-  callResult.returnData.forEach(([success, gasUsed, result], i) => {
-    const formattedRes = (result !== '0x'
-      ? AbiCoder.decodeParameters(calls[i].abiItem.outputs!, result)
-      : undefined);
-    formattedResult = [...formattedResult, formattedRes];
-  });
+    const callResult = await multicallContract.methods.multicall(validCalls).call({}, block);
 
-  return formattedResult as Multicall.Payload;
+    // Decode results for this chunk, mapping back to original call indices
+    let validCallResultIndex = 0;
+    for (let j = 0; j < chunk.length; j++) {
+      if (validCallsIndices.includes(j)) {
+        // This call was included in the multicall
+        const originalCall = chunk[j];
+        // @ts-ignore
+        const [success, gasUsed, result] = callResult.returnData[validCallResultIndex];
+        const formattedRes = (result !== '0x'
+          ? AbiCoder.decodeParameters(originalCall.abiItem.outputs!, result)
+          : undefined);
+        allResults.push(formattedRes);
+        validCallResultIndex++;
+      } else {
+        // This call was filtered out (target was '0x0'), add undefined
+        allResults.push(undefined);
+      }
+    }
+  }
+
+  return allResults;
 }
 
 export async function getEventsFromContract<T extends BaseContract>(
