@@ -32,7 +32,7 @@ export async function multicall(
     }));
 
     const callResult = await multicallContract.methods.multicall(
-      formattedCalls.filter(item => item.target !== '0x0'),
+      formattedCalls,
     ).call({}, block);
 
     let formattedResult: Multicall.Payload = [];
