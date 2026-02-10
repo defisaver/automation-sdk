@@ -18,27 +18,34 @@ export async function multicall(
   block: BlockNumber = 'latest',
 ): Promise<Multicall.Payload> {
   const multicallContract = makeUniMulticallContract(web3, chainId).contract;
+  const MAX_CALLS_PER_BATCH = 1000;
 
-  const formattedCalls: Multicall.FormattedCalls[] = calls.map((call) => ({
-    callData: AbiCoder.encodeFunctionCall(call.abiItem, call.params),
-    target: call.target || '0x0',
-    gasLimit: call.gasLimit || 1e6,
-  }));
+  const allResults: Multicall.Payload = [];
 
-  const callResult = await multicallContract.methods.multicall(
-    formattedCalls.filter(item => item.target !== '0x0'),
-  ).call({}, block);
+  // Process each chunk
+  for (let i = 0; i < calls.length; i += MAX_CALLS_PER_BATCH) {
+    const chunk = calls.slice(i, i + MAX_CALLS_PER_BATCH);
+    const formattedCalls: Multicall.FormattedCalls[] = chunk.map((call) => ({
+      callData: AbiCoder.encodeFunctionCall(call.abiItem, call.params),
+      target: call.target || '0x0',
+      gasLimit: call.gasLimit || 1e6,
+    }));
 
-  let formattedResult: Multicall.Payload = [];
+    const callResult = await multicallContract.methods.multicall(
+      formattedCalls,
+    ).call({}, block);
 
-  callResult.returnData.forEach(([success, gasUsed, result], i) => {
-    const formattedRes = (result !== '0x'
-      ? AbiCoder.decodeParameters(calls[i].abiItem.outputs!, result)
-      : undefined);
-    formattedResult = [...formattedResult, formattedRes];
-  });
+    let formattedResult: Multicall.Payload = [];
+    callResult.returnData.forEach(([success,, result], j) => {
+      const formattedRes = (success && result !== '0x'
+        ? AbiCoder.decodeParameters(chunk[j].abiItem.outputs!, result)
+        : undefined);
+      formattedResult = [...formattedResult, formattedRes];
+    });
+    allResults.push(...formattedResult);
+  }
 
-  return formattedResult as Multicall.Payload;
+  return allResults;
 }
 
 export async function getEventsFromContract<T extends BaseContract>(
