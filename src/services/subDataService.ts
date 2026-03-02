@@ -104,6 +104,26 @@ export const makerLeverageManagementSubData = {
   },
 };
 
+export const makerLeverageManagementWithoutSubProxy = {
+  encode(
+    vaultId: number,
+    targetRatio: number,
+    daiAddr?: EthereumAddress,
+  ): SubData {
+    const encodedVaultId = AbiCoder.encodeParameter('uint256', vaultId);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedDaiAddr = AbiCoder.encodeParameter('address', daiAddr || getAssetInfo('DAI', 1).address);
+    return [encodedVaultId, encodedTargetRatio, encodedDaiAddr];
+  },
+  decode(subData: SubData): { vaultId: number, targetRatio: number, daiAddr: string } {
+    const vaultId = +AbiCoder.decodeParameter('uint256', subData[0])!.toString();
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[1]) as any as string);
+    const daiAddr = AbiCoder.decodeParameter('address', subData[2])!.toString();
+
+    return { vaultId, targetRatio, daiAddr };
+  },
+};
+
 export const liquityLeverageManagementSubData = {
   decode: (subData:SubData) => {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
@@ -592,6 +612,26 @@ export const sparkLeverageManagementSubData = { // TODO encode?
     return { targetRatio };
   },
 };
+export const sparkLeverageManagementSubDataWithoutSubProxy = {
+  encode(
+    targetRatio: number,
+    ratioState: RatioState,
+  ): SubData {
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+
+    const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', true);
+    const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', false);
+    return [encodedTargetRatio, encodedRatioState, encodedUseDefaultMarket, encodedUseOnBehalf];
+  },
+  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
+
+    return { targetRatio, ratioState };
+  },
+};
+
 
 export const liquityDsrPaybackSubData = {
   encode: (targetRatio: number) => {
