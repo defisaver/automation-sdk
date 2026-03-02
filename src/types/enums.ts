@@ -151,6 +151,7 @@ export namespace Strategies {
     EoaBoostOnPrice = 'eoa-boost-on-price',
     EoaRepayOnPrice = 'eoa-repay-on-price',
     CollateralSwitch = 'collateral-switch',
+    EoaCollateralSwitch = 'eoa-collateral-switch',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
