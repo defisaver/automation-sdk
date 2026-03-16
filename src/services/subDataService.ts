@@ -11,7 +11,7 @@ import {
   ChainId, CollActionType, DebtActionType, RatioState,
 } from '../types/enums';
 
-import { ZERO_ADDRESS } from '../constants';
+import { EMPTY_SLOT, ZERO_ADDRESS } from '../constants';
 
 import { compareAddresses, ratioPercentageToWei, weiToRatioPercentage } from './utils';
 
@@ -811,7 +811,15 @@ export const aaveV4LeverageManagementSubData = {
     const ownerEncoded = AbiCoder.encodeParameter('address', owner);
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    return [spokeEncoded, ownerEncoded, ratioStateEncoded, targetRatioEncoded];
+    // Add two empty slots for future addons (e.g tsi or slippage settings)
+    return [
+      spokeEncoded,
+      ownerEncoded,
+      ratioStateEncoded,
+      targetRatioEncoded,
+      EMPTY_SLOT,
+      EMPTY_SLOT,
+    ];
   },
   decode: (subData: SubData) => {
     const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
@@ -842,6 +850,7 @@ export const aaveV4LeverageManagementOnPriceSubData = {
     const debtAssetIdEncoded = AbiCoder.encodeParameter('uint256', debtAssetId);
     const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    // Add two empty slots for future addons (e.g tsi or slippage settings)
     return [
       spokeEncoded,
       ownerEncoded,
@@ -851,6 +860,8 @@ export const aaveV4LeverageManagementOnPriceSubData = {
       debtAssetIdEncoded,
       ratioStateEncoded,
       targetRatioEncoded,
+      EMPTY_SLOT,
+      EMPTY_SLOT,
     ];
   },
   decode: (subData: SubData) => {
@@ -884,6 +895,7 @@ export const aaveV4CloseSubData = {
     const debtAssetEncoded = AbiCoder.encodeParameter('address', debtAsset);
     const debtAssetIdEncoded = AbiCoder.encodeParameter('uint256', debtAssetId);
     const closeTypeEncoded = AbiCoder.encodeParameter('uint8', closeType);
+    // Add two empty slots for future addons (e.g tsi or slippage settings)
     return [
       spokeEncoded,
       ownerEncoded,
@@ -892,6 +904,8 @@ export const aaveV4CloseSubData = {
       debtAssetEncoded,
       debtAssetIdEncoded,
       closeTypeEncoded,
+      EMPTY_SLOT,
+      EMPTY_SLOT,
     ];
   },
   decode: (subData: SubData) => {
@@ -924,6 +938,7 @@ export const aaveV4CollateralSwitchSubData = {
     const toAssetEncoded = AbiCoder.encodeParameter('address', toAsset);
     const toAssetIdEncoded = AbiCoder.encodeParameter('uint256', toAssetId);
     const amountToSwitchEncoded = AbiCoder.encodeParameter('uint256', amountToSwitch);
+    // Add two empty slots for future addons (e.g tsi or slippage settings)
     return [
       spokeEncoded,
       ownerEncoded,
@@ -932,6 +947,8 @@ export const aaveV4CollateralSwitchSubData = {
       toAssetEncoded,
       toAssetIdEncoded,
       amountToSwitchEncoded,
+      EMPTY_SLOT,
+      EMPTY_SLOT,
     ];
   },
   decode: (subData: SubData) => {

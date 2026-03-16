@@ -23,6 +23,8 @@ import LegacyProtocol from '../automation/private/LegacyProtocol';
 // General
 export const ZERO_ADDRESS: EthereumAddress = '0x0000000000000000000000000000000000000000';
 
+export const EMPTY_SLOT: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
 export const AAVE_V3_VARIABLE_BORROW_RATE = 2;
 
 export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
