@@ -106,13 +106,24 @@ export function getPositionId(...args: (number | string)[]) {
 }
 
 export function getCloseStrategyType(
-  stopLossPrice: number,
+  stopLossPrice: number | string,
   stopLossType: CloseToAssetType,
-  takeProfitPrice: number,
+  takeProfitPrice: number | string,
   takeProfitType: CloseToAssetType,
 ): CloseStrategyType {
-  const isStopLoss = stopLossPrice > 0;
-  const isTakeProfit = takeProfitPrice > 0;
+  const stopLossPriceDec = new Dec(stopLossPrice);
+  const takeProfitPriceDec = new Dec(takeProfitPrice);
+
+  if (!stopLossPriceDec.isFinite() || stopLossPriceDec.isNegative()) {
+    throw new Error('CloseOnPrice: stopLossPrice must be a finite non-negative number');
+  }
+
+  if (!takeProfitPriceDec.isFinite() || takeProfitPriceDec.isNegative()) {
+    throw new Error('CloseOnPrice: takeProfitPrice must be a finite non-negative number');
+  }
+
+  const isStopLoss = stopLossPriceDec.gt(0);
+  const isTakeProfit = takeProfitPriceDec.gt(0);
 
   if (!isStopLoss && !isTakeProfit) {
     throw new Error('CloseOnPrice: At least one price must be defined');

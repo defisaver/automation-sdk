@@ -871,7 +871,7 @@ export const aaveV4Encode = {
     debtAsset: EthereumAddress,
     debtAssetId: number,
     targetRatio: number,
-    price: number,
+    price: string,
     priceState: RatioState,
     ratioState: RatioState, // UNDER for repay, OVER for boost
   ) {
@@ -904,9 +904,9 @@ export const aaveV4Encode = {
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
-    stopLossPrice: number = 0,
+    stopLossPrice: string = '0',
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
-    takeProfitPrice: number = 0,
+    takeProfitPrice: string = '0',
     takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
@@ -940,7 +940,7 @@ export const aaveV4Encode = {
     toAsset: EthereumAddress,
     toAssetId: number,
     amountToSwitch: string,
-    price: number,
+    price: string,
     ratioState: RatioState,
   ) {
     const isBundle = false;

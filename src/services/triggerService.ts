@@ -766,24 +766,22 @@ export const aaveV4QuotePriceTrigger = {
     spoke: EthereumAddress,
     baseTokenId: number,
     quoteTokenId: number,
-    price: number,
+    price: string,
     ratioState: RatioState,
   ) {
-    // Price is always in 8 decimals
-    const _price = new Dec(price.toString()).mul(10 ** 8).floor().toString();
+    // Price is intentionally scaled to 1e18 for higher precision.
+    const _price = new Dec(price).mul(1e18).floor().toString();
     return [AbiCoder.encodeParameters(['address', 'uint256', 'uint256', 'uint256', 'uint8'], [spoke, baseTokenId, quoteTokenId, _price, ratioState])];
   },
   decode(
     triggerData: TriggerData,
   ) {
     const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint256', 'uint256', 'uint8'], triggerData[0]);
-    // Price is always in 8 decimals
-    const price = new Dec(decodedData[3] as string).div(10 ** 8).toDP(8).toString();
     return {
       spoke: decodedData[0] as EthereumAddress,
       baseTokenId: Number(decodedData[1]),
       quoteTokenId: Number(decodedData[2]),
-      price,
+      price: new Dec(decodedData[3] as string).div(1e18).toString(),
       ratioState: Number(decodedData[4]),
     };
   },
@@ -794,12 +792,12 @@ export const aaveV4QuotePriceRangeTrigger = {
     spoke: EthereumAddress,
     baseTokenId: number,
     quoteTokenId: number,
-    lowerPrice: number,
-    upperPrice: number,
+    lowerPrice: string,
+    upperPrice: string,
   ) {
-    // Price is scaled to 1e8
-    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e8).floor().toString();
-    const upperPriceFormatted = new Dec(upperPrice).mul(1e8).floor().toString();
+    // Price is intentionally scaled to 1e18 for higher precision.
+    const lowerPriceFormatted = new Dec(lowerPrice).mul(1e18).floor().toString();
+    const upperPriceFormatted = new Dec(upperPrice).mul(1e18).floor().toString();
     return [
       AbiCoder.encodeParameters(
         ['address', 'uint256', 'uint256', 'uint256', 'uint256'],
@@ -814,8 +812,8 @@ export const aaveV4QuotePriceRangeTrigger = {
       spoke: decodedData[0] as EthereumAddress,
       baseTokenId: Number(decodedData[1]),
       quoteTokenId: Number(decodedData[2]),
-      lowerPrice: new Dec(decodedData[3] as string).div(1e8).toString(),
-      upperPrice: new Dec(decodedData[4] as string).div(1e8).toString(),
+      lowerPrice: new Dec(decodedData[3] as string).div(1e18).toString(),
+      upperPrice: new Dec(decodedData[4] as string).div(1e18).toString(),
     };
   },
 };
