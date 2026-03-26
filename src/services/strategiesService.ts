@@ -479,9 +479,11 @@ function parseAaveV4CollateralSwitch(position: Position.Automated, parseData: Pa
   const { subStruct } = parseData.subscriptionEventData;
   const triggerData = triggerService.aaveV4QuotePriceTrigger.decode(subStruct.triggerData);
   const subData = subDataService.aaveV4CollateralSwitchSubData.decode(subStruct.subData);
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
+  _position.strategy.strategyId = isEOA ? Strategies.Identifiers.EoaCollateralSwitch : Strategies.Identifiers.CollateralSwitch;
   return _position;
 }
 
@@ -1349,6 +1351,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV4LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV4CloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV4CollateralSwitch,
+    [Strategies.Identifiers.EoaCollateralSwitch]: parseAaveV4CollateralSwitch,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
