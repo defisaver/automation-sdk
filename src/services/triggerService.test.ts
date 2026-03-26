@@ -32,6 +32,7 @@ import {
   compoundV3PriceRangeTrigger,
   aaveV3QuotePriceRangeTrigger,
   morphoBluePriceRangeTrigger,
+  sparkQuotePriceTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1279,6 +1280,56 @@ describe('Feature: triggerService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(morphoBluePriceRangeTrigger.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing triggerService.sparkQuotePriceTrigger', () => {
+    describe('encode()', () => {
+      const examples: Array<[[string], [baseTokenAddr: EthereumAddress, quoteTokenAddr: EthereumAddress, price: number, ratioState: RatioState]]> = [
+        [
+          ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000003a352944000000000000000000000000000000000000000000000000000000000000000001'],
+          [web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address), web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address), 2500, RatioState.UNDER]
+        ],
+        [
+          ['0x000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec70000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000000000000000000c1c0000000000000000000000000000000000000000000000000000000000000000'],
+          [web3Utils.toChecksumAddress(getAssetInfo('USDT', ChainId.Ethereum).address), web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address), 0.000031, RatioState.OVER]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${expected}`, () => {
+          expect(sparkQuotePriceTrigger.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+    
+     describe('decode()', () => {
+       const examples: Array<[{ baseTokenAddr: EthereumAddress, quoteTokenAddr: EthereumAddress, price: string, ratioState: RatioState }, TriggerData]> = [
+         [
+           { 
+             baseTokenAddr: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address), 
+             quoteTokenAddr: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address), 
+             price: '2500', 
+             ratioState: RatioState.UNDER
+           },
+           ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000003a352944000000000000000000000000000000000000000000000000000000000000000001']
+         ],
+         [
+           {
+             baseTokenAddr: web3Utils.toChecksumAddress(getAssetInfo('USDT', ChainId.Ethereum).address), 
+             quoteTokenAddr: web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address), 
+             price: '0.000031', 
+             ratioState: RatioState.OVER
+           },
+           ['0x000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec70000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000000000000000000c1c0000000000000000000000000000000000000000000000000000000000000000']
+         ]
+       ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkQuotePriceTrigger.decode(actual)).to.eql(expected);
         });
       });
     });
