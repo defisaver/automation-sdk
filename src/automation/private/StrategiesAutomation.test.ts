@@ -659,5 +659,45 @@ describe('Feature: StrategiesAutomation.ts', () => {
         expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
       });
     });
+
+    it('Aave V4: pairs repay/boost merge only when trigger spoke matches (no cross-spoke merge)', () => {
+      const spoke1 = '0x0000000000000000000000000000000000000a01';
+      const spoke2 = '0x0000000000000000000000000000000000000a02';
+      const base = {
+        isEnabled: true,
+        chainId: 1,
+        owner: '0x0000000000000000000000000000000000000b01',
+        protocol: { id: 'Aave__V4' },
+        strategy: { strategyId: 'leverage-management' },
+        blockNumber: 0,
+        subHash: '0x1',
+        positionId: 'test',
+      };
+      const boostSpoke1 = {
+        ...base,
+        subId: 1,
+        strategyData: { decoded: { triggerData: { spoke: spoke1 }, subData: {} } },
+        specific: { mergeId: 'boost', subId2: 1 },
+      };
+      const repaySpoke2 = {
+        ...base,
+        subId: 2,
+        strategyData: { decoded: { triggerData: { spoke: spoke2 }, subData: {} } },
+        specific: { mergeWithId: 'boost', subId1: 2 },
+      };
+      const boostSpoke2 = {
+        ...base,
+        subId: 3,
+        strategyData: { decoded: { triggerData: { spoke: spoke2 }, subData: {} } },
+        specific: { mergeId: 'boost', subId2: 3 },
+      };
+      // @ts-ignore — mergeSubs is protected; exercised here as in examples above
+      const merged = exampleStrategiesAutomation.mergeSubs([boostSpoke1, repaySpoke2, boostSpoke2]);
+      expect(merged).to.have.length(2);
+      const mergedPair = merged.find((m: { subIds?: number[] }) => m.subIds?.length === 2);
+      const loneBoost = merged.find((m: { subIds?: number[] }) => m.subIds?.length === 1);
+      expect(mergedPair?.strategyData?.decoded?.triggerData?.spoke).to.equal(spoke2);
+      expect(loneBoost?.subId).to.equal(1);
+    });
   });
 });

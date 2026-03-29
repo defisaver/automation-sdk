@@ -129,7 +129,18 @@ export default class StrategiesAutomation extends Automation {
       && (
         s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.MorphoBlue // merge morpho blue with the same marketId
         || s.strategyData.decoded.triggerData.marketId.toLowerCase() === current.strategyData.decoded.triggerData.marketId.toLowerCase()
+      )
+      && (
+        s.protocol.id !== ProtocolIdentifiers.StrategiesAutomation.AaveV4
+        || this._aaveV4MergeSpokesMatch(s, current)
       );
+  }
+
+  /** Repay/boost leverage pairs must not merge across different Aave V4 spokes. */
+  private _aaveV4MergeSpokesMatch(s: Position.Automated, current: Position.Automated): boolean {
+    const a = s.strategyData?.decoded?.triggerData?.spoke as EthereumAddress | undefined;
+    const b = current.strategyData?.decoded?.triggerData?.spoke as EthereumAddress | undefined;
+    return !!a && !!b && a.toLowerCase() === b.toLowerCase();
   }
 
   protected mergeSubs(_subscriptions:(Position.Automated | null)[]) {
