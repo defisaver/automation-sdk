@@ -248,6 +248,30 @@ export declare namespace Position {
       ratioState: RatioState,
       ratio: number,
     }
+
+    interface CloseBase extends Base {
+      stopLossPrice: string,
+      takeProfitPrice: string,
+      stopLossType: CloseToAssetType | undefined,
+      takeProfitType: CloseToAssetType | undefined,
+    }
+
+    interface AaveV4LeverageManagementOnPrice extends Base {
+      collAsset: EthereumAddress,
+      collAssetId: number,
+      debtAsset: EthereumAddress,
+      debtAssetId: number,
+      price: string,
+      ratioState: number,
+      ratio: number,
+    }
+
+    interface AaveV4CloseOnPrice extends CloseBase {
+      collAsset: EthereumAddress,
+      collAssetId: number,
+      debtAsset: EthereumAddress,
+      debtAssetId: number,
+    }
   }
 
   type SpecificAny =
@@ -266,6 +290,8 @@ export declare namespace Position {
     | Specific.CompoundV3LeverageManagementOnPrice
     | Specific.CompoundV3CloseOnPrice
     | Specific.AaveV3CloseOnPriceGeneric
+    | Specific.AaveV4LeverageManagementOnPrice
+    | Specific.AaveV4CloseOnPrice
     | Specific.SparkOnPrice;
 
   export interface Automated {

@@ -23,6 +23,8 @@ import LegacyProtocol from '../automation/private/LegacyProtocol';
 // General
 export const ZERO_ADDRESS: EthereumAddress = '0x0000000000000000000000000000000000000000';
 
+export const EMPTY_SLOT: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
 export const AAVE_V3_VARIABLE_BORROW_RATE = 2;
 
 export const PROTOCOLS: Record<keyof typeof ProtocolIdentifiers.StrategiesAutomation, Interfaces.Protocol> = (() => {
@@ -122,6 +124,16 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyOrBundleId: Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH,
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
+  },
+  [Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH_EOA]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH_EOA,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
+    protocol: PROTOCOLS.AaveV4,
   },
 };
 
@@ -505,6 +517,56 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyOrBundleId: Bundles.MainnetIds.SPARK_BOOST_ON_PRICE,
     strategyId: Strategies.Identifiers.BoostOnPrice,
     protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.AAVE_V4_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.BoostOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_CLOSE,
+    strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.AAVE_V4_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV4,
   },
 };
 
