@@ -194,6 +194,20 @@ export const liquityEncode = {
       boostEnabled,
     ];
   },
+  leverageManagementWithoutSubProxy(
+    strategyOrBundleId: number,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.liquityLeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const triggerData = triggerService.liquityRatioTrigger.encode(user, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
   dsrPayback(
     proxyAddress: EthereumAddress,
     triggerRatio: number,
@@ -256,6 +270,21 @@ export const aaveV2Encode = {
     boostEnabled: boolean,
   ) {
     return subDataService.aaveV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
+  },
+  leverageManagementWithoutSubProxy(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.aaveV2LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const triggerData = triggerService.aaveV2RatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
 
@@ -450,6 +479,20 @@ export const compoundV2Encode = {
   ) {
     return subDataService.compoundV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
   },
+  leverageManagementWithoutSubProxy(
+    strategyOrBundleId: number,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.compoundV2LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const triggerData = triggerService.compoundV2RatioTrigger.encode(user, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
 };
 
 export const compoundV3Encode = {
@@ -464,6 +507,22 @@ export const compoundV3Encode = {
     isEOA: boolean,
   ) {
     return subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
+  },
+  leverageManagementWithoutSubProxy(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy.encode(market, baseToken, targetRatio, ratioState);
+    const triggerData = triggerService.compoundV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
   },
   leverageManagementOnPrice(
     strategyOrBundleId: number,
@@ -556,6 +615,25 @@ export const exchangeEncode = {
     orderType: OrderType,
   ) {
     return subDataService.exchangeLimitOrderSubData.encode(fromToken, toToken, amount, targetPrice, goodUntil, orderType);
+  },
+  limitOrderWithoutSubProxy(
+    fromToken: EthereumAddress,
+    toToken: EthereumAddress,
+    amount: string,
+    targetPrice: string,
+    goodUntil: string | number,
+    orderType: OrderType,
+    fromTokenDecimals: number,
+    toTokenDecimals: number,
+    network: ChainId,
+  ) {
+    requireAddresses([fromToken, toToken]);
+    const subData = subDataService.exchangeLimitOrderSubDataWithoutSubProxy.encode(fromToken, toToken, amount);
+    const triggerData = triggerService.exchangeOffchainPriceTrigger.encode(targetPrice, Number(goodUntil), orderType, fromTokenDecimals, toTokenDecimals);
+
+    const strategyId = STRATEGY_IDS[network].EXCHANGE_LIMIT_ORDER;
+
+    return [strategyId, false, triggerData, subData];
   },
 };
 
