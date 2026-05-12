@@ -612,9 +612,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
   const { subStruct, subId } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
-  const subDataDecoder = position.chainId !== 1
-    ? subDataService.compoundV3L2LeverageManagementSubData
-    : subDataService.compoundV3LeverageManagementSubData;
+  const subDataDecoder = subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy;
 
   const triggerData = triggerService.compoundV3RatioTrigger.decode(subStruct.triggerData);
   const subData = subDataDecoder.decode(subStruct.subData);
