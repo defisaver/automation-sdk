@@ -1,6 +1,6 @@
 {
   "name": "@defisaver/automation-sdk",
-  "version": "3.3.12-strategies-refactor-3",
+  "version": "3.3.12-strategies-refactor-4",
   "description": "",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",

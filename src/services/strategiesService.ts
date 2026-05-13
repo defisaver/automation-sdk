@@ -1129,6 +1129,7 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
     debtAsset: subData.loanToken,
     price: triggerData.price,
     ratio: subData.targetRatio,
+    ratioState: triggerData.priceState,
   };
 
   return _position;
