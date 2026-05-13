@@ -281,7 +281,7 @@ export const aaveV2Encode = {
   ) {
     const isBundle = true;
 
-    const subData = subDataService.aaveV2LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const subData = subDataService.aaveV2LeverageManagementSubDataWithoutSubProxy.encode(market, targetRatio, ratioState);
     const triggerData = triggerService.aaveV2RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
@@ -559,21 +559,6 @@ export const compoundV3Encode = {
     const triggerDataEncoded = triggerService.compoundV3PriceRangeTrigger.encode(market, collToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
-  },
-};
-
-export const compoundV3L2Encode = {
-  leverageManagement(
-    market: EthereumAddress,
-    baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-    isEOA: boolean = false,
-  ) {
-    return subDataService.compoundV3L2LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
   },
 };
 
