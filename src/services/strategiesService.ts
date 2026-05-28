@@ -386,14 +386,14 @@ function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: Pa
 }
 
 function parseSparkCollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
-    const _position = cloneDeep(position);
-    const { subStruct } = parseData.subscriptionEventData;
-    const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
-    const subData = subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
-    _position.strategyData.decoded.triggerData = triggerData;
-    _position.strategyData.decoded.subData = subData;
-    _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
-    return _position;
+  const _position = cloneDeep(position);
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  return _position;
 }
 
 function parseAaveV4LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
