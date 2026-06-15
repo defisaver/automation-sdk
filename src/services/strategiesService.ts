@@ -385,6 +385,17 @@ function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: Pa
   return _position;
 }
 
+function parseSparkCollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+  const { subStruct } = parseData.subscriptionEventData;
+  const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  return _position;
+}
+
 function parseAaveV4LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct, subId, subHash } = parseData.subscriptionEventData;
@@ -1386,6 +1397,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.RepayOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.BoostOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseSparkCloseOnPrice,
+    [Strategies.Identifiers.CollateralSwitch]: parseSparkCollateralSwitch,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,

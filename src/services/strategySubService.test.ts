@@ -1892,7 +1892,124 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+
+    describe('collateralSwitch()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          fromAsset: EthereumAddress,
+          fromAssetId: number,
+          toAsset: EthereumAddress,
+          toAssetId: number,
+          marketAddr: EthereumAddress,
+          amountToSwitch: string,
+          baseTokenAddress: EthereumAddress,
+          quoteTokenAddress: EthereumAddress,
+          price: number,
+          state: RatioState,
+        ]
+      ]> = [
+        // WETH -> cbBTC, price 0.025 WETH/cbBTC, state UNDER
+        [
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf00000000000000000000000000000000000000000000000000000000002625a00000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+              '0x0000000000000000000000000000000000000000000000000000000000000007',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            '10000000000000000000', // 10 WETH
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            0.025,
+            RatioState.UNDER,
+          ]
+        ],
+        // cbBTC -> WETH, price 25 cbBTC/WETH, state UNDER
+        [
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000009502f9000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+              '0x0000000000000000000000000000000000000000000000000000000000000007',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000000000000000000000000000000000000005f5e100',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            '100000000', // 1 cbBTC (8 decimals)
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            25,
+            RatioState.UNDER,
+          ]
+        ],
+        // cbBTC -> WETH, price 40 cbBTC/WETH, state OVER
+        [
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            false,
+            ['0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000ee6b28000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+              '0x0000000000000000000000000000000000000000000000000000000000000007',
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000000000000000000000000000000000000005f5e100',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.SPARK_COLLATERAL_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            '100000000', // 1 cbBTC (8 decimals)
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            40,
+            RatioState.OVER,
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkEncode.collateralSwitch(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
+
   describe('When testing strategySubService.aaveV4Encode', () => {
     describe('leverageManagement()', () => {
       const examples: Array<[

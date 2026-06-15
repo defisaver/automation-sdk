@@ -8,3 +8,5 @@ cjs/
 src/types/contracts/generated
 .yarn/releases
 .yarnrc.yml
+
+.DS_Store
