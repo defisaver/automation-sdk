@@ -9,12 +9,10 @@ import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from 
 
 import '../configuration';
 import {
-  aaveV2Encode,
   chickenBondsEncode,
   liquityEncode,
   makerEncode,
   aaveV3Encode,
-  compoundV2Encode,
   compoundV3Encode,
   morphoAaveV2Encode,
   exchangeEncode,
@@ -135,39 +133,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(makerEncode.trailingStop(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [
-          vaultId: number, triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ],
-        [
-          vaultId: number, triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ]
-      ]> = [
-        [
-          [
-            5791,
-            new Dec('210').mul(1e16).toString(),
-            new Dec('290').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            true,
-          ],
-          [
-            5791, '210', '290', '240', '240', true,
-          ]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerEncode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });
@@ -295,38 +260,6 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [
-          triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ],
-        [
-          triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ]
-      ]> = [
-        [
-          [
-            new Dec('210').mul(1e16).toString(),
-            new Dec('290').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            false,
-          ],
-          [
-            '210', '290', '240', '240', false,
-          ]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityEncode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('paybackFromChickenBondStrategySub()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -435,53 +368,7 @@ describe('Feature: strategySubService.ts', () => {
     });
   });
 
-  describe('When testing strategySubService.aaveV2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [string, string, string, string, boolean],
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV2Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe('When testing strategySubService.aaveV3Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        string,
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          '0x000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
-          [160, 220, 180, 190, true]
-        ],
-        [
-          '0x000000000000000016345785d8a0000000000000000000001bc16d674ec80000000000000000000018fae27693b4000000000000000000001a5e27eef13e000000',
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('closeToAsset()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -1140,74 +1027,7 @@ describe('Feature: strategySubService.ts', () => {
     });
   });
 
-  describe('When testing strategySubService.compoundV2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [string, string, string, string, boolean],
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV2Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe('When testing strategySubService.compoundV3Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[[EthereumAddress, EthereumAddress, string, string, string, string, boolean, boolean], [market: EthereumAddress, baseToken: EthereumAddress, triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean, isEOA: boolean]]> = [
-        [
-          [
-            web3Utils.toChecksumAddress('0x1C0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
-            new Dec(160).mul(1e16).toString(),
-            new Dec(220).mul(1e16).toString(),
-            new Dec(180).mul(1e16).toString(),
-            new Dec(190).mul(1e16).toString(),
-            true, false,
-          ],
-          [
-            web3Utils.toChecksumAddress('0x1C0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
-            160, 220, 180, 190,
-            true, false,
-          ]
-        ],
-        [
-          [
-            web3Utils.toChecksumAddress('0xaC0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            new Dec(160).mul(1e16).toString(),
-            new Dec(210).mul(1e16).toString(),
-            new Dec(180).mul(1e16).toString(),
-            new Dec(190).mul(1e16).toString(),
-            false, true,
-          ],
-          [
-            web3Utils.toChecksumAddress('0xaC0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            160, 210, 180, 190,
-            false, true,
-          ]
-        ],
-      ];
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV3Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
     describe('leverageManagementOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -1392,53 +1212,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(exchangeEncode.dca(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('limitOrder()', () => {
-      const examples: Array<[[EthereumAddress, EthereumAddress, string, string, string, string], [fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: OrderType]]> = [
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            '1696590921159',
-            `${OrderType.STOP_LOSS}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            1696590921159,
-            OrderType.STOP_LOSS
-          ]
-        ],
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            '1646590921159',
-            `${OrderType.TAKE_PROFIT}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            1646590921159,
-            OrderType.TAKE_PROFIT
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(exchangeEncode.limitOrder(...actual)).to.eql(expected);
         });
       });
     });
@@ -1701,25 +1474,6 @@ describe('Feature: strategySubService.ts', () => {
   });
 
   describe('When testing strategySubService.sparkEncode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[string, [number, number, number, number, boolean]]> = [
-        [
-          '0x0000000000000000136dcc951d8c00000000000000000000214e8348c4f0000000000000000000001d24b2dfac52000000000000000000001a5e27eef13e000001',
-          [140,240,210,190,true]
-        ],
-        [
-          '0x0000000000000000130337bdce49000000000000000000001988fe4052b800000000000000000000281b57b028e1000000000000000000002223acf76376000000',
-          [137, 184, 289, 246, false]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkEncode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('leverageManagementOnPrice()', () => {
       const examples: Array<[[StrategyOrBundleIds, boolean, TriggerData, SubData], 
       [
