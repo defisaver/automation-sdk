@@ -569,6 +569,131 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
+  describe('When testing subDataService.sparkCollateralSwitchSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string, useOnBehalf?: boolean]]> = [
+        // WETH -> cbBTC
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            '10000000000000000000', // 10 WETH
+            false,
+          ]
+        ],
+        // cbBTC -> WETH (MaxUint256)
+        [
+          [
+            '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            MAXUINT,
+          ]
+        ],
+        // WETH -> cbBTC (5 WETH)
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000004563918244f40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            7,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            '5000000000000000000', // 5 WETH
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkCollateralSwitchSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string }, SubData]> = [
+        // WETH -> cbBTC
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            fromAssetId: 0,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            toAssetId: 7,
+            marketAddr: web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            amountToSwitch: '10000000000000000000',
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        // cbBTC -> WETH (MaxUint256)
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('cbBTC', ChainId.Ethereum).address),
+            fromAssetId: 7,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            toAssetId: 0,
+            marketAddr: web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            amountToSwitch: MAXUINT,
+          },
+          [
+            '0x000000000000000000000000cbb7c0000ab88b473b1f5afd9ef808440eed33bf',
+            '0x0000000000000000000000000000000000000000000000000000000000000007',
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkCollateralSwitchSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
   describe('When testing subDataService.compoundV2LeverageManagementSubData', () => {
     describe('encode()', () => {
       const examples: Array<[[string, string, string, string, boolean], [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean]]> = [

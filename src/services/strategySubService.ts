@@ -591,6 +591,27 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  collateralSwitch(
+    strategyOrBundleId: number,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    state: RatioState,
+  ) {
+    const isBundle = false;
+
+    const subDataEncoded = subDataService.sparkCollateralSwitchSubData.encode(fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch);
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+
 };
 
 export const crvUSDEncode = {
