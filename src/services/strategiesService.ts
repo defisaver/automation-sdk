@@ -102,7 +102,7 @@ function parseMakerTrailingStop(position: Position.Automated, parseData: ParseDa
 function parseMakerLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
@@ -119,9 +119,10 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -130,6 +131,7 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -190,7 +192,7 @@ function parseLiquityTrailingStop(position: Position.Automated, parseData: Parse
 function parseAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV2RatioTrigger.decode(subStruct.triggerData);
@@ -207,9 +209,10 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -218,6 +221,7 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -501,7 +505,7 @@ function parseAaveV4CollateralSwitch(position: Position.Automated, parseData: Pa
 function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.morphoAaveV2RatioTrigger.decode(subStruct.triggerData);
@@ -518,9 +522,10 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -529,6 +534,7 @@ function parseMorphoAaveV2LeverageManagement(position: Position.Automated, parse
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -579,7 +585,7 @@ function parseAaveV3CloseOnPriceWithMaximumGasPrice(position: Position.Automated
 function parseCompoundV2LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.compoundV2RatioTrigger.decode(subStruct.triggerData);
@@ -597,9 +603,10 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -608,6 +615,7 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -620,12 +628,10 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
 function parseCompoundV3LeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
-  const subDataDecoder = position.chainId !== 1
-    ? subDataService.compoundV3L2LeverageManagementSubData
-    : subDataService.compoundV3LeverageManagementSubData;
+  const subDataDecoder = subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy;
 
   const triggerData = triggerService.compoundV3RatioTrigger.decode(subStruct.triggerData);
   const subData = subDataDecoder.decode(subStruct.subData);
@@ -643,9 +649,10 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -654,6 +661,7 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -779,7 +787,7 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 function parseLiquityLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
@@ -796,9 +804,10 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -807,6 +816,7 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -861,7 +871,7 @@ function parseLiquityV2LeverageManagement(position: Position.Automated, parseDat
 function parseSparkLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
-  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
@@ -878,9 +888,10 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
     };
   } else {
     _position.specific = {
@@ -889,6 +900,7 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
       boostEnabled: isEnabled,
       subId2: Number(subId),
       mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
     };
   }
 
@@ -1128,6 +1140,7 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
     debtAsset: subData.loanToken,
     price: triggerData.price,
     ratio: subData.targetRatio,
+    ratioState: triggerData.priceState,
   };
 
   return _position;
