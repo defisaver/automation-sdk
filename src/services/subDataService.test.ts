@@ -569,6 +569,111 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
+  describe('When testing subDataService.aaveV3DebtSwitchSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[SubData, [fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string, useOnBehalf?: boolean]]> = [
+        // USDC -> DAI
+        [
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            3,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '10000000000000000000', // 10 tokens
+            false,
+          ]
+        ],
+        // DAI -> USDC (MaxUint256)
+        [
+          [
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            3,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            MAXUINT, // MaxUint256
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV3DebtSwitchSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string }, SubData]> = [
+        // USDC -> DAI
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            fromAssetId: 1,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            toAssetId: 3,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            amountToSwitch: '10000000000000000000',
+          },
+          [
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        // DAI -> USDC (MaxUint256)
+        [
+          {
+            fromAsset: web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            fromAssetId: 3,
+            toAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            toAssetId: 1,
+            marketAddr: web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            amountToSwitch: MAXUINT,
+          },
+          [
+            '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+            '0x0000000000000000000000000000000000000000000000000000000000000003',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.aaveV3DebtSwitchSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
   describe('When testing subDataService.sparkCollateralSwitchSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string, useOnBehalf?: boolean]]> = [

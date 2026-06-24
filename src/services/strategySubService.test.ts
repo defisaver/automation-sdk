@@ -1139,6 +1139,92 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
+
+    describe('debtSwitch()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          fromAsset: EthereumAddress,
+          fromAssetId: number,
+          toAsset: EthereumAddress,
+          toAssetId: number,
+          marketAddr: EthereumAddress,
+          amountToSwitch: string,
+          baseTokenAddress: EthereumAddress,
+          quoteTokenAddress: EthereumAddress,
+          price: number,
+          state: RatioState,
+        ]
+      ]> = [
+        // USDC -> DAI, price 100000, state UNDER
+        [
+          [
+            Strategies.MainnetIds.AAVE_V3_DEBT_SWITCH,
+            false,
+            ['0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000000000000000000000000000000009184e72a0000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+              '0x0000000000000000000000000000000000000000000000000000000000000003',
+              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+              '0x0000000000000000000000000000000000000000000000008ac7230489e80000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.AAVE_V3_DEBT_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            3,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            '10000000000000000000', // 10 tokens
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            100000,
+            RatioState.UNDER,
+          ]
+        ],
+        // DAI -> USDC (MaxUint256), price 1, state OVER
+        [
+          [
+            Strategies.MainnetIds.AAVE_V3_DEBT_SWITCH,
+            false,
+            ['0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+              '0x0000000000000000000000000000000000000000000000000000000000000003',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+              '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Strategies.MainnetIds.AAVE_V3_DEBT_SWITCH,
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            3,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39'),
+            MAXUINT, // MaxUint256
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            RatioState.OVER,
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3Encode.debtSwitch(...actual)).to.eql(expected);
+        });
+      });
+    });
   });
 
   describe('When testing strategySubService.compoundV2Encode', () => {
