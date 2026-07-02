@@ -102,6 +102,26 @@ export const makerEncode = {
       subData,
     ];
   },
+
+  liquidationProtection(
+    vaultId: number,
+    triggerRatio: number,
+    targetRatio: number,
+    ratioState: RatioState,
+    daiAddr?: EthereumAddress,
+  ) {
+    const bundleId = Bundles.MainnetIds.MAKER_LIQUIDATION_PROTECTION;
+
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRatio, ratioState);
+    const subData = subDataService.makerLiquidationProtectionSubData.encode(vaultId, targetRatio, daiAddr);
+
+    return [
+      bundleId,
+      true,
+      triggerData,
+      subData,
+    ];
+  },
 };
 
 export const liquityEncode = {
