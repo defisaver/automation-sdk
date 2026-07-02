@@ -16,7 +16,7 @@ import { STRATEGY_IDS } from '../constants';
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
 import {
-  compareAddresses, getCloseStrategyType, requireAddress, requireAddresses,
+  compareAddresses, getBundleIdsByNetwork, getCloseStrategyType, requireAddress, requireAddresses,
 } from './utils';
 
 export const makerEncode = {
@@ -357,6 +357,27 @@ export const aaveV3Encode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 
+  liquidationProtection(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.aaveV3LiquidationProtectionSubData.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+    );
+    const triggerData = triggerService.aaveV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
   leverageManagementOnPriceGeneric(
     strategyOrBundleId: number,
     price: number,
@@ -461,6 +482,20 @@ export const compoundV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
+    boostEnabled: boolean,
+    isEOA: boolean,
+  ) {
+    return subDataService.compoundV3LiquidationProtectionSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
+  },
+
   leverageManagementOnPrice(
     strategyOrBundleId: number,
     market: EthereumAddress,
@@ -497,6 +532,35 @@ export const compoundV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+};
+
+export const compoundV3L2Encode = {
+  leverageManagement(
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
+    boostEnabled: boolean,
+    isEOA: boolean = false,
+  ) {
+    return subDataService.compoundV3L2LeverageManagementSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
+  },
+
+  liquidationProtection(
+    market: EthereumAddress,
+    baseToken: EthereumAddress,
+    triggerRepayRatio: number,
+    triggerBoostRatio: number,
+    targetBoostRatio: number,
+    targetRepayRatio: number,
+    boostEnabled: boolean,
+    isEOA: boolean = false,
+  ) {
+    return subDataService.compoundV3L2LiquidationProtectionSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
+  },
+
 };
 
 export const morphoAaveV2Encode = {
@@ -611,6 +675,26 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkLiquidationProtectionSubData.encode(
+      targetRatio,
+      ratioState,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
   collateralSwitch(
     strategyOrBundleId: number,
     fromAsset: EthereumAddress,
@@ -707,6 +791,32 @@ export const morphoBlueEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    marketId: string,
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    user: EthereumAddress,
+    isEOA: boolean,
+    network: ChainId,
+  ) {
+    const subData = subDataService.morphoBlueLiquidationProtectionSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user, isEOA);
+
+    const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
+
+    // TODO -> Check if need to deploy separate bundles for EOA, or can reuse this for EOA. Logic above is different for EOA and SW on arbi and mainnet. Base uses same for both, not sure if because of lack of EOA support or because it is using same bundle for both.
+    const bundleId = (getBundleIdsByNetwork(network) as typeof Bundles.MainnetIds).MORPHO_BLUE_LIQUIDATION_PROTECTION;
+    const isBundle = true;
+
+    return [bundleId, isBundle, triggerData, subData];
+  },
+
   leverageManagementOnPrice(
     strategyOrBundleId: number,
     isBundle: boolean = true,
@@ -835,6 +945,22 @@ export const fluidEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    nftId: string,
+    vault: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    strategyOrBundleId: number,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.fluidLiquidationProtectionSubData.encode(nftId, vault, ratioState, targetRatio);
+    const triggerData = triggerService.fluidRatioTrigger.encode(nftId, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
 };
 
 export const aaveV4Encode = {
@@ -852,6 +978,22 @@ export const aaveV4Encode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    strategyOrBundleId: number,
+    owner: EthereumAddress,
+    spoke: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.aaveV4LiquidationProtectionSubData.encode(spoke, owner, ratioState, targetRatio);
+    const triggerData = triggerService.aaveV4RatioTrigger.encode(owner, spoke, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
   leverageManagementOnPrice(
     strategyOrBundleId: number,
     owner: EthereumAddress,

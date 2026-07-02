@@ -5,6 +5,7 @@ import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
 import {
+  Bundles,
   ChainId, CloseStrategyType, CloseToAssetType, RatioState,
 } from '../types/enums';
 
@@ -170,5 +171,18 @@ export function getStopLossAndTakeProfitTypeByCloseStrategyType(
       return { stopLossType: CloseToAssetType.COLLATERAL, takeProfitType: CloseToAssetType.COLLATERAL };
     default:
       throw new Error('CloseStrategyType not supported');
+  }
+}
+
+export function getBundleIdsByNetwork(network: ChainId) {
+  switch (network) {
+    case ChainId.Arbitrum:
+      return Bundles.ArbitrumIds;
+    case ChainId.Base:
+      return Bundles.BaseIds;
+    case ChainId.Optimism:
+      return Bundles.OptimismIds;
+    default:
+      return Bundles.MainnetIds;
   }
 }

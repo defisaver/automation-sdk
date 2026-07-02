@@ -1234,6 +1234,7 @@ export const compoundV3LiquidationProtectionSubData = {
     market: EthereumAddress,
     baseToken: EthereumAddress,
     triggerRepayRatio: number,
+    // TODO -> can remove boost stuff ? Not sure if want it to be compatible or not.
     triggerBoostRatio: number,
     targetBoostRatio: number,
     targetRepayRatio: number,
@@ -1263,6 +1264,7 @@ export const compoundV3L2LiquidationProtectionSubData = {
     market: EthereumAddress,
     baseToken: EthereumAddress,
     triggerRepayRatio: number,
+    // TODO -> can remove boost stuff ? Not sure if want it to be compatible or not.
     triggerBoostRatio: number,
     targetBoostRatio: number,
     targetRepayRatio: number,
