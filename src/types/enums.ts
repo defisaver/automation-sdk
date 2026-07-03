@@ -153,6 +153,8 @@ export namespace Strategies {
     EoaRepayOnPrice = 'eoa-repay-on-price',
     CollateralSwitch = 'collateral-switch',
     EoaCollateralSwitch = 'eoa-collateral-switch',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'eoa-liquidation-protection',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -164,6 +166,8 @@ export namespace Strategies {
     EoaLeverageManagement = 'leverage-management-eoa',
     LeverageManagementOnPrice = 'leverage-management-on-price',
     EoaLeverageManagementOnPrice = 'leverage-management-on-price-eoa',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
 }
 

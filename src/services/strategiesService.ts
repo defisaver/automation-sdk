@@ -140,6 +140,34 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
   return _position;
 }
 
+function parseMakerLiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.makerLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, subData.vaultId);
+
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled, // TODO -> Not sure if should hardcode to TRUE
+    subId1: Number(subId),
+  };
+
+  // TODO -> Is this ok?
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
 function parseLiquityCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -276,6 +304,36 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   } else {
     _position.strategy.strategyId = Strategies.IdOverrides.EoaLeverageManagement;
   }
+
+  return _position;
+}
+
+function parseAaveV3LiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
+  //  const isEOA = _position.strategy.strategyId.includes('eoa');
+
+  const subData = subDataService.aaveV3LiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  // TODO -> Should split for EOA or not? Prob not as they will use same encoding and decoding
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
 }
@@ -436,6 +494,32 @@ function parseAaveV4LeverageManagement(position: Position.Automated, parseData: 
 
   return _position;
 }
+
+function parseAaveV4LiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const triggerData = triggerService.aaveV4RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV4LiquidationProtectionSubData.decode(subStruct.subData);
+  // const isEOA = _position.strategy.strategyId.includes('eoa');
+  // const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  return _position;
+}
+
 
 function parseAaveV4LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
@@ -669,6 +753,41 @@ function parseCompoundV3LeverageManagement(position: Position.Automated, parseDa
 
   return _position;
 }
+
+
+function parseCompoundV3LiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const subDataDecoder = subDataService.compoundV3LiquidationProtectionSubData;
+
+  const triggerData = triggerService.compoundV3RatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataDecoder.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.owner.toLowerCase(), triggerData.market);
+
+  // const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
+
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled, // TODO -> Should be hardcoded to true?
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLiquidationProtection : Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
 
 function parseCompoundV3LeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
@@ -909,6 +1028,34 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   return _position;
 }
 
+function parseSparkLiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.sparkLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
+
 function parseSparkLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
@@ -1105,6 +1252,35 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
   const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
 
+
+  return _position;
+}
+
+
+function parseMorphoBlueLiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const triggerData = triggerService.morphoBlueRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.morphoBlueLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.owner.toLowerCase(), triggerData.marketId);
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  // TODO -> Should be separate for EOA ?
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
 }
@@ -1315,6 +1491,37 @@ function parseFluidT1LeverageManagement(position: Position.Automated, parseData:
   return _position;
 }
 
+
+function parseFluidT1LiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.fluidRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.fluidLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(
+    _position.chainId, _position.protocol.id, _position.owner, triggerData.nftId, subData.vault,
+  );
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEnabled,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
+
 const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
   [ProtocolIdentifiers.StrategiesAutomation.MakerDAO]: {
     [Strategies.Identifiers.SavingsLiqProtection]: parseMakerSavingsLiqProtection,
@@ -1324,6 +1531,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.TrailingStopToDebt]: parseMakerTrailingStop,
     [Strategies.Identifiers.Repay]: parseMakerLeverageManagement,
     [Strategies.Identifiers.Boost]: parseMakerLeverageManagement,
+    [Strategies.Identifiers.LiquidationProtection]: parseMakerLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.Liquity]: {
     [Strategies.Identifiers.CloseOnPriceToColl]: parseLiquityCloseOnPrice,
@@ -1362,6 +1570,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV3CollateralSwitch,
+    [Strategies.Identifiers.LiquidationProtection]: parseAaveV3LiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV4]: {
     [Strategies.Identifiers.Repay]: parseAaveV4LeverageManagement,
@@ -1376,6 +1585,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV4CloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV4CollateralSwitch,
     [Strategies.Identifiers.EoaCollateralSwitch]: parseAaveV4CollateralSwitch,
+    [Strategies.Identifiers.LiquidationProtection]: parseAaveV4LiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
@@ -1392,6 +1602,9 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseCompoundV3LeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseCompoundV3CloseOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseCompoundV3CloseOnPrice,
+    // TODO -> here should prob separate EOA from SW
+    [Strategies.Identifiers.LiquidationProtection]: parseCompoundV3LiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseCompoundV3LiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.ChickenBonds]: {
     [Strategies.Identifiers.Rebond]: parseChickenBondsRebond,
@@ -1411,6 +1624,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.BoostOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseSparkCloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseSparkCollateralSwitch,
+    [Strategies.Identifiers.LiquidationProtection]: parseSparkLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,
@@ -1425,10 +1639,12 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
     [Strategies.Identifiers.RepayOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseMorphoBlueCloseOnPrice,
+    [Strategies.Identifiers.LiquidationProtection]: parseMorphoBlueLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
     [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,
     [Strategies.Identifiers.Boost]: parseFluidT1LeverageManagement,
+    [Strategies.Identifiers.LiquidationProtection]: parseFluidT1LiquidationProtection,
   },
 };
 
