@@ -1,22 +1,26 @@
-import Dec from 'decimal.js';
 import { getAssetInfo } from '@defisaver/tokens';
+import Dec from 'decimal.js';
 
-import type { OrderType } from '../types/enums';
+import { STRATEGY_IDS } from '../constants';
 import {
-  CloseToAssetType,
   Bundles,
   ChainId,
+  CloseToAssetType,
   RatioState,
   Strategies,
 } from '../types/enums';
 import type { EthereumAddress, StrategyOrBundleIds } from '../types';
 
-import { STRATEGY_IDS } from '../constants';
+import type { OrderType } from '../types/enums';
 
 import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
 import {
-  compareAddresses, getBundleIdsByNetwork, getCloseStrategyType, requireAddress, requireAddresses,
+  compareAddresses,
+  getBundleIdsByNetwork,
+  getCloseStrategyType,
+  requireAddress,
+  requireAddresses,
 } from './utils';
 
 export const makerEncode = {

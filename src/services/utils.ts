@@ -186,3 +186,20 @@ export function getBundleIdsByNetwork(network: ChainId) {
       return Bundles.MainnetIds;
   }
 }
+
+// Mainnet uses the V2 bundle ids; L2s use the original bundle ids.
+export function getCompoundV3LeverageManagementBundleId(network: ChainId, isEOA: boolean, isBoost: boolean): number {
+  switch (Number(network)) {
+    case ChainId.Ethereum:
+      if (isEOA) return isBoost ? Bundles.MainnetIds.COMP_V3_EOA_BOOST_V2_BUNDLE : Bundles.MainnetIds.COMP_V3_EOA_REPAY_V2_BUNDLE;
+      return isBoost ? Bundles.MainnetIds.COMP_V3_SW_BOOST_V2_BUNDLE : Bundles.MainnetIds.COMP_V3_SW_REPAY_V2_BUNDLE;
+    case ChainId.Base:
+      if (isEOA) return isBoost ? Bundles.BaseIds.COMP_V3_EOA_BOOST : Bundles.BaseIds.COMP_V3_EOA_REPAY;
+      return isBoost ? Bundles.BaseIds.COMP_V3_SW_BOOST_BUNDLE : Bundles.BaseIds.COMP_V3_SW_REPAY_BUNDLE;
+    case ChainId.Arbitrum:
+      if (isEOA) return isBoost ? Bundles.ArbitrumIds.COMP_V3_EOA_BOOST : Bundles.ArbitrumIds.COMP_V3_EOA_REPAY;
+      return isBoost ? Bundles.ArbitrumIds.COMP_V3_SW_BOOST_BUNDLE : Bundles.ArbitrumIds.COMP_V3_SW_REPAY_BUNDLE;
+    default:
+      throw new Error(`Compound V3 leverage management is not supported on network ${network}`);
+  }
+}
