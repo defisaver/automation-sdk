@@ -573,6 +573,46 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV4,
   },
+  [Bundles.MainnetIds.MAKER_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.MAKER_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.MakerDAO,
+  },
+  [Bundles.MainnetIds.AAVE_V3_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V4_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V4_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.AaveV4,
+  },
+  [Bundles.MainnetIds.SPARK_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.COMP_V3_SW_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_SW_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.MainnetIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.MainnetIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.FLUID_T1_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.FLUID_T1_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.FluidT1,
+  },
   [Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE]: {
     strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE,
     strategyId: Strategies.Identifiers.RepayOnPrice,
@@ -634,6 +674,11 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
   [Bundles.OptimismIds.AAVE_V3_EOA_CLOSE]: {
     strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_CLOSE,
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
     protocol: PROTOCOLS.AaveV3,
   },
 
@@ -780,6 +825,32 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.AAVE_V3_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.COMP_V3_SW_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.COMP_V3_SW_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.BaseIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.FLUID_T1_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.FLUID_T1_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.FluidT1,
+  },
+
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -932,6 +1003,31 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_REPAY_ON_PRICE,
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.COMP_V3_SW_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.COMP_V3_SW_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.ArbitrumIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.CompoundV3,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.FLUID_T1_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.FLUID_T1_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.FluidT1,
   },
 };
 
