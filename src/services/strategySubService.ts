@@ -487,17 +487,21 @@ export const compoundV3Encode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 
-  liquidationProtection(
+  liquidationProtectionWithoutSubProxy(
+    strategyOrBundleId: number,
     market: EthereumAddress,
     baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-    isEOA: boolean,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
   ) {
-    return subDataService.compoundV3LiquidationProtectionSubData.encode(market, baseToken, triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled, isEOA);
+    const isBundle = true;
+
+    const subData = subDataService.compoundV3LiquidationProtectionSubDataWithoutSubProxy.encode(market, baseToken, targetRatio, ratioState);
+    const triggerData = triggerService.compoundV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 
   leverageManagementOnPrice(
