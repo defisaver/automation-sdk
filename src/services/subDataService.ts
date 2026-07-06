@@ -606,6 +606,7 @@ export const aaveV3LeverageManagementSubData = {
 
 // ! Any change here will PROBABLY require a change in aaveV3LiquidationProtectionSubData as well
 // ! Double check before changing. Liquidation protection is using Generic encoding for both - EOA and SW
+// TODO -> Can we just reuse this logic for encoding and decoding in aaveV3LiquidationProtectionSubData? It is the same, would love to reuse it if it is used only internally, without any external direct calls from frontend or backend.
 export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,
@@ -1170,41 +1171,8 @@ export const compoundV2LeverageManagementSubDataWithoutSubProxy = {
  \______| \______/  |__|  |__| | _|             \__/     |____/
  */
 
-// ! Any change here will PROBABLY require a change in compoundV3LiquidationProtectionSubData as well, since it is copy paste
-// ! Double check before changing
-export const compoundV3LeverageManagementSubData = {
-  encode(
-    market: EthereumAddress,
-    baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-    isEOA: boolean,
-  ): SubData {
-    return [
-      market,
-      baseToken,
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled, isEOA,
-    ];
-  },
-  decode(subData: SubData): { targetRatio: number } {
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-
-    return { targetRatio };
-  },
-};
-
 // ! Any change here will PROBABLY require a change in compoundV3LiquidationProtectionSubDataWithoutSubProxy as well, since it is copy paste
 // ! Double check before changing
-// TODO -> Double check if this logic is okay
 export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     market: EthereumAddress,
@@ -1227,37 +1195,6 @@ export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
     return {
       market, baseToken, targetRatio, ratioState,
     };
-  },
-};
-
-export const compoundV3LiquidationProtectionSubData = {
-  encode(
-    market: EthereumAddress,
-    baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    // TODO -> can remove boost stuff ? Not sure if want it to be compatible or not.
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-    isEOA: boolean,
-  ): SubData {
-    return [
-      market,
-      baseToken,
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled, isEOA,
-    ];
-  },
-  decode(subData: SubData): { targetRatio: number } {
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-
-    return { targetRatio };
   },
 };
 
@@ -1908,8 +1845,9 @@ export const fluidLeverageManagementSubData = {
     const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
     const wrapEthEncoded = AbiCoder.encodeParameter('bool', true);
 
-    const collActionType = CollActionType.WITHDRAW;
-    const debtActionType = DebtActionType.PAYBACK;
+    const isRepay = ratioState === RatioState.UNDER;
+    const collActionType = isRepay ? CollActionType.WITHDRAW : CollActionType.SUPPLY;
+    const debtActionType = isRepay ? DebtActionType.PAYBACK : DebtActionType.BORROW;
 
     const collActionTypeEncoded = AbiCoder.encodeParameter('uint8', collActionType);
     const debtActionTypeEncoded = AbiCoder.encodeParameter('uint8', debtActionType);

@@ -600,7 +600,7 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
   },
   [Bundles.MainnetIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
     strategyOrBundleId: Bundles.MainnetIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
-    strategyId: Strategies.Identifiers.LiquidationProtection,
+    strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.CompoundV3,
   },
   [Bundles.MainnetIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
@@ -837,7 +837,7 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
   },
   [Bundles.BaseIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
     strategyOrBundleId: Bundles.BaseIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
-    strategyId: Strategies.Identifiers.LiquidationProtection,
+    strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.CompoundV3,
   },
   [Bundles.BaseIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
@@ -1016,7 +1016,7 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   },
   [Bundles.ArbitrumIds.COMP_V3_EOA_LIQUIDATION_PROTECTION]: {
     strategyOrBundleId: Bundles.ArbitrumIds.COMP_V3_EOA_LIQUIDATION_PROTECTION,
-    strategyId: Strategies.Identifiers.LiquidationProtection,
+    strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.CompoundV3,
   },
   [Bundles.ArbitrumIds.MORPHO_BLUE_LIQUIDATION_PROTECTION]: {
