@@ -158,11 +158,10 @@ function parseMakerLiquidationProtection(position: Position.Automated, parseData
   _position.specific = {
     triggerRepayRatio: triggerData.ratio,
     targetRepayRatio: subData.targetRatio,
-    repayEnabled: isEnabled, // TODO -> Not sure if should hardcode to TRUE
+    repayEnabled: isEnabled,
     subId1: Number(subId),
   };
 
-  // TODO -> Is this ok?
   _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
@@ -315,7 +314,6 @@ function parseAaveV3LiquidationProtection(position: Position.Automated, parseDat
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV3RatioTrigger.decode(subStruct.triggerData);
-  //  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   const subData = subDataService.aaveV3LiquidationProtectionSubData.decode(subStruct.subData);
 
@@ -332,8 +330,8 @@ function parseAaveV3LiquidationProtection(position: Position.Automated, parseDat
     subHashRepay: subHash,
   };
 
-  // TODO -> Should split for EOA or not? Prob not as they will use same encoding and decoding
-  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLiquidationProtection : Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
 }
@@ -501,13 +499,12 @@ function parseAaveV4LiquidationProtection(position: Position.Automated, parseDat
   const { isEnabled } = parseData.strategiesSubsData;
   const triggerData = triggerService.aaveV4RatioTrigger.decode(subStruct.triggerData);
   const subData = subDataService.aaveV4LiquidationProtectionSubData.decode(subStruct.subData);
-  // const isEOA = _position.strategy.strategyId.includes('eoa');
-  // const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
+  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.spoke);
-  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLiquidationProtection : Strategies.IdOverrides.LiquidationProtection;
 
   _position.specific = {
     triggerRepayRatio: triggerData.ratio,
@@ -771,14 +768,12 @@ function parseCompoundV3LiquidationProtection(position: Position.Automated, pars
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, triggerData.owner.toLowerCase(), triggerData.market);
 
-  // const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
-
   const isEOA = _position.strategy.strategyId.includes('eoa');
 
   _position.specific = {
     triggerRepayRatio: triggerData.ratio,
     targetRepayRatio: subData.targetRatio,
-    repayEnabled: isEnabled, // TODO -> Should be hardcoded to true?
+    repayEnabled: isEnabled,
     subId1: Number(subId),
     subHashRepay: subHash,
   };
@@ -1279,8 +1274,7 @@ function parseMorphoBlueLiquidationProtection(position: Position.Automated, pars
   };
 
   const isEOA = _position.strategy.strategyId.includes('eoa');
-  // TODO -> Should be separate for EOA ?
-  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
+  _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLiquidationProtection : Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
 }
@@ -1571,6 +1565,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV3CollateralSwitch,
     [Strategies.Identifiers.LiquidationProtection]: parseAaveV3LiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseAaveV3LiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.AaveV4]: {
     [Strategies.Identifiers.Repay]: parseAaveV4LeverageManagement,
@@ -1586,6 +1581,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV4CollateralSwitch,
     [Strategies.Identifiers.EoaCollateralSwitch]: parseAaveV4CollateralSwitch,
     [Strategies.Identifiers.LiquidationProtection]: parseAaveV4LiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseAaveV4LiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CompoundV2]: {
     [Strategies.Identifiers.Repay]: parseCompoundV2LeverageManagement,
@@ -1602,7 +1598,6 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseCompoundV3LeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseCompoundV3CloseOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseCompoundV3CloseOnPrice,
-    // TODO -> here should prob separate EOA from SW
     [Strategies.Identifiers.LiquidationProtection]: parseCompoundV3LiquidationProtection,
     [Strategies.Identifiers.EoaLiquidationProtection]: parseCompoundV3LiquidationProtection,
   },
@@ -1640,6 +1635,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.RepayOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseMorphoBlueCloseOnPrice,
     [Strategies.Identifiers.LiquidationProtection]: parseMorphoBlueLiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseMorphoBlueLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
     [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,
