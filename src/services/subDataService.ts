@@ -606,7 +606,6 @@ export const aaveV3LeverageManagementSubData = {
 
 // ! Any change here will PROBABLY require a change in aaveV3LiquidationProtectionSubData as well
 // ! Double check before changing. Liquidation protection is using Generic encoding for both - EOA and SW
-// TODO -> Can we just reuse this logic for encoding and decoding in aaveV3LiquidationProtectionSubData? It is the same, would love to reuse it if it is used only internally, without any external direct calls from frontend or backend.
 export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,

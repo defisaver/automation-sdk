@@ -114,7 +114,7 @@ export const makerEncode = {
     ratioState: RatioState,
     daiAddr?: EthereumAddress,
   ) {
-    const bundleId = Bundles.MainnetIds.MAKER_LIQUIDATION_PROTECTION;
+    const bundleId = Bundles.MainnetIds.MAKER_SW_LIQUIDATION_PROTECTION;
 
     const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRatio, ratioState);
     const subData = subDataService.makerLiquidationProtectionSubData.encode(vaultId, targetRatio, daiAddr);
@@ -818,8 +818,11 @@ export const morphoBlueEncode = {
 
     const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
 
-    // TODO -> Check if need to deploy separate bundles for EOA, or can reuse this for EOA. Logic above is different for EOA and SW on arbi and mainnet. Base uses same for both, not sure if because of lack of EOA support or because it is using same bundle for both.
-    const bundleId = (getBundleIdsByNetwork(network) as typeof Bundles.MainnetIds).MORPHO_BLUE_LIQUIDATION_PROTECTION;
+
+    // Type casting because there is no MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION for Base chain.
+    // That is fine because we will just always send isEOA == false for Base chain.
+    const bundleNetwork = getBundleIdsByNetwork(network) as typeof Bundles.MainnetIds;
+    const bundleId = isEOA ? bundleNetwork.MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION : bundleNetwork.MORPHO_BLUE_SW_LIQUIDATION_PROTECTION;
     const isBundle = true;
 
     return [bundleId, isBundle, triggerData, subData];
