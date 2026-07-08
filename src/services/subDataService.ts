@@ -1241,6 +1241,26 @@ export const sparkLeverageManagementSubDataWithoutSubProxy = {
     return { targetRatio, ratioState };
   },
 };
+export const sparkGenericLeverageManagementSubData = {
+  encode(
+    targetRatio: number,
+    ratioState: RatioState,
+    market: EthereumAddress,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+    const encodedMarket = AbiCoder.encodeParameter('address', market);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    return [encodedTargetRatio, encodedRatioState, encodedMarket, encodedUser];
+  },
+  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
+    const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
+    return { targetRatio, ratioState };
+  },
+};
+
 export const sparkCloseGenericSubData = {
   encode(
     collAsset: EthereumAddress,

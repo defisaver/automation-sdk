@@ -642,6 +642,26 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagementGeneric(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkGenericLeverageManagementSubData.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
   collateralSwitch(
     strategyOrBundleId: number,
     fromAsset: EthereumAddress,
