@@ -154,7 +154,7 @@ export namespace Strategies {
     CollateralSwitch = 'collateral-switch',
     EoaCollateralSwitch = 'eoa-collateral-switch',
     LiquidationProtection = 'liquidation-protection',
-    EoaLiquidationProtection = 'eoa-liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
