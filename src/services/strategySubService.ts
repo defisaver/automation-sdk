@@ -376,6 +376,7 @@ export const aaveV3Encode = {
       ratioState,
       market,
       user,
+      true, // isGeneric
     );
     const triggerData = triggerService.aaveV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
@@ -481,13 +482,13 @@ export const compoundV3Encode = {
   ) {
     const isBundle = true;
 
-    const subData = subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy.encode(market, baseToken, targetRatio, ratioState);
+    const subData = subDataService.compoundV3LeverageManagementSubData.encode(market, baseToken, targetRatio, ratioState);
     const triggerData = triggerService.compoundV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 
-  liquidationProtectionWithoutSubProxy(
+  liquidationProtection(
     strategyOrBundleId: number,
     market: EthereumAddress,
     baseToken: EthereumAddress,
@@ -498,7 +499,7 @@ export const compoundV3Encode = {
   ) {
     const isBundle = true;
 
-    const subData = subDataService.compoundV3LiquidationProtectionSubDataWithoutSubProxy.encode(market, baseToken, targetRatio, ratioState);
+    const subData = subDataService.compoundV3LiquidationProtectionSubData.encode(market, baseToken, targetRatio, ratioState);
     const triggerData = triggerService.compoundV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];

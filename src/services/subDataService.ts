@@ -165,8 +165,6 @@ export const makerLeverageManagementSubData = {
   },
 };
 
-// ! Any change here will PROBABLY require a change in makerLiquidationProtectionSubData as well, since it is copy paste
-// ! Double check before changing
 export const makerLeverageManagementWithoutSubProxy = {
   encode(
     vaultId: number,
@@ -187,26 +185,7 @@ export const makerLeverageManagementWithoutSubProxy = {
   },
 };
 
-export const makerLiquidationProtectionSubData = {
-  encode(
-    vaultId: number,
-    targetRatio: number,
-    daiAddr?: EthereumAddress,
-  ): SubData {
-    const encodedVaultId = AbiCoder.encodeParameter('uint256', vaultId);
-    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const encodedDaiAddr = AbiCoder.encodeParameter('address', daiAddr || getAssetInfo('DAI', 1).address);
-
-    return [encodedVaultId, encodedTargetRatio, encodedDaiAddr];
-  },
-  decode(subData: SubData): { vaultId: number, targetRatio: number, daiAddr: string } {
-    const vaultId = +AbiCoder.decodeParameter('uint256', subData[0])!.toString();
-    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[1]) as any as string);
-    const daiAddr = AbiCoder.decodeParameter('address', subData[2])!.toString();
-
-    return { vaultId, targetRatio, daiAddr };
-  },
-};
+export const makerLiquidationProtectionSubData = makerLeverageManagementWithoutSubProxy;
 
 
 /**
@@ -604,8 +583,6 @@ export const aaveV3LeverageManagementSubData = {
   },
 };
 
-// ! Any change here will PROBABLY require a change in aaveV3LiquidationProtectionSubData as well
-// ! Double check before changing. Liquidation protection is using Generic encoding for both - EOA and SW
 export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,
@@ -634,28 +611,7 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
   },
 };
 
-export const aaveV3LiquidationProtectionSubData = {
-  encode(
-    targetRatio: number,
-    ratioState: RatioState,
-    market: EthereumAddress,
-    user: EthereumAddress,
-  ): SubData {
-    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
-    const encodedMarket = AbiCoder.encodeParameter('address', market);
-    const encodedUser = AbiCoder.encodeParameter('address', user);
-
-    return [encodedTargetRatio, encodedRatioState, encodedMarket, encodedUser];
-  },
-  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
-    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
-
-    return { targetRatio, ratioState };
-  },
-};
-
+export const aaveV3LiquidationProtectionSubData = aaveV3LeverageManagementSubDataWithoutSubProxy;
 
 export const aaveV3LeverageManagementOnPriceGeneric = {
   encode(
@@ -904,8 +860,6 @@ export const aaveV3LeverageManagementOnPriceSubData = {
 /__/     \__\ /__/     \__\  \__/     |_______|       \__/        |_|
  */
 
-// ! Any change here will PROBABLY require a change in aaveV4LiquidationProtectionSubData as well, since it is copy paste
-// ! Double check before changing
 export const aaveV4LeverageManagementSubData = {
   encode: (
     spoke: EthereumAddress,
@@ -938,37 +892,7 @@ export const aaveV4LeverageManagementSubData = {
   },
 };
 
-export const aaveV4LiquidationProtectionSubData = {
-  encode: (
-    spoke: EthereumAddress,
-    owner: EthereumAddress,
-    ratioState: RatioState,
-    targetRatio: number,
-  ) => {
-    const spokeEncoded = AbiCoder.encodeParameter('address', spoke);
-    const ownerEncoded = AbiCoder.encodeParameter('address', owner);
-    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
-    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    // Add two empty slots for future addons (e.g tsi or slippage settings)
-    return [
-      spokeEncoded,
-      ownerEncoded,
-      ratioStateEncoded,
-      targetRatioEncoded,
-      EMPTY_SLOT,
-      EMPTY_SLOT,
-    ];
-  },
-  decode: (subData: SubData) => {
-    const spoke = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
-    const owner = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
-    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[2])) as RatioState;
-    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[3]) as any as string);
-    return {
-      spoke, owner, ratioState, targetRatio,
-    };
-  },
-};
+export const aaveV4LiquidationProtectionSubData = aaveV4LeverageManagementSubData;
 
 export const aaveV4LeverageManagementOnPriceSubData = {
   encode: (
@@ -1170,9 +1094,7 @@ export const compoundV2LeverageManagementSubDataWithoutSubProxy = {
  \______| \______/  |__|  |__| | _|             \__/     |____/
  */
 
-// ! Any change here will PROBABLY require a change in compoundV3LiquidationProtectionSubDataWithoutSubProxy as well, since it is copy paste
-// ! Double check before changing
-export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
+export const compoundV3LeverageManagementSubData = {
   encode(
     market: EthereumAddress,
     baseToken: EthereumAddress,
@@ -1197,30 +1119,7 @@ export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
   },
 };
 
-export const compoundV3LiquidationProtectionSubDataWithoutSubProxy = {
-  encode(
-    market: EthereumAddress,
-    baseToken: EthereumAddress,
-    targetRatio: number,
-    ratioState: RatioState,
-  ): SubData {
-    const encodedMarket = AbiCoder.encodeParameter('address', market);
-    const encodedBaseToken = AbiCoder.encodeParameter('address', baseToken);
-    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
-    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    return [encodedMarket, encodedBaseToken, encodedRatioState, encodedTargetRatio];
-  },
-  decode(subData: SubData): { market: EthereumAddress, baseToken: EthereumAddress, targetRatio: number, ratioState: RatioState } {
-    const market = AbiCoder.decodeParameter('address', subData[0]) as any as EthereumAddress;
-    const baseToken = AbiCoder.decodeParameter('address', subData[1]) as any as EthereumAddress;
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
-    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[3]) as any as string);
-
-    return {
-      market, baseToken, targetRatio, ratioState,
-    };
-  },
-};
+export const compoundV3LiquidationProtectionSubData = compoundV3LeverageManagementSubData;
 
 export const compoundV3LeverageManagementOnPriceSubData = {
   encode(
@@ -1390,8 +1289,6 @@ export const sparkLeverageManagementSubData = {
   },
 };
 
-// ! Any change here will PROBABLY require a change in sparkLiquidationProtectionSubData as well, since it is copy paste
-// ! Double check before changing
 export const sparkLeverageManagementSubDataWithoutSubProxy = {
   encode(
     targetRatio: number,
@@ -1412,25 +1309,7 @@ export const sparkLeverageManagementSubDataWithoutSubProxy = {
   },
 };
 
-export const sparkLiquidationProtectionSubData = {
-  encode(
-    targetRatio: number,
-    ratioState: RatioState,
-  ): SubData {
-    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
-    const encodedUseDefaultMarket = AbiCoder.encodeParameter('bool', true);
-    const encodedUseOnBehalf = AbiCoder.encodeParameter('bool', false);
-
-    return [encodedTargetRatio, encodedRatioState, encodedUseDefaultMarket, encodedUseOnBehalf];
-  },
-  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
-    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[1]) as any as RatioState;
-
-    return { targetRatio, ratioState };
-  },
-};
+export const sparkLiquidationProtectionSubData = sparkLeverageManagementSubDataWithoutSubProxy;
 
 
 export const sparkCloseGenericSubData = {
@@ -1648,8 +1527,6 @@ export const crvUSDPaybackSubData = {
 |__|  |__|  \______/  | _| `._____|| _|      |__|  |__|  \______/
  */
 
-// ! Any change here will PROBABLY require a change in morphoBlueLiquidationProtectionSubData as well, since it is copy paste
-// ! Double check before changing
 export const morphoBlueLeverageManagementSubData = {
   encode: (
     loanToken: EthereumAddress,
@@ -1695,51 +1572,7 @@ export const morphoBlueLeverageManagementSubData = {
   },
 };
 
-export const morphoBlueLiquidationProtectionSubData = {
-  encode: (
-    loanToken: EthereumAddress,
-    collToken: EthereumAddress,
-    oracle: EthereumAddress,
-    irm: EthereumAddress,
-    lltv: string,
-    ratioState: RatioState,
-    targetRatio: number,
-    user: EthereumAddress,
-    isEOA: boolean,
-  ) => {
-    const loanTokenEncoded = AbiCoder.encodeParameter('address', loanToken);
-    const collTokenEncoded = AbiCoder.encodeParameter('address', collToken);
-    const oracleEncoded = AbiCoder.encodeParameter('address', oracle);
-    const irmEncoded = AbiCoder.encodeParameter('address', irm);
-    const lltvEncoded = AbiCoder.encodeParameter('uint256', lltv);
-    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
-    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const userEncoded = AbiCoder.encodeParameter('address', user);
-    const isEOAEncoded = AbiCoder.encodeParameter('bool', isEOA);
-    return [loanTokenEncoded, collTokenEncoded, oracleEncoded, irmEncoded, lltvEncoded, ratioStateEncoded, targetRatioEncoded, userEncoded, isEOAEncoded];
-  },
-  decode: (subData: SubData) => {
-    const loanToken = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
-    const collToken = AbiCoder.decodeParameter('address', subData[1]) as any as EthereumAddress;
-    const oracle = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
-    const irm = AbiCoder.decodeParameter('address', subData[3]) as any as EthereumAddress;
-    const lltv = AbiCoder.decodeParameter('uint256', subData[4]) as any as EthereumAddress;
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[6]) as any as EthereumAddress;
-    const user = AbiCoder.decodeParameter('address', subData[7]) as any as EthereumAddress;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-
-    return {
-      loanToken,
-      collToken,
-      oracle,
-      irm,
-      lltv,
-      user,
-      targetRatio,
-    };
-  },
-};
-
+export const morphoBlueLiquidationProtectionSubData = morphoBlueLeverageManagementSubData;
 
 export const morphoBlueLeverageManagementOnPriceSubData = {
   encode(
@@ -1829,8 +1662,6 @@ _______  __       __    __   __   _______
 |  |     |  `----.|  `--'  | |  | |  '--'  |
 |__|     |_______| \______/  |__| |_______/
  */
-// ! Any change here will PROBABLY require a change in fluidLeverageManagementSubData as well, since it is copy paste
-// ! Double check before changing
 export const fluidLeverageManagementSubData = {
   encode: (
     nftId: string,
@@ -1874,44 +1705,4 @@ export const fluidLeverageManagementSubData = {
   },
 };
 
-export const fluidLiquidationProtectionSubData = {
-  encode: (
-    nftId: string,
-    vault: EthereumAddress,
-    ratioState: RatioState,
-    targetRatio: number,
-  ) => {
-    const nftIdEncoded = AbiCoder.encodeParameter('uint256', nftId);
-    const vaultEncoded = AbiCoder.encodeParameter('address', vault);
-    const ratioStateEncoded = AbiCoder.encodeParameter('uint8', ratioState);
-    const targetRatioEncoded = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
-    const wrapEthEncoded = AbiCoder.encodeParameter('bool', true);
-
-    const collActionType = CollActionType.WITHDRAW;
-    const debtActionType = DebtActionType.PAYBACK;
-
-    const collActionTypeEncoded = AbiCoder.encodeParameter('uint8', collActionType);
-    const debtActionTypeEncoded = AbiCoder.encodeParameter('uint8', debtActionType);
-
-    return [
-      nftIdEncoded,
-      vaultEncoded,
-      ratioStateEncoded,
-      targetRatioEncoded,
-      wrapEthEncoded,
-      collActionTypeEncoded,
-      debtActionTypeEncoded,
-    ];
-  },
-  decode: (subData: SubData) => {
-    const nftId = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
-    const vault = AbiCoder.decodeParameter('address', subData[1]) as unknown as EthereumAddress;
-    const ratioState = AbiCoder.decodeParameter('uint8', subData[2]) as any as RatioState;
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
-
-    return {
-      nftId, vault, ratioState, targetRatio,
-    };
-  },
-};
+export const fluidLiquidationProtectionSubData = fluidLeverageManagementSubData;

@@ -28,14 +28,12 @@ import {
   compareSubHashes,
   encodeSubId,
   getCloseStrategyType,
-  getCompoundV3LeverageManagementBundleId,
 } from './services/utils';
 
 const utils = {
   compareSubHashes,
   encodeSubId,
   getCloseStrategyType,
-  getCompoundV3LeverageManagementBundleId,
   getRatioStateInfoForAaveCloseStrategy,
 };
 

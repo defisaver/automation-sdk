@@ -11,7 +11,6 @@ import {
   compareAddresses,
   encodeSubId,
   ethToWeth,
-  getCompoundV3LeverageManagementBundleId,
   getRatioStateInfoForAaveCloseStrategy,
   isAddress,
   isDefined,
@@ -368,36 +367,6 @@ describe('Feature: utils.ts', () => {
       it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
         expect(getPositionId(...actual)).to.eql(expected);
       });
-    });
-  });
-
-  describe('When testing utils.getCompoundV3LeverageManagementBundleId()', () => {
-    // Mainnet uses the V2 bundle ids; L2s use the original bundle ids.
-    const examples: Array<[number, [network: ChainId, isEOA: boolean, isBoost: boolean]]> = [
-      [Bundles.MainnetIds.COMP_V3_SW_REPAY_V2_BUNDLE, [ChainId.Ethereum, false, false]],
-      [Bundles.MainnetIds.COMP_V3_SW_BOOST_V2_BUNDLE, [ChainId.Ethereum, false, true]],
-      [Bundles.MainnetIds.COMP_V3_EOA_REPAY_V2_BUNDLE, [ChainId.Ethereum, true, false]],
-      [Bundles.MainnetIds.COMP_V3_EOA_BOOST_V2_BUNDLE, [ChainId.Ethereum, true, true]],
-
-      [Bundles.BaseIds.COMP_V3_SW_REPAY_BUNDLE, [ChainId.Base, false, false]],
-      [Bundles.BaseIds.COMP_V3_SW_BOOST_BUNDLE, [ChainId.Base, false, true]],
-      [Bundles.BaseIds.COMP_V3_EOA_REPAY, [ChainId.Base, true, false]],
-      [Bundles.BaseIds.COMP_V3_EOA_BOOST, [ChainId.Base, true, true]],
-
-      [Bundles.ArbitrumIds.COMP_V3_SW_REPAY_BUNDLE, [ChainId.Arbitrum, false, false]],
-      [Bundles.ArbitrumIds.COMP_V3_SW_BOOST_BUNDLE, [ChainId.Arbitrum, false, true]],
-      [Bundles.ArbitrumIds.COMP_V3_EOA_REPAY, [ChainId.Arbitrum, true, false]],
-      [Bundles.ArbitrumIds.COMP_V3_EOA_BOOST, [ChainId.Arbitrum, true, true]],
-    ];
-
-    examples.forEach(([expected, actual]) => {
-      it(`Given ${actual} should return expected value: ${expected}`, () => {
-        expect(getCompoundV3LeverageManagementBundleId(...actual)).to.equal(expected);
-      });
-    });
-
-    it(`Given ${ChainId.Optimism} (unsupported) should throw an error`, () => {
-      expect(() => getCompoundV3LeverageManagementBundleId(ChainId.Optimism, false, false)).to.throw(Error);
     });
   });
 });
