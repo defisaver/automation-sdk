@@ -662,6 +662,25 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagementOnPriceGeneric(
+    strategyOrBundleId: number,
+    price: number,
+    ratioState: RatioState,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.sparkLeverageManagementOnPriceGenericSubData.encode(
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, user,
+    );
+    const triggerData = triggerService.sparkQuotePriceTrigger.encode(collAsset, debtAsset, price, ratioState);
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
   collateralSwitch(
     strategyOrBundleId: number,
     fromAsset: EthereumAddress,

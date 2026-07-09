@@ -1350,6 +1350,41 @@ export const sparkLeverageManagementOnPriceSubData = {
     };
   },
 };
+export const sparkLeverageManagementOnPriceGenericSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint16', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint16', debtAssetId);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    return [
+      encodedColl, encodedCollId, encodedDebt, encodedDebtId,
+      encodedMarket, encodedTargetRatio, encodedUser,
+    ];
+  },
+  decode(subData: SubData) {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as any as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint16', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as any as EthereumAddress;
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[5]) as any as string);
+    const user = AbiCoder.decodeParameter('address', subData[6]) as any as EthereumAddress;
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, user,
+    };
+  },
+};
 export const sparkCollateralSwitchSubData = {
   encode(
     fromAsset: EthereumAddress,
