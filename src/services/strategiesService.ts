@@ -106,7 +106,7 @@ function parseMakerLeverageManagement(position: Position.Automated, parseData: P
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.makerRatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.makerLeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.legacyMakerLeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -223,7 +223,7 @@ function parseAaveV2LeverageManagement(position: Position.Automated, parseData: 
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.aaveV2RatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV2LeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.legacyAaveV2LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -267,9 +267,9 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   const isEOA = _position.strategy.strategyId.includes('eoa');
   let subData;
   if (isEOA) {
-    subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.decode(subStruct.subData);
-  } else {
     subData = subDataService.aaveV3LeverageManagementSubData.decode(subStruct.subData);
+  } else {
+    subData = subDataService.legacyAaveV3LeverageManagementSubData.decode(subStruct.subData);
   }
 
   _position.strategyData.decoded.triggerData = triggerData;
@@ -670,7 +670,7 @@ function parseCompoundV2LeverageManagement(position: Position.Automated, parseDa
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.compoundV2RatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.compoundV2LeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.legacyCompoundV2LeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -888,7 +888,7 @@ function parseExchangeLimitOrder(position: Position.Automated, parseData: ParseD
 
   const { subStruct } = parseData.subscriptionEventData;
 
-  _position.strategyData.decoded.subData = subDataService.exchangeLimitOrderSubData.decode(subStruct.subData, chainId);
+  _position.strategyData.decoded.subData = subDataService.legacyExchangeLimitOrderSubData.decode(subStruct.subData, chainId);
   const fromTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.fromToken, chainId).decimals;
   const toTokenDecimals = getAssetInfoByAddress(_position.strategyData.decoded.subData.toToken, chainId).decimals;
   _position.strategyData.decoded.triggerData = triggerService.exchangeOffchainPriceTrigger.decode(subStruct.triggerData, fromTokenDecimals, toTokenDecimals);
@@ -905,7 +905,7 @@ function parseLiquityLeverageManagement(position: Position.Automated, parseData:
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.liquityRatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.liquityLeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.legacyLiquityLeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -989,7 +989,7 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   const { isEnabled } = parseData.strategiesSubsData;
 
   const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkLeverageManagementSubData.decode(subStruct.subData);
+  const subData = subDataService.legacySparkLeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;

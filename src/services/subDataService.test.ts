@@ -1,10 +1,9 @@
-import Dec from 'decimal.js';
 import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
 import { MAXUINT } from '@defisaver/tokens';
 
-import { ChainId, CloseStrategyType, OrderType, RatioState } from '../types/enums';
+import { ChainId, CloseStrategyType, RatioState } from '../types/enums';
 import type { EthereumAddress, SubData } from '../types';
 
 import '../configuration';
@@ -133,7 +132,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.makerLeverageManagementSubData', () => {
+  describe('When testing subDataService.legacyMakerLeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ vaultId: number, targetRatio: number }, SubData]> = [
         [
@@ -147,13 +146,13 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.makerLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacyMakerLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
   });
 
-  describe('When testing subDataService.makerLeverageManagementWithoutSubProxy', () => {
+  describe('When testing subDataService.makerLeverageManagementSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [vaultId: number, targetRatio: number, daiAddr?: EthereumAddress]]> = [
         [
@@ -174,7 +173,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.makerLeverageManagementWithoutSubProxy.encode(...actual)).to.eql(expected);
+          expect(subDataService.makerLeverageManagementSubData.encode(...actual)).to.eql(expected);
         });
       });
     });
@@ -207,13 +206,13 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.makerLeverageManagementWithoutSubProxy.decode(actual)).to.eql(expected);
+          expect(subDataService.makerLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
   });
 
-  describe('When testing subDataService.liquityLeverageManagementSubData', () => {
+  describe('When testing subDataService.legacyLiquityLeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -227,7 +226,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.liquityLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacyLiquityLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -287,26 +286,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.aaveV2LeverageManagementSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[[string, string, string, string, boolean], [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean]]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.aaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
+  describe('When testing subDataService.legacyAaveV2LeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -321,13 +301,13 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.aaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacyAaveV2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
   });
 
-  describe('When testing subDataService.aaveV3LeverageManagementSubData', () => {
+  describe('When testing subDataService.legacyAaveV3LeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -342,7 +322,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.aaveV3LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacyAaveV3LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -694,26 +674,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.compoundV2LeverageManagementSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[[string, string, string, string, boolean], [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean]]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.compoundV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
+  describe('When testing subDataService.legacyCompoundV2LeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -728,32 +689,13 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.compoundV2LeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacyCompoundV2LeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
   });
 
   describe('When testing subDataService.morphoAaveV2LeverageManagementSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[[string, string, string, string, boolean], [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean]]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.morphoAaveV2LeverageManagementSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -775,25 +717,6 @@ describe('Feature: subDataService.ts', () => {
   });
 
   describe('When testing subDataService.cBondsRebondSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[SubData, [bondId: number | string]]> = [
-        [
-          ['0x00000000000000000000000000000000000000000000000000000000000000c8'],
-          [200]
-        ],
-        [
-          ['0x000000000000000000000000000000000000000000000000000000000000a119'],
-          [41241]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.cBondsRebondSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('decode()', () => {
       const examples: Array<[{ bondId: string }, SubData]> = [
         [
@@ -944,54 +867,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe('When testing subDataService.exchangeLimitOrderSubData', () => {
-    describe('encode()', () => {
-      const examples: Array<[[EthereumAddress, EthereumAddress, string, string, string, string], [fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: OrderType]]> = [
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            '1696590921159',
-            `${OrderType.STOP_LOSS}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            1696590921159,
-            OrderType.STOP_LOSS
-          ]
-        ],
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            '1646590921159',
-            `${OrderType.TAKE_PROFIT}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            1646590921159,
-            OrderType.TAKE_PROFIT
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${expected}`, () => {
-          expect(subDataService.exchangeLimitOrderSubData.encode(...actual)).to.eql(expected);
-        });
-      });
-    });
-
+  describe('When testing subDataService.legacyExchangeLimitOrderSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ fromToken: EthereumAddress, toToken: EthereumAddress, amount: string }, [SubData, ChainId]]> = [
         [
@@ -1026,13 +902,13 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.exchangeLimitOrderSubData.decode(...actual)).to.eql(expected);
+          expect(subDataService.legacyExchangeLimitOrderSubData.decode(...actual)).to.eql(expected);
         });
       });
     });
   });
 
-  describe('When testing subDataService.sparkLeverageManagementSubData', () => {
+  describe('When testing subDataService.legacySparkLeverageManagementSubData', () => {
     describe('decode()', () => {
       const examples: Array<[{ targetRatio: number }, SubData]> = [
         [
@@ -1047,7 +923,7 @@ describe('Feature: subDataService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(subDataService.sparkLeverageManagementSubData.decode(actual)).to.eql(expected);
+          expect(subDataService.legacySparkLeverageManagementSubData.decode(actual)).to.eql(expected);
         });
       });
     });
