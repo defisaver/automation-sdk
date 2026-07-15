@@ -573,6 +573,11 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV4,
   },
+  [Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -770,6 +775,11 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.CloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -916,6 +926,11 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   [Bundles.ArbitrumIds.MORPHO_BLUE_CLOSE]: {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_CLOSE,
     strategyId: Strategies.Identifiers.CloseOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
 };

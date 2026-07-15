@@ -1423,6 +1423,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaRepay]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.EoaBoost]: parseMorphoBlueLeverageManagement,
     [Strategies.Identifiers.BoostOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
+    [Strategies.Identifiers.RepayOnPrice]: parseMorphoBlueLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseMorphoBlueCloseOnPrice,
   },
   [ProtocolIdentifiers.StrategiesAutomation.FluidT1]: {
