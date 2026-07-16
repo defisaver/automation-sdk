@@ -578,6 +578,21 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.MainnetIds.MORPHO_BLUE_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.MORPHO_BLUE_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -780,6 +795,31 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.RepayOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -931,6 +971,21 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
   [Bundles.ArbitrumIds.MORPHO_BLUE_REPAY_ON_PRICE]: {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_REPAY_ON_PRICE,
     strategyId: Strategies.Identifiers.RepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.MORPHO_BLUE_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
 };
