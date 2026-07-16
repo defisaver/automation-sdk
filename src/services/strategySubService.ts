@@ -1,26 +1,23 @@
-import Dec from "decimal.js";
-import { getAssetInfo } from "@defisaver/tokens";
+import Dec from 'decimal.js';
+import { getAssetInfo } from '@defisaver/tokens';
 
-import type { OrderType } from "../types/enums";
+import type { OrderType } from '../types/enums';
 import {
   CloseToAssetType,
   Bundles,
   ChainId,
   RatioState,
   Strategies,
-} from "../types/enums";
-import type { EthereumAddress, StrategyOrBundleIds } from "../types";
+} from '../types/enums';
+import type { EthereumAddress, StrategyOrBundleIds } from '../types';
 
-import { STRATEGY_IDS } from "../constants";
+import { STRATEGY_IDS } from '../constants';
 
-import * as subDataService from "./subDataService";
-import * as triggerService from "./triggerService";
+import * as subDataService from './subDataService';
+import * as triggerService from './triggerService';
 import {
-  compareAddresses,
-  getCloseStrategyType,
-  requireAddress,
-  requireAddresses,
-} from "./utils";
+  compareAddresses, getCloseStrategyType, requireAddress, requireAddresses,
+} from './utils';
 
 export const makerEncode = {
   repayFromSavings(
@@ -31,20 +28,10 @@ export const makerEncode = {
     isBundle: boolean = true,
     chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
-    mcdCdpManagerAddr?: EthereumAddress
+    mcdCdpManagerAddr?: EthereumAddress,
   ) {
-    const subData = subDataService.makerRepayFromSavingsSubData.encode(
-      vaultId,
-      targetRepayRatio,
-      chainId,
-      daiAddr,
-      mcdCdpManagerAddr
-    );
-    const triggerData = triggerService.makerRatioTrigger.encode(
-      vaultId,
-      triggerRepayRatio,
-      RatioState.UNDER
-    );
+    const subData = subDataService.makerRepayFromSavingsSubData.encode(vaultId, targetRepayRatio, chainId, daiAddr, mcdCdpManagerAddr);
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRepayRatio, RatioState.UNDER);
 
     return [bundleId, isBundle, triggerData, subData];
   },
@@ -56,27 +43,14 @@ export const makerEncode = {
     chainlinkCollAddress: EthereumAddress,
     chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
-    mcdCdpManagerAddr?: EthereumAddress
+    mcdCdpManagerAddr?: EthereumAddress,
   ) {
     requireAddresses([closeToAssetAddr, chainlinkCollAddress]);
 
-    const subData = subDataService.makerCloseSubData.encode(
-      vaultId,
-      closeToAssetAddr,
-      chainId,
-      daiAddr,
-      mcdCdpManagerAddr
-    );
-    const triggerData = triggerService.chainlinkPriceTrigger.encode(
-      chainlinkCollAddress,
-      price,
-      ratioState
-    );
+    const subData = subDataService.makerCloseSubData.encode(vaultId, closeToAssetAddr, chainId, daiAddr, mcdCdpManagerAddr);
+    const triggerData = triggerService.chainlinkPriceTrigger.encode(chainlinkCollAddress, price, ratioState);
 
-    const strategyOrBundleId = compareAddresses(
-      closeToAssetAddr,
-      getAssetInfo("DAI", chainId).address
-    )
+    const strategyOrBundleId = compareAddresses(closeToAssetAddr, getAssetInfo('DAI', chainId).address)
       ? Strategies.MainnetIds.MAKER_CLOSE_ON_PRICE_TO_DAI
       : Strategies.MainnetIds.MAKER_CLOSE_ON_PRICE_TO_COLL;
 
@@ -92,27 +66,14 @@ export const makerEncode = {
     roundId: number,
     chainId: ChainId = ChainId.Ethereum,
     daiAddr?: EthereumAddress,
-    mcdCdpManagerAddr?: EthereumAddress
+    mcdCdpManagerAddr?: EthereumAddress,
   ) {
     requireAddresses([closeToAssetAddr, chainlinkCollAddress]);
 
-    const subData = subDataService.makerCloseSubData.encode(
-      vaultId,
-      closeToAssetAddr,
-      chainId,
-      daiAddr,
-      mcdCdpManagerAddr
-    );
-    const triggerData = triggerService.trailingStopTrigger.encode(
-      chainlinkCollAddress,
-      triggerPercentage,
-      roundId
-    );
+    const subData = subDataService.makerCloseSubData.encode(vaultId, closeToAssetAddr, chainId, daiAddr, mcdCdpManagerAddr);
+    const triggerData = triggerService.trailingStopTrigger.encode(chainlinkCollAddress, triggerPercentage, roundId);
 
-    const strategyOrBundleId = compareAddresses(
-      closeToAssetAddr,
-      getAssetInfo("DAI", chainId).address
-    )
+    const strategyOrBundleId = compareAddresses(closeToAssetAddr, getAssetInfo('DAI', chainId).address)
       ? Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_DAI
       : Strategies.MainnetIds.MAKER_TRAILING_STOP_LOSS_TO_COLL;
 
@@ -126,26 +87,20 @@ export const makerEncode = {
     targetRatio: number,
     ratioState: RatioState,
     isBoost: boolean,
-    daiAddr?: EthereumAddress
+    daiAddr?: EthereumAddress,
   ) {
-    const bundleId = isBoost
-      ? Bundles.MainnetIds.MAKER_BOOST
-      : Bundles.MainnetIds.MAKER_REPAY;
+    const bundleId = isBoost ? Bundles.MainnetIds.MAKER_BOOST : Bundles.MainnetIds.MAKER_REPAY;
 
-    const triggerData = triggerService.makerRatioTrigger.encode(
-      vaultId,
-      triggerRatio,
-      ratioState
-    );
+    const triggerData = triggerService.makerRatioTrigger.encode(vaultId, triggerRatio, ratioState);
 
-    const subData =
-      subDataService.makerLeverageManagementWithoutSubProxy.encode(
-        vaultId,
-        targetRatio,
-        daiAddr
-      );
+    const subData = subDataService.makerLeverageManagementWithoutSubProxy.encode(vaultId, targetRatio, daiAddr);
 
-    return [bundleId, true, triggerData, subData];
+    return [
+      bundleId,
+      true,
+      triggerData,
+      subData,
+    ];
   },
 };
 
@@ -157,24 +112,14 @@ export const liquityEncode = {
     chainlinkCollAddress: EthereumAddress,
     chainId: ChainId = ChainId.Ethereum,
     collAddr?: EthereumAddress,
-    debtAddr?: EthereumAddress
+    debtAddr?: EthereumAddress,
   ) {
     requireAddresses([closeToAssetAddr, chainlinkCollAddress]);
 
-    const subData = subDataService.liquityCloseSubData.encode(
-      closeToAssetAddr,
-      chainId,
-      collAddr,
-      debtAddr
-    );
-    const triggerData = triggerService.chainlinkPriceTrigger.encode(
-      chainlinkCollAddress,
-      price,
-      priceOverOrUnder
-    );
+    const subData = subDataService.liquityCloseSubData.encode(closeToAssetAddr, chainId, collAddr, debtAddr);
+    const triggerData = triggerService.chainlinkPriceTrigger.encode(chainlinkCollAddress, price, priceOverOrUnder);
 
-    const strategyOrBundleId =
-      Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL;
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_CLOSE_ON_PRICE_TO_COLL;
 
     const isBundle = false;
 
@@ -187,24 +132,14 @@ export const liquityEncode = {
     roundId: number,
     chainId: ChainId = ChainId.Ethereum,
     collAddr?: EthereumAddress,
-    debtAddr?: EthereumAddress
+    debtAddr?: EthereumAddress,
   ) {
     requireAddresses([closeToAssetAddr, chainlinkCollAddress]);
 
-    const subData = subDataService.liquityCloseSubData.encode(
-      closeToAssetAddr,
-      chainId,
-      collAddr,
-      debtAddr
-    );
-    const triggerData = triggerService.trailingStopTrigger.encode(
-      chainlinkCollAddress,
-      triggerPercentage,
-      roundId
-    );
+    const subData = subDataService.liquityCloseSubData.encode(closeToAssetAddr, chainId, collAddr, debtAddr);
+    const triggerData = triggerService.trailingStopTrigger.encode(chainlinkCollAddress, triggerPercentage, roundId);
 
-    const strategyOrBundleId =
-      Strategies.MainnetIds.LIQUITY_TRAILING_STOP_LOSS_TO_COLL;
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_TRAILING_STOP_LOSS_TO_COLL;
 
     const isBundle = false;
 
@@ -215,18 +150,11 @@ export const liquityEncode = {
     ratio: number,
     sourceId: string,
     sourceType: number,
-    ratioState: RatioState = RatioState.UNDER
+    ratioState: RatioState = RatioState.UNDER,
   ) {
     requireAddress(proxyAddress);
-    const subData = subDataService.liquityPaybackUsingChickenBondSubData.encode(
-      sourceId,
-      sourceType
-    );
-    const triggerData = triggerService.liquityRatioTrigger.encode(
-      proxyAddress,
-      ratio,
-      ratioState
-    );
+    const subData = subDataService.liquityPaybackUsingChickenBondSubData.encode(sourceId, sourceType);
+    const triggerData = triggerService.liquityRatioTrigger.encode(proxyAddress, ratio, ratioState);
 
     const strategyId = Bundles.MainnetIds.LIQUITY_PAYBACK_USING_CHICKEN_BOND;
 
@@ -239,35 +167,23 @@ export const liquityEncode = {
     user: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.liquityLeverageManagementSubDataWithoutSubProxy.encode(
-        targetRatio,
-        ratioState
-      );
-    const triggerData = triggerService.liquityRatioTrigger.encode(
-      user,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.liquityLeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const triggerData = triggerService.liquityRatioTrigger.encode(user, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
   dsrPayback(
     proxyAddress: EthereumAddress,
     triggerRatio: number,
-    targetRatio: number
+    targetRatio: number,
   ) {
     requireAddress(proxyAddress);
     const subData = subDataService.liquityDsrPaybackSubData.encode(targetRatio);
-    const triggerData = triggerService.liquityRatioTrigger.encode(
-      proxyAddress,
-      triggerRatio,
-      RatioState.UNDER
-    );
+    const triggerData = triggerService.liquityRatioTrigger.encode(proxyAddress, triggerRatio, RatioState.UNDER);
 
     const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DSR_PAYBACK;
 
@@ -278,15 +194,11 @@ export const liquityEncode = {
   dsrSupply(
     proxyAddress: EthereumAddress,
     triggerRatio: number,
-    targetRatio: number
+    targetRatio: number,
   ) {
     requireAddress(proxyAddress);
     const subData = subDataService.liquityDsrSupplySubData.encode(targetRatio);
-    const triggerData = triggerService.liquityRatioTrigger.encode(
-      proxyAddress,
-      triggerRatio,
-      RatioState.UNDER
-    );
+    const triggerData = triggerService.liquityRatioTrigger.encode(proxyAddress, triggerRatio, RatioState.UNDER);
 
     const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DSR_SUPPLY;
 
@@ -297,19 +209,13 @@ export const liquityEncode = {
   debtInFrontRepay(
     proxyAddress: EthereumAddress,
     debtInFrontMin: string,
-    targetRatioIncrease: number
+    targetRatioIncrease: number,
   ) {
     requireAddress(proxyAddress);
-    const subData =
-      subDataService.liquityDebtInFrontRepaySubData.encode(targetRatioIncrease);
-    const triggerData =
-      triggerService.liquityDebtInFrontWithLimitTrigger.encode(
-        proxyAddress,
-        debtInFrontMin
-      );
+    const subData = subDataService.liquityDebtInFrontRepaySubData.encode(targetRatioIncrease);
+    const triggerData = triggerService.liquityDebtInFrontWithLimitTrigger.encode(proxyAddress, debtInFrontMin);
 
-    const strategyOrBundleId =
-      Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY;
+    const strategyOrBundleId = Strategies.MainnetIds.LIQUITY_DEBT_IN_FRONT_REPAY;
 
     const isBundle = false;
 
@@ -330,22 +236,12 @@ export const aaveV2Encode = {
     user: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.aaveV2LeverageManagementSubDataWithoutSubProxy.encode(
-        market,
-        targetRatio,
-        ratioState
-      );
-    const triggerData = triggerService.aaveV2RatioTrigger.encode(
-      user,
-      market,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.aaveV2LeverageManagementSubDataWithoutSubProxy.encode(market, targetRatio, ratioState);
+    const triggerData = triggerService.aaveV2RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -356,34 +252,21 @@ export const aaveV3Encode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      baseTokenAddress: EthereumAddress;
-      quoteTokenAddress: EthereumAddress;
-      price: number;
-      ratioState: RatioState;
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState
     },
     subData: {
-      collAsset: EthereumAddress;
-      collAssetId: number;
-      debtAsset: EthereumAddress;
-      debtAssetId: number;
-    }
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
+    },
   ) {
-    const { collAsset, collAssetId, debtAsset, debtAssetId } = subData;
-    const subDataEncoded = subDataService.aaveV3QuotePriceSubData.encode(
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId
-    );
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId,
+    } = subData;
+    const subDataEncoded = subDataService.aaveV3QuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
 
-    const { baseTokenAddress, quoteTokenAddress, price, ratioState } =
-      triggerData;
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(
-      baseTokenAddress,
-      quoteTokenAddress,
-      price,
-      ratioState
-    );
+    const {
+      baseTokenAddress, quoteTokenAddress, price, ratioState,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -391,42 +274,21 @@ export const aaveV3Encode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      baseTokenAddress: EthereumAddress;
-      quoteTokenAddress: EthereumAddress;
-      price: number;
-      ratioState: RatioState;
-      maximumGasPrice: number;
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, ratioState: RatioState, maximumGasPrice: number
     },
     subData: {
-      collAsset: EthereumAddress;
-      collAssetId: number;
-      debtAsset: EthereumAddress;
-      debtAssetId: number;
-    }
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number,
+    },
   ) {
-    const { collAsset, collAssetId, debtAsset, debtAssetId } = subData;
-    const subDataEncoded = subDataService.aaveV3QuotePriceSubData.encode(
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId
-    );
+    const {
+      collAsset, collAssetId, debtAsset, debtAssetId,
+    } = subData;
+    const subDataEncoded = subDataService.aaveV3QuotePriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId);
 
     const {
-      baseTokenAddress,
-      quoteTokenAddress,
-      price,
-      maximumGasPrice,
-      ratioState,
+      baseTokenAddress, quoteTokenAddress, price, maximumGasPrice, ratioState,
     } = triggerData;
-    const triggerDataEncoded =
-      triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(
-        baseTokenAddress,
-        quoteTokenAddress,
-        price,
-        ratioState,
-        maximumGasPrice
-      );
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceWithMaximumGasPriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, ratioState, maximumGasPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -434,45 +296,21 @@ export const aaveV3Encode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      baseTokenAddress: EthereumAddress;
-      quoteTokenAddress: EthereumAddress;
-      price: number;
-      state: RatioState.UNDER;
+      baseTokenAddress: EthereumAddress, quoteTokenAddress: EthereumAddress, price: number, state: RatioState.UNDER
     },
     subData: {
-      collAsset: EthereumAddress;
-      collAssetId: number;
-      debtAsset: EthereumAddress;
-      debtAssetId: number;
-      marketAddr: EthereumAddress;
-      targetRatio: number;
-    }
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
+    },
   ) {
     const {
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId,
-      marketAddr,
-      targetRatio,
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     } = subData;
-    const subDataEncoded =
-      subDataService.aaveV3LeverageManagementOnPriceSubData.encode(
-        collAsset,
-        collAssetId,
-        debtAsset,
-        debtAssetId,
-        marketAddr,
-        targetRatio
-      );
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
 
-    const { baseTokenAddress, quoteTokenAddress, price, state } = triggerData;
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(
-      baseTokenAddress,
-      quoteTokenAddress,
-      price,
-      state
-    );
+    const {
+      baseTokenAddress, quoteTokenAddress, price, state,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -483,24 +321,18 @@ export const aaveV3Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
-    isGeneric: boolean = false // added later, isGeneric should be `false` for old strategies (if some are using this). For EOA should be `TRUE` !!! In the future, if we switch new SW subs to generic strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
+    isGeneric: boolean = false, // added later, isGeneric should be `false` for old strategies (if some are using this). For EOA should be `TRUE` !!! In the future, if we switch new SW subs to generic strategies too, then all new strategies should go with `isGeneric = true`. Old ones should stay the same
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(
-        targetRatio,
-        ratioState,
-        market,
-        user,
-        isGeneric
-      );
-    const triggerData = triggerService.aaveV3RatioTrigger.encode(
-      user,
+    const subData = subDataService.aaveV3LeverageManagementSubDataWithoutSubProxy.encode(
+      targetRatio,
+      ratioState,
       market,
-      triggerRatio,
-      ratioState
+      user,
+      isGeneric,
     );
+    const triggerData = triggerService.aaveV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -515,25 +347,19 @@ export const aaveV3Encode = {
     debtAssetId: number,
     marketAddr: EthereumAddress,
     targetRatio: number,
-    user: EthereumAddress
+    user: EthereumAddress,
   ) {
     const isBundle = true;
-    const subDataEncoded =
-      subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(
-        collAsset,
-        collAssetId,
-        debtAsset,
-        debtAssetId,
-        marketAddr,
-        targetRatio,
-        user
-      );
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(
+    const subDataEncoded = subDataService.aaveV3LeverageManagementOnPriceGeneric.encode(
       collAsset,
+      collAssetId,
       debtAsset,
-      price,
-      ratioState
+      debtAssetId,
+      marketAddr,
+      targetRatio,
+      user,
     );
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(collAsset, debtAsset, price, ratioState);
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 
@@ -548,32 +374,13 @@ export const aaveV3Encode = {
     stopLossPrice: number = 0,
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
-    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId,
-      closeType,
-      marketAddr,
-      user
-    );
-    const triggerDataEncoded =
-      triggerService.aaveV3QuotePriceRangeTrigger.encode(
-        collAsset,
-        debtAsset,
-        stopLossPrice,
-        takeProfitPrice
-      );
+    const subDataEncoded = subDataService.aaveV3CloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -589,24 +396,12 @@ export const aaveV3Encode = {
     baseTokenAddress: EthereumAddress,
     quoteTokenAddress: EthereumAddress,
     price: number,
-    state: RatioState
+    state: RatioState,
   ) {
     const isBundle = false;
 
-    const subDataEncoded = subDataService.aaveV3CollateralSwitchSubData.encode(
-      fromAsset,
-      fromAssetId,
-      toAsset,
-      toAssetId,
-      marketAddr,
-      amountToSwitch
-    );
-    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(
-      baseTokenAddress,
-      quoteTokenAddress,
-      price,
-      state
-    );
+    const subDataEncoded = subDataService.aaveV3CollateralSwitchSubData.encode(fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -618,20 +413,12 @@ export const compoundV2Encode = {
     user: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.compoundV2LeverageManagementSubDataWithoutSubProxy.encode(
-        targetRatio,
-        ratioState
-      );
-    const triggerData = triggerService.compoundV2RatioTrigger.encode(
-      user,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.compoundV2LeverageManagementSubDataWithoutSubProxy.encode(targetRatio, ratioState);
+    const triggerData = triggerService.compoundV2RatioTrigger.encode(user, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -645,23 +432,12 @@ export const compoundV3Encode = {
     user: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy.encode(
-        market,
-        baseToken,
-        targetRatio,
-        ratioState
-      );
-    const triggerData = triggerService.compoundV3RatioTrigger.encode(
-      user,
-      market,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.compoundV3LeverageManagementSubDataWithoutSubProxy.encode(market, baseToken, targetRatio, ratioState);
+    const triggerData = triggerService.compoundV3RatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -674,25 +450,11 @@ export const compoundV3Encode = {
     price: number,
     priceState: RatioState,
     ratioState: RatioState, // REPAY for repay on price, BOOST for boost on price
-    user: EthereumAddress
+    user: EthereumAddress,
   ) {
     const isBundle = true;
-    const subDataEncoded =
-      subDataService.compoundV3LeverageManagementOnPriceSubData.encode(
-        market,
-        collToken,
-        baseToken,
-        targetRatio,
-        ratioState,
-        user
-      );
-    const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(
-      market,
-      collToken,
-      user,
-      price,
-      priceState
-    );
+    const subDataEncoded = subDataService.compoundV3LeverageManagementOnPriceSubData.encode(market, collToken, baseToken, targetRatio, ratioState, user);
+    const triggerDataEncoded = triggerService.compoundV3PriceTrigger.encode(market, collToken, user, price, priceState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -705,30 +467,13 @@ export const compoundV3Encode = {
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
     takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
-    user: EthereumAddress
+    user: EthereumAddress,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.compoundV3CloseSubData.encode(
-      market,
-      collToken,
-      baseToken,
-      closeType,
-      user
-    );
-    const triggerDataEncoded =
-      triggerService.compoundV3PriceRangeTrigger.encode(
-        market,
-        collToken,
-        stopLossPrice,
-        takeProfitPrice
-      );
+    const subDataEncoded = subDataService.compoundV3CloseSubData.encode(market, collToken, baseToken, closeType, user);
+    const triggerDataEncoded = triggerService.compoundV3PriceRangeTrigger.encode(market, collToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -740,15 +485,9 @@ export const morphoAaveV2Encode = {
     triggerBoostRatio: number,
     targetBoostRatio: number,
     targetRepayRatio: number,
-    boostEnabled: boolean
+    boostEnabled: boolean,
   ) {
-    return subDataService.morphoAaveV2LeverageManagementSubData.encode(
-      triggerRepayRatio,
-      triggerBoostRatio,
-      targetBoostRatio,
-      targetRepayRatio,
-      boostEnabled
-    );
+    return subDataService.morphoAaveV2LeverageManagementSubData.encode(triggerRepayRatio, triggerBoostRatio, targetBoostRatio, targetRepayRatio, boostEnabled);
   },
 };
 
@@ -759,19 +498,11 @@ export const exchangeEncode = {
     amount: string,
     timestamp: number,
     interval: number,
-    network: ChainId
+    network: ChainId,
   ) {
     requireAddresses([fromToken, toToken]);
-    const subData = subDataService.exchangeDcaSubData.encode(
-      fromToken,
-      toToken,
-      amount,
-      interval
-    );
-    const triggerData = triggerService.exchangeTimestampTrigger.encode(
-      timestamp,
-      interval
-    );
+    const subData = subDataService.exchangeDcaSubData.encode(fromToken, toToken, amount, interval);
+    const triggerData = triggerService.exchangeTimestampTrigger.encode(timestamp, interval);
 
     const strategyId = STRATEGY_IDS[network].EXCHANGE_DCA;
 
@@ -786,22 +517,11 @@ export const exchangeEncode = {
     orderType: OrderType,
     fromTokenDecimals: number,
     toTokenDecimals: number,
-    network: ChainId
+    network: ChainId,
   ) {
     requireAddresses([fromToken, toToken]);
-    const subData =
-      subDataService.exchangeLimitOrderSubDataWithoutSubProxy.encode(
-        fromToken,
-        toToken,
-        amount
-      );
-    const triggerData = triggerService.exchangeOffchainPriceTrigger.encode(
-      targetPrice,
-      Number(goodUntil),
-      orderType,
-      fromTokenDecimals,
-      toTokenDecimals
-    );
+    const subData = subDataService.exchangeLimitOrderSubDataWithoutSubProxy.encode(fromToken, toToken, amount);
+    const triggerData = triggerService.exchangeOffchainPriceTrigger.encode(targetPrice, Number(goodUntil), orderType, fromTokenDecimals, toTokenDecimals);
 
     const strategyId = STRATEGY_IDS[network].EXCHANGE_LIMIT_ORDER;
 
@@ -814,45 +534,21 @@ export const sparkEncode = {
     strategyOrBundleId: number,
     isBundle: boolean = true,
     triggerData: {
-      baseTokenAddr: EthereumAddress;
-      quoteTokenAddr: EthereumAddress;
-      price: number;
-      ratioState: RatioState;
+      baseTokenAddr: EthereumAddress, quoteTokenAddr: EthereumAddress, price: number, ratioState: RatioState
     },
     subData: {
-      collAsset: EthereumAddress;
-      collAssetId: number;
-      debtAsset: EthereumAddress;
-      debtAssetId: number;
-      marketAddr: EthereumAddress;
-      targetRatio: number;
-    }
+      collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number,
+    },
   ) {
     const {
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId,
-      marketAddr,
-      targetRatio,
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio,
     } = subData;
-    const subDataEncoded =
-      subDataService.sparkLeverageManagementOnPriceSubData.encode(
-        collAsset,
-        collAssetId,
-        debtAsset,
-        debtAssetId,
-        marketAddr,
-        targetRatio
-      );
+    const subDataEncoded = subDataService.sparkLeverageManagementOnPriceSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio);
 
-    const { baseTokenAddr, quoteTokenAddr, price, ratioState } = triggerData;
-    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(
-      baseTokenAddr,
-      quoteTokenAddr,
-      price,
-      ratioState
-    );
+    const {
+      baseTokenAddr, quoteTokenAddr, price, ratioState,
+    } = triggerData;
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddr, quoteTokenAddr, price, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -867,32 +563,13 @@ export const sparkEncode = {
     stopLossPrice: number = 0,
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
-    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.sparkCloseGenericSubData.encode(
-      collAsset,
-      collAssetId,
-      debtAsset,
-      debtAssetId,
-      closeType,
-      marketAddr,
-      user
-    );
-    const triggerDataEncoded =
-      triggerService.sparkQuotePriceRangeTrigger.encode(
-        collAsset,
-        debtAsset,
-        stopLossPrice,
-        takeProfitPrice
-      );
+    const subDataEncoded = subDataService.sparkCloseGenericSubData.encode(collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user);
+    const triggerDataEncoded = triggerService.sparkQuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -902,21 +579,15 @@ export const sparkEncode = {
     user: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
 
-    const subData =
-      subDataService.sparkLeverageManagementSubDataWithoutSubProxy.encode(
-        targetRatio,
-        ratioState
-      );
-    const triggerData = triggerService.sparkRatioTrigger.encode(
-      user,
-      market,
-      triggerRatio,
-      ratioState
+    const subData = subDataService.sparkLeverageManagementSubDataWithoutSubProxy.encode(
+      targetRatio,
+      ratioState,
     );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -931,27 +602,16 @@ export const sparkEncode = {
     baseTokenAddress: EthereumAddress,
     quoteTokenAddress: EthereumAddress,
     price: number,
-    state: RatioState
+    state: RatioState,
   ) {
     const isBundle = false;
 
-    const subDataEncoded = subDataService.sparkCollateralSwitchSubData.encode(
-      fromAsset,
-      fromAssetId,
-      toAsset,
-      toAssetId,
-      marketAddr,
-      amountToSwitch
-    );
-    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(
-      baseTokenAddress,
-      quoteTokenAddress,
-      price,
-      state
-    );
+    const subDataEncoded = subDataService.sparkCollateralSwitchSubData.encode(fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch);
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+
 };
 
 export const crvUSDEncode = {
@@ -962,27 +622,13 @@ export const crvUSDEncode = {
     targetRatio: number,
     triggerRatio: number,
     collTokenAddr: EthereumAddress,
-    crvUSDAddr: EthereumAddress
+    crvUSDAddr: EthereumAddress,
   ) {
-    const subData = subDataService.crvUSDLeverageManagementSubData.encode(
-      controllerAddr,
-      ratioState,
-      targetRatio,
-      collTokenAddr,
-      crvUSDAddr
-    );
-    const triggerData = triggerService.crvUSDRatioTrigger.encode(
-      owner,
-      controllerAddr,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.crvUSDLeverageManagementSubData.encode(controllerAddr, ratioState, targetRatio, collTokenAddr, crvUSDAddr);
+    const triggerData = triggerService.crvUSDRatioTrigger.encode(owner, controllerAddr, triggerRatio, ratioState);
 
     // over is boost, under is repay
-    const strategyOrBundleId =
-      ratioState === RatioState.OVER
-        ? Bundles.MainnetIds.CRVUSD_BOOST
-        : Bundles.MainnetIds.CRVUSD_REPAY;
+    const strategyOrBundleId = ratioState === RatioState.OVER ? Bundles.MainnetIds.CRVUSD_BOOST : Bundles.MainnetIds.CRVUSD_REPAY;
     const isBundle = true;
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
@@ -994,20 +640,10 @@ export const crvUSDEncode = {
     paybackAmount: string,
     crvUSDAddr: EthereumAddress,
     controllerAddr: EthereumAddress,
-    minHealthRatio: number
+    minHealthRatio: number,
   ) {
-    const subData = subDataService.crvUSDPaybackSubData.encode(
-      controllerAddr,
-      addressToPullTokensFrom,
-      positionOwner,
-      paybackAmount,
-      crvUSDAddr
-    );
-    const triggerData = triggerService.crvUsdHealthRatioTrigger.encode(
-      proxyAddress,
-      controllerAddr,
-      minHealthRatio
-    );
+    const subData = subDataService.crvUSDPaybackSubData.encode(controllerAddr, addressToPullTokensFrom, positionOwner, paybackAmount, crvUSDAddr);
+    const triggerData = triggerService.crvUsdHealthRatioTrigger.encode(proxyAddress, controllerAddr, minHealthRatio);
 
     const strategyId = Strategies.MainnetIds.CURVEUSD_PAYBACK;
     const isBundle = false;
@@ -1016,12 +652,7 @@ export const crvUSDEncode = {
   },
 };
 
-export type MorphoBlueBundleStrategy =
-  | "repay"
-  | "boost"
-  | "repayOnPrice"
-  | "boostOnPrice"
-  | "close";
+export type MorphoBlueBundleStrategy = 'repay' | 'boost' | 'repayOnPrice' | 'boostOnPrice' | 'close';
 
 function getMorphoBlueBundlesIds(network: ChainId) {
   switch (network) {
@@ -1032,40 +663,28 @@ function getMorphoBlueBundlesIds(network: ChainId) {
     case ChainId.Arbitrum:
       return Bundles.ArbitrumIds;
     default:
-      throw new Error(
-        `Morpho Blue strategies are not supported on chain ${network}`
-      );
+      throw new Error(`Morpho Blue strategies are not supported on chain ${network}`);
   }
 }
 
 export function getMorphoBlueBundleId(
   network: ChainId,
   strategy: MorphoBlueBundleStrategy,
-  isEOA: boolean
+  isEOA: boolean,
 ): number {
   const bundlesIds = getMorphoBlueBundlesIds(network);
 
   switch (strategy) {
-    case "repay":
-      return isEOA
-        ? bundlesIds.MORPHO_BLUE_EOA_REPAY
-        : bundlesIds.MORPHO_BLUE_REPAY;
-    case "boost":
-      return isEOA
-        ? bundlesIds.MORPHO_BLUE_EOA_BOOST
-        : bundlesIds.MORPHO_BLUE_BOOST;
-    case "repayOnPrice":
-      return isEOA
-        ? bundlesIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE
-        : bundlesIds.MORPHO_BLUE_REPAY_ON_PRICE;
-    case "boostOnPrice":
-      return isEOA
-        ? bundlesIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE
-        : bundlesIds.MORPHO_BLUE_BOOST_ON_PRICE;
-    case "close":
-      return isEOA
-        ? bundlesIds.MORPHO_BLUE_EOA_CLOSE
-        : bundlesIds.MORPHO_BLUE_CLOSE;
+    case 'repay':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY : bundlesIds.MORPHO_BLUE_REPAY;
+    case 'boost':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST : bundlesIds.MORPHO_BLUE_BOOST;
+    case 'repayOnPrice':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE : bundlesIds.MORPHO_BLUE_REPAY_ON_PRICE;
+    case 'boostOnPrice':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE : bundlesIds.MORPHO_BLUE_BOOST_ON_PRICE;
+    case 'close':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_CLOSE : bundlesIds.MORPHO_BLUE_CLOSE;
     default:
       throw new Error(`Unknown Morpho Blue strategy: ${strategy}`);
   }
@@ -1084,34 +703,15 @@ export const morphoBlueEncode = {
     triggerRatio: number,
     user: EthereumAddress,
     isEOA: boolean,
-    network: ChainId
+    network: ChainId,
   ) {
-    const subData = subDataService.morphoBlueLeverageManagementSubData.encode(
-      loanToken,
-      collToken,
-      oracle,
-      irm,
-      lltv,
-      ratioState,
-      targetRatio,
-      user,
-      isEOA
-    );
+    const subData = subDataService.morphoBlueLeverageManagementSubData.encode(loanToken, collToken, oracle, irm, lltv, ratioState, targetRatio, user, isEOA);
 
-    const triggerData = triggerService.morphoBlueRatioTrigger.encode(
-      marketId,
-      user,
-      triggerRatio,
-      ratioState
-    );
+    const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
 
     // over is boost, under is repay
     const isBoost = ratioState === RatioState.OVER;
-    const bundleId = getMorphoBlueBundleId(
-      network,
-      isBoost ? "boost" : "repay",
-      isEOA
-    );
+    const bundleId = getMorphoBlueBundleId(network, isBoost ? 'boost' : 'repay', isEOA);
     const isBundle = true;
 
     return [bundleId, isBundle, triggerData, subData];
@@ -1127,25 +727,10 @@ export const morphoBlueEncode = {
     user: EthereumAddress,
     targetRatio: number,
     price: number,
-    priceState: RatioState
+    priceState: RatioState,
   ) {
-    const subData =
-      subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(
-        loanToken,
-        collToken,
-        oracle,
-        irm,
-        lltv,
-        targetRatio,
-        user
-      );
-    const triggerData = triggerService.morphoBluePriceTrigger.encode(
-      oracle,
-      collToken,
-      loanToken,
-      price,
-      priceState
-    );
+    const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, targetRatio, user);
+    const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
   leverageManagementOnPriceGeneric(
@@ -1160,31 +745,12 @@ export const morphoBlueEncode = {
     priceState: RatioState,
     isBoost: boolean,
     isEOA: boolean,
-    network: ChainId
+    network: ChainId,
   ) {
-    const subData =
-      subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(
-        loanToken,
-        collToken,
-        oracle,
-        irm,
-        lltv,
-        targetRatio,
-        user
-      );
-    const triggerData = triggerService.morphoBluePriceTrigger.encode(
-      oracle,
-      collToken,
-      loanToken,
-      price,
-      priceState
-    );
+    const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, targetRatio, user);
+    const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
 
-    const bundleId = getMorphoBlueBundleId(
-      network,
-      isBoost ? "boostOnPrice" : "repayOnPrice",
-      isEOA
-    );
+    const bundleId = getMorphoBlueBundleId(network, isBoost ? 'boostOnPrice' : 'repayOnPrice', isEOA);
     const isBundle = true;
 
     return [bundleId, isBundle, triggerData, subData];
@@ -1200,33 +766,13 @@ export const morphoBlueEncode = {
     stopLossPrice: number = 0,
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
-    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(
-      loanToken,
-      collToken,
-      oracle,
-      irm,
-      lltv,
-      user,
-      closeType
-    );
-    const triggerDataEncoded =
-      triggerService.morphoBluePriceRangeTrigger.encode(
-        oracle,
-        collToken,
-        loanToken,
-        stopLossPrice,
-        takeProfitPrice
-      );
+    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, user, closeType);
+    const triggerDataEncoded = triggerService.morphoBluePriceRangeTrigger.encode(oracle, collToken, loanToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -1242,35 +788,15 @@ export const morphoBlueEncode = {
     takeProfitPrice: number = 0,
     takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
     isEOA: boolean,
-    network: ChainId
+    network: ChainId,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(
-      loanToken,
-      collToken,
-      oracle,
-      irm,
-      lltv,
-      user,
-      closeType
-    );
-    const triggerDataEncoded =
-      triggerService.morphoBluePriceRangeTrigger.encode(
-        oracle,
-        collToken,
-        loanToken,
-        stopLossPrice,
-        takeProfitPrice
-      );
+    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, user, closeType);
+    const triggerDataEncoded = triggerService.morphoBluePriceRangeTrigger.encode(oracle, collToken, loanToken, stopLossPrice, takeProfitPrice);
 
-    const bundleId = getMorphoBlueBundleId(network, "close", isEOA);
+    const bundleId = getMorphoBlueBundleId(network, 'close', isEOA);
 
     return [bundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -1285,23 +811,11 @@ export const liquityV2Encode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
-    strategyOrBundleId: number
+    strategyOrBundleId: number,
   ) {
     const isBundle = true;
-    const subData = subDataService.liquityV2LeverageManagementSubData.encode(
-      market,
-      troveId,
-      collToken,
-      boldToken,
-      ratioState,
-      targetRatio
-    );
-    const triggerData = triggerService.liquityV2RatioTrigger.encode(
-      market,
-      troveId,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.liquityV2LeverageManagementSubData.encode(market, troveId, collToken, boldToken, ratioState, targetRatio);
+    const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -1314,28 +828,13 @@ export const liquityV2Encode = {
     stopLossPrice: number = 0,
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
     takeProfitPrice: number = 0,
-    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subData = subDataService.liquityV2CloseSubData.encode(
-      market,
-      troveId,
-      collToken,
-      boldToken,
-      closeType
-    );
-    const triggerData = triggerService.closePriceTrigger.encode(
-      collToken,
-      stopLossPrice,
-      takeProfitPrice
-    );
+    const subData = subDataService.liquityV2CloseSubData.encode(market, troveId, collToken, boldToken, closeType);
+    const triggerData = triggerService.closePriceTrigger.encode(collToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -1348,23 +847,13 @@ export const liquityV2Encode = {
     collToken: EthereumAddress,
     boldToken: EthereumAddress,
     targetRatio: number,
-    isRepayOnPrice: boolean
+    isRepayOnPrice: boolean,
   ) {
-    const subDataEncoded =
-      subDataService.liquityV2LeverageManagementOnPriceSubData.encode(
-        market,
-        troveId,
-        collToken,
-        boldToken,
-        targetRatio,
-        isRepayOnPrice
-      );
-
-    const triggerDataEncoded = triggerService.liquityV2QuotePriceTrigger.encode(
-      market,
-      price,
-      state
+    const subDataEncoded = subDataService.liquityV2LeverageManagementOnPriceSubData.encode(
+      market, troveId, collToken, boldToken, targetRatio, isRepayOnPrice,
     );
+
+    const triggerDataEncoded = triggerService.liquityV2QuotePriceTrigger.encode(market, price, state);
     const isBundle = true;
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
@@ -1374,24 +863,13 @@ export const liquityV2Encode = {
     boldToken: EthereumAddress,
     targetRatio: number,
     ratioState: RatioState,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const strategyId = Strategies.MainnetIds.LIQUITY_V2_PAYBACK;
     const isBundle = false;
 
-    const subData = subDataService.liquityV2PaybackSubData.encode(
-      market,
-      troveId,
-      boldToken,
-      targetRatio,
-      ratioState
-    );
-    const triggerData = triggerService.liquityV2RatioTrigger.encode(
-      market,
-      troveId,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.liquityV2PaybackSubData.encode(market, troveId, boldToken, targetRatio, ratioState);
+    const triggerData = triggerService.liquityV2RatioTrigger.encode(market, troveId, triggerRatio, ratioState);
 
     return [strategyId, isBundle, triggerData, subData];
   },
@@ -1404,20 +882,11 @@ export const fluidEncode = {
     ratioState: RatioState,
     targetRatio: number,
     triggerRatio: number,
-    strategyOrBundleId: number
+    strategyOrBundleId: number,
   ) {
     const isBundle = true;
-    const subData = subDataService.fluidLeverageManagementSubData.encode(
-      nftId,
-      vault,
-      ratioState,
-      targetRatio
-    );
-    const triggerData = triggerService.fluidRatioTrigger.encode(
-      nftId,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.fluidLeverageManagementSubData.encode(nftId, vault, ratioState, targetRatio);
+    const triggerData = triggerService.fluidRatioTrigger.encode(nftId, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -1430,21 +899,11 @@ export const aaveV4Encode = {
     spoke: EthereumAddress,
     ratioState: RatioState,
     targetRatio: number,
-    triggerRatio: number
+    triggerRatio: number,
   ) {
     const isBundle = true;
-    const subData = subDataService.aaveV4LeverageManagementSubData.encode(
-      spoke,
-      owner,
-      ratioState,
-      targetRatio
-    );
-    const triggerData = triggerService.aaveV4RatioTrigger.encode(
-      owner,
-      spoke,
-      triggerRatio,
-      ratioState
-    );
+    const subData = subDataService.aaveV4LeverageManagementSubData.encode(spoke, owner, ratioState, targetRatio);
+    const triggerData = triggerService.aaveV4RatioTrigger.encode(owner, spoke, triggerRatio, ratioState);
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
@@ -1459,26 +918,25 @@ export const aaveV4Encode = {
     targetRatio: number,
     price: string,
     priceState: RatioState,
-    ratioState: RatioState // UNDER for repay, OVER for boost
+    ratioState: RatioState, // UNDER for repay, OVER for boost
   ) {
     const isBundle = true;
-    const subData =
-      subDataService.aaveV4LeverageManagementOnPriceSubData.encode(
-        spoke,
-        owner,
-        collAsset,
-        collAssetId,
-        debtAsset,
-        debtAssetId,
-        ratioState,
-        targetRatio
-      );
+    const subData = subDataService.aaveV4LeverageManagementOnPriceSubData.encode(
+      spoke,
+      owner,
+      collAsset,
+      collAssetId,
+      debtAsset,
+      debtAssetId,
+      ratioState,
+      targetRatio,
+    );
     const triggerData = triggerService.aaveV4QuotePriceTrigger.encode(
       spoke,
       collAssetId,
       debtAssetId,
       price,
-      priceState
+      priceState,
     );
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
@@ -1491,18 +949,13 @@ export const aaveV4Encode = {
     collAssetId: number,
     debtAsset: EthereumAddress,
     debtAssetId: number,
-    stopLossPrice: string = "0",
+    stopLossPrice: string = '0',
     stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
-    takeProfitPrice: string = "0",
-    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL
+    takeProfitPrice: string = '0',
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
   ) {
     const isBundle = true;
-    const closeType = getCloseStrategyType(
-      stopLossPrice,
-      stopLossType,
-      takeProfitPrice,
-      takeProfitType
-    );
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
     const subData = subDataService.aaveV4CloseSubData.encode(
       spoke,
@@ -1511,14 +964,14 @@ export const aaveV4Encode = {
       collAssetId,
       debtAsset,
       debtAssetId,
-      closeType
+      closeType,
     );
     const triggerData = triggerService.aaveV4QuotePriceRangeTrigger.encode(
       spoke,
       collAssetId,
       debtAssetId,
       stopLossPrice,
-      takeProfitPrice
+      takeProfitPrice,
     );
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
@@ -1533,7 +986,7 @@ export const aaveV4Encode = {
     toAssetId: number,
     amountToSwitch: string,
     price: string,
-    ratioState: RatioState
+    ratioState: RatioState,
   ) {
     const isBundle = false;
     const subData = subDataService.aaveV4CollateralSwitchSubData.encode(
@@ -1543,14 +996,14 @@ export const aaveV4Encode = {
       fromAssetId,
       toAsset,
       toAssetId,
-      amountToSwitch
+      amountToSwitch,
     );
     const triggerData = triggerService.aaveV4QuotePriceTrigger.encode(
       spoke,
       fromAssetId, // baseTokenId
       toAssetId, // quoteTokenId
       price,
-      ratioState
+      ratioState,
     );
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
