@@ -10,3 +10,4 @@ src/types/contracts/generated
 .yarnrc.yml
 
 .DS_Store
+.vscode/
