@@ -240,6 +240,11 @@ export namespace Bundles {
     AAVE_V4_EOA_REPAY_ON_PRICE = 68,
     AAVE_V4_EOA_BOOST_ON_PRICE = 69,
     AAVE_V4_EOA_CLOSE = 70,
+    SPARK_EOA_REPAY = 71,
+    SPARK_EOA_BOOST = 72,
+    SPARK_EOA_CLOSE = 73,
+    SPARK_EOA_REPAY_ON_PRICE = 74,
+    SPARK_EOA_BOOST_ON_PRICE = 75,
   }
 
   export enum OptimismIds {

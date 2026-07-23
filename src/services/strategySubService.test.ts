@@ -1837,6 +1837,129 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
+    describe('leverageManagementGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          market: EthereumAddress,
+          user: EthereumAddress,
+          ratioState: RatioState,
+          targetRatio: number,
+          triggerRatio: number,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.SPARK_EOA_REPAY,
+            true,
+            ['0x000000000000000000000000123456789012345678901234567890123456789000000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee000000000000000000000000000000000000000000000000136dcc951d8c00000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_EOA_REPAY,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            RatioState.UNDER,
+            180,
+            140,
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkEncode.leverageManagementGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('leverageManagementOnPriceGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          price: number,
+          ratioState: RatioState,
+          collAsset: EthereumAddress,
+          collAssetId: number,
+          debtAsset: EthereumAddress,
+          debtAssetId: number,
+          marketAddr: EthereumAddress,
+          targetRatio: number,
+          user: EthereumAddress,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.SPARK_EOA_REPAY_ON_PRICE,
+            true,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000003a352944000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_EOA_REPAY_ON_PRICE,
+            2500,
+            RatioState.UNDER,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            200,
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.SPARK_EOA_BOOST_ON_PRICE,
+            true,
+            ['0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000006b175474e89094c44da98b954eedeac495271d0f00000000000000000000000000000000000000000000000000000417bce6c8000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c599',
+              '0x0000000000000000000000000000000000000000000000000000000000000002',
+              '0x0000000000000000000000006b175474e89094c44da98b954eedeac495271d0f',
+              '0x0000000000000000000000000000000000000000000000000000000000000004',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x00000000000000000000000000000000000000000000000022b1c8c1227a0000',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_EOA_BOOST_ON_PRICE,
+            45000,
+            RatioState.OVER,
+            web3Utils.toChecksumAddress(getAssetInfo('WBTC', ChainId.Ethereum).address),
+            2,
+            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
+            4,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            250,
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkEncode.leverageManagementOnPriceGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
     describe('closeOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],

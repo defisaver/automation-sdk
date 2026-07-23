@@ -2455,6 +2455,143 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+  describe('When testing subDataService.sparkGenericLeverageManagementSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [targetRatio: number, ratioState: RatioState, market: EthereumAddress, user: EthereumAddress]
+      ]> = [
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            180,
+            RatioState.UNDER,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkGenericLeverageManagementSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[
+        { targetRatio: number, ratioState: RatioState },
+        SubData,
+      ]> = [
+        [
+          { targetRatio: 180, ratioState: RatioState.UNDER },
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkGenericLeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+  describe('When testing subDataService.sparkLeverageManagementOnPriceGenericSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [
+          collAsset: EthereumAddress,
+          collAssetId: number,
+          debtAsset: EthereumAddress,
+          debtAssetId: number,
+          marketAddr: EthereumAddress,
+          targetRatio: number,
+          user: EthereumAddress,
+        ]
+      ]> = [
+        [
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            200,
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLeverageManagementOnPriceGenericSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[
+        {
+          collAsset: EthereumAddress,
+          collAssetId: number,
+          debtAsset: EthereumAddress,
+          debtAssetId: number,
+          marketAddr: EthereumAddress,
+          targetRatio: number,
+          user: EthereumAddress,
+        },
+        SubData,
+      ]> = [
+        [
+          {
+            collAsset: web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            collAssetId: 0,
+            debtAsset: web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            debtAssetId: 1,
+            marketAddr: web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            targetRatio: 200,
+            user: web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          },
+          [
+            '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLeverageManagementOnPriceGenericSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
   describe('When testing subDataService.aaveV4LeverageManagementSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [spoke: EthereumAddress, owner: EthereumAddress, ratioState: RatioState, targetRatio: number]]> = [

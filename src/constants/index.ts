@@ -573,6 +573,31 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.AaveV4,
   },
+  [Bundles.MainnetIds.SPARK_EOA_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_REPAY,
+    strategyId: Strategies.Identifiers.EoaRepay,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_EOA_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_BOOST,
+    strategyId: Strategies.Identifiers.EoaBoost,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_EOA_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_CLOSE,
+    strategyId: Strategies.Identifiers.EoaCloseOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_EOA_REPAY_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_REPAY_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaRepayOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_EOA_BOOST_ON_PRICE]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_BOOST_ON_PRICE,
+    strategyId: Strategies.Identifiers.EoaBoostOnPrice,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
