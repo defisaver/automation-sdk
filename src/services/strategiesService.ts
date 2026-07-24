@@ -388,11 +388,17 @@ function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: Pa
 function parseSparkCollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
+  const subData = isEOA
+    ? subDataService.sparkGenericFLCollateralSwitchSubData.decode(subStruct.subData)
+    : subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  _position.strategy.strategyId = isEOA
+    ? Strategies.Identifiers.EoaCollateralSwitch
+    : Strategies.Identifiers.CollateralSwitch;
   return _position;
 }
 
@@ -1415,6 +1421,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseSparkCloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseSparkCollateralSwitch,
+    [Strategies.Identifiers.EoaCollateralSwitch]: parseSparkCollateralSwitch,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,

@@ -140,6 +140,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.Spark,
   },
+  [Strategies.MainnetIds.SPARK_GENERIC_FL_COLLATERAL_SWITCH]: {
+    strategyOrBundleId: Strategies.MainnetIds.SPARK_GENERIC_FL_COLLATERAL_SWITCH,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {

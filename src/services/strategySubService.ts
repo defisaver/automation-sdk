@@ -701,6 +701,29 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+  collateralSwitchGeneric(
+    strategyOrBundleId: number,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    state: RatioState,
+  ) {
+    const isBundle = false;
+
+    const subDataEncoded = subDataService.sparkGenericFLCollateralSwitchSubData.encode(
+      fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch, user,
+    );
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 
 };
 

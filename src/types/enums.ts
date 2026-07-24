@@ -101,6 +101,7 @@ export namespace Strategies {
     AAVE_V4_COLLATERAL_SWITCH = 154,
     AAVE_V4_COLLATERAL_SWITCH_EOA = 155,
     SPARK_COLLATERAL_SWITCH = 156,
+    SPARK_GENERIC_FL_COLLATERAL_SWITCH = 157,
   }
 
   export enum OptimismIds {
