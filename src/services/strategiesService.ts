@@ -1072,6 +1072,7 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
 
   const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   const triggerData = triggerService.morphoBlueRatioTrigger.decode(subStruct.triggerData);
   const subData = subDataService.morphoBlueLeverageManagementSubData.decode(subStruct.subData);
 
@@ -1089,7 +1090,7 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
       repayEnabled: isEnabled,
       subId1: Number(subId),
       subHashRepay: subHash,
-      mergeWithId: Strategies.Identifiers.Boost,
+      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   } else {
     _position.specific = {
@@ -1098,13 +1099,11 @@ function parseMorphoBlueLeverageManagement(position: Position.Automated, parseDa
       boostEnabled: isEnabled,
       subId2: Number(subId),
       subHashBoost: subHash,
-      mergeId: Strategies.Identifiers.Boost,
+      mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
     };
   }
 
-  const isEOA = _position.strategy.strategyId.includes('eoa');
   _position.strategy.strategyId = isEOA ? Strategies.IdOverrides.EoaLeverageManagement : Strategies.IdOverrides.LeverageManagement;
-
 
   return _position;
 }
@@ -1113,6 +1112,7 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   const triggerData = triggerService.morphoBluePriceTrigger.decode(subStruct.triggerData);
   const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.decode(subStruct.subData);
 
@@ -1143,6 +1143,10 @@ function parseMorphoBlueLeverageManagementOnPrice(position: Position.Automated, 
     ratioState: triggerData.priceState,
   };
 
+  _position.strategy.strategyId = isEOA
+    ? Strategies.IdOverrides.EoaLeverageManagementOnPrice
+    : Strategies.IdOverrides.LeverageManagementOnPrice;
+
   return _position;
 }
 
@@ -1150,6 +1154,7 @@ function parseMorphoBlueCloseOnPrice(position: Position.Automated, parseData: Pa
   const _position = cloneDeep(position);
 
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   const triggerData = triggerService.morphoBluePriceRangeTrigger.decode(subStruct.triggerData);
   const subData = subDataService.morphoBlueCloseOnPriceSubData.decode(subStruct.subData);
@@ -1173,6 +1178,8 @@ function parseMorphoBlueCloseOnPrice(position: Position.Automated, parseData: Pa
   const marketId = web3.utils.keccak256(marketIdEncodedData);
 
   const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+
+  _position.strategy.strategyId = isEOA ? Strategies.Identifiers.EoaCloseOnPrice : Strategies.Identifiers.CloseOnPrice;
 
   _position.specific = {
     subHash: _position.subHash,
