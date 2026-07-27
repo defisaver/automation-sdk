@@ -9,17 +9,14 @@ import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from 
 
 import '../configuration';
 import {
-  aaveV2Encode,
   chickenBondsEncode,
   liquityEncode,
   makerEncode,
   aaveV3Encode,
-  compoundV2Encode,
   compoundV3Encode,
   morphoAaveV2Encode,
   exchangeEncode,
   crvUSDEncode,
-  compoundV3L2Encode,
   morphoBlueEncode,
   sparkEncode,
   aaveV4Encode,
@@ -136,39 +133,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(makerEncode.trailingStop(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [
-          vaultId: number, triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ],
-        [
-          vaultId: number, triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ]
-      ]> = [
-        [
-          [
-            5791,
-            new Dec('210').mul(1e16).toString(),
-            new Dec('290').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            true,
-          ],
-          [
-            5791, '210', '290', '240', '240', true,
-          ]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerEncode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });
@@ -296,38 +260,6 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [
-          triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ],
-        [
-          triggerRepayRatio: string, triggerBoostRatio: string, targetBoostRatio: string,
-          targetRepayRatio: string, boostEnabled: boolean,
-        ]
-      ]> = [
-        [
-          [
-            new Dec('210').mul(1e16).toString(),
-            new Dec('290').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            new Dec('240').mul(1e16).toString(),
-            false,
-          ],
-          [
-            '210', '290', '240', '240', false,
-          ]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(liquityEncode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('paybackFromChickenBondStrategySub()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -436,53 +368,7 @@ describe('Feature: strategySubService.ts', () => {
     });
   });
 
-  describe('When testing strategySubService.aaveV2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [string, string, string, string, boolean],
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV2Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe('When testing strategySubService.aaveV3Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        string,
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          '0x000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e000001',
-          [160, 220, 180, 190, true]
-        ],
-        [
-          '0x000000000000000016345785d8a0000000000000000000001bc16d674ec80000000000000000000018fae27693b4000000000000000000001a5e27eef13e000000',
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('closeToAsset()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -1141,74 +1027,7 @@ describe('Feature: strategySubService.ts', () => {
     });
   });
 
-  describe('When testing strategySubService.compoundV2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[
-        [string, string, string, string, boolean],
-        [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean],
-      ]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV2Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
   describe('When testing strategySubService.compoundV3Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[[EthereumAddress, EthereumAddress, string, string, string, string, boolean, boolean], [market: EthereumAddress, baseToken: EthereumAddress, triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean, isEOA: boolean]]> = [
-        [
-          [
-            web3Utils.toChecksumAddress('0x1C0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
-            new Dec(160).mul(1e16).toString(),
-            new Dec(220).mul(1e16).toString(),
-            new Dec(180).mul(1e16).toString(),
-            new Dec(190).mul(1e16).toString(),
-            true, false,
-          ],
-          [
-            web3Utils.toChecksumAddress('0x1C0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
-            160, 220, 180, 190,
-            true, false,
-          ]
-        ],
-        [
-          [
-            web3Utils.toChecksumAddress('0xaC0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            new Dec(160).mul(1e16).toString(),
-            new Dec(210).mul(1e16).toString(),
-            new Dec(180).mul(1e16).toString(),
-            new Dec(190).mul(1e16).toString(),
-            false, true,
-          ],
-          [
-            web3Utils.toChecksumAddress('0xaC0F620155e85491f8D35440eb17538Ca5c55212'),
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            160, 210, 180, 190,
-            false, true,
-          ]
-        ],
-      ];
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV3Encode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
     describe('leverageManagementOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -1393,53 +1212,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(exchangeEncode.dca(...actual)).to.eql(expected);
-        });
-      });
-    });
-
-    describe('limitOrder()', () => {
-      const examples: Array<[[EthereumAddress, EthereumAddress, string, string, string, string], [fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: OrderType]]> = [
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            '1696590921159',
-            `${OrderType.STOP_LOSS}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('DAI', ChainId.Ethereum).address),
-            '2131',
-            '0.53123',
-            1696590921159,
-            OrderType.STOP_LOSS
-          ]
-        ],
-        [
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            '1646590921159',
-            `${OrderType.TAKE_PROFIT}`
-          ],
-          [
-            web3Utils.toChecksumAddress(getAssetInfo('LINK', ChainId.Arbitrum).address),
-            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Arbitrum).address),
-            '2131',
-            '0.43123',
-            1646590921159,
-            OrderType.TAKE_PROFIT
-          ]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(exchangeEncode.limitOrder(...actual)).to.eql(expected);
         });
       });
     });
@@ -1645,6 +1417,177 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
+    describe('leverageManagementOnPrice()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          isBundle: boolean,
+          loanToken: EthereumAddress,
+          collToken: EthereumAddress,
+          oracle: EthereumAddress,
+          irm: EthereumAddress,
+          lltv: string,
+          user: EthereumAddress,
+          targetRatio: number,
+          price: number,
+          priceState: RatioState,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE,
+            true,
+            ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000003a352944000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE,
+            true,
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            '945000000000000000',
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            200,
+            2500,
+            RatioState.UNDER,
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
+            true,
+            ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000005d21dba0000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
+            true,
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            '945000000000000000',
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            160,
+            4000,
+            RatioState.OVER,
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueEncode.leverageManagementOnPrice(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('leverageManagementOnPriceGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          loanToken: EthereumAddress,
+          collToken: EthereumAddress,
+          oracle: EthereumAddress,
+          irm: EthereumAddress,
+          lltv: string,
+          user: EthereumAddress,
+          targetRatio: number,
+          price: number,
+          priceState: RatioState,
+          isBoost: boolean,
+          isEOA: boolean,
+          network: ChainId,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_REPAY_ON_PRICE,
+            true,
+            ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000003a352944000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            '945000000000000000',
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            200,
+            2500,
+            RatioState.UNDER,
+            false,
+            false,
+            ChainId.Ethereum,
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.MORPHO_BLUE_BOOST_ON_PRICE,
+            true,
+            ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000005d21dba0000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+            ],
+          ],
+          [
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            '945000000000000000',
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            160,
+            4000,
+            RatioState.OVER,
+            true,
+            false,
+            ChainId.Ethereum,
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueEncode.leverageManagementOnPriceGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
     describe('closeOnPrice()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
@@ -1688,7 +1631,7 @@ describe('Feature: strategySubService.ts', () => {
             1500,
             CloseToAssetType.DEBT,
             4000,
-            CloseToAssetType.COLLATERAL
+            CloseToAssetType.COLLATERAL,
           ]
         ],
       ];
@@ -1699,60 +1642,66 @@ describe('Feature: strategySubService.ts', () => {
         });
       });
     });
-  });
 
-  describe('When testing strategySubService.compoundV3L2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[string, [EthereumAddress, EthereumAddress, number, number, number, number, boolean, boolean]]> = [
+    describe('closeOnPriceGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
         [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0213D212133AfaB8F2b829B1066C7E43cAD94E2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000001a5e27eef13e00000100',
+          loanToken: EthereumAddress,
+          collToken: EthereumAddress,
+          oracle: EthereumAddress,
+          irm: EthereumAddress,
+          lltv: string,
+          user: EthereumAddress,
+          stopLossPrice: number,
+          stopLossType: CloseToAssetType,
+          takeProfitPrice: number,
+          takeProfitType: CloseToAssetType,
+          isEOA: boolean,
+          network: ChainId,
+        ]
+      ]> = [
+        [
           [
-            web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
-            web3Utils.toChecksumAddress('0x0213d212133AFaB8F2B829B1066c7E43cAd94E2c'),
-            160, 220, 180, 190,
+            Bundles.MainnetIds.MORPHO_BLUE_CLOSE,
             true,
-            false,
+             ['0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000007f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
+              '0x000000000000000000000000870ac11d48b15db9a138cf899d20f13f79ba00bc',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000d1d507e40be8000',
+              '0x0000000000000000000000001031d218133afab8c2b819b1366c7e434ad91e9c',
+              '0x0000000000000000000000000000000000000000000000000000000000000005',
+            ],
           ],
-        ],
-        [
-          '0x0313D212133AFab8F2b829B1066c7e43caD94e2c0413d212133afAb8F2B829b1066C7e43cAd94e2c000000000000000016345785d8a0000000000000000000001e87f85809dc0000000000000000000018fae27693b4000000000000000000000f43fc2c04ee00000000',
           [
-            web3Utils.toChecksumAddress('0x0313d212133AFaB8F2B829B1066c7E43cAd94E2c'),
-            web3Utils.toChecksumAddress('0x0413d212133AFaB8F2B829B1066c7E43cAd94E2c'),
-            160, 220, 180, 110,
+            web3Utils.toChecksumAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+            web3Utils.toChecksumAddress('0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'),
+            web3Utils.toChecksumAddress('0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC'),
+            web3Utils.toChecksumAddress('0x0000000000000000000000000000000000000000'),
+            '945000000000000000',
+            web3Utils.toChecksumAddress('0x1031d218133AFaB8c2B819B1366c7E434Ad91E9c'),
+            1500,
+            CloseToAssetType.DEBT,
+            4000,
+            CloseToAssetType.COLLATERAL,
             false,
-            false,
-          ],
+            ChainId.Ethereum,
+          ]
         ],
       ];
+
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(compoundV3L2Encode.leverageManagement(...actual)).to.eql(expected);
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(morphoBlueEncode.closeOnPriceGeneric(...actual)).to.eql(expected);
         });
       });
     });
   });
 
   describe('When testing strategySubService.sparkEncode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[string, [number, number, number, number, boolean]]> = [
-        [
-          '0x0000000000000000136dcc951d8c00000000000000000000214e8348c4f0000000000000000000001d24b2dfac52000000000000000000001a5e27eef13e000001',
-          [140,240,210,190,true]
-        ],
-        [
-          '0x0000000000000000130337bdce49000000000000000000001988fe4052b800000000000000000000281b57b028e1000000000000000000002223acf76376000000',
-          [137, 184, 289, 246, false]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(sparkEncode.leverageManagement(...actual)).to.eql(expected);
-        });
-      });
-    });
-
     describe('leverageManagementOnPrice()', () => {
       const examples: Array<[[StrategyOrBundleIds, boolean, TriggerData, SubData], 
       [
