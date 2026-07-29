@@ -317,6 +317,7 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 39,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 40,
     MORPHO_BLUE_EOA_CLOSE = 41,
+    MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 42,
   }
 
   export enum ArbitrumIds {

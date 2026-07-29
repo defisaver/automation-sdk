@@ -174,15 +174,3 @@ export function getStopLossAndTakeProfitTypeByCloseStrategyType(
   }
 }
 
-export function getBundleIdsByNetwork(network: ChainId) {
-  switch (Number(network)) {
-    case ChainId.Ethereum:
-      return Bundles.MainnetIds;
-    case ChainId.Arbitrum:
-      return Bundles.ArbitrumIds;
-    case ChainId.Base:
-      return Bundles.BaseIds;
-    default:
-      throw new Error(`Unsupported network ${network}`);
-  }
-}

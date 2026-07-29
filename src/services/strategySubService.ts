@@ -17,7 +17,6 @@ import * as subDataService from './subDataService';
 import * as triggerService from './triggerService';
 import {
   compareAddresses,
-  getBundleIdsByNetwork,
   getCloseStrategyType,
   requireAddress,
   requireAddresses,
@@ -718,7 +717,7 @@ export const crvUSDEncode = {
   },
 };
 
-export type MorphoBlueBundleStrategy = 'repay' | 'boost' | 'repayOnPrice' | 'boostOnPrice' | 'close';
+export type MorphoBlueBundleStrategy = 'repay' | 'boost' | 'repayOnPrice' | 'boostOnPrice' | 'close' | 'liquidationProtection';
 
 function getMorphoBlueBundlesIds(network: ChainId) {
   switch (network) {
@@ -751,6 +750,8 @@ export function getMorphoBlueBundleId(
       return isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE : bundlesIds.MORPHO_BLUE_BOOST_ON_PRICE;
     case 'close':
       return isEOA ? bundlesIds.MORPHO_BLUE_EOA_CLOSE : bundlesIds.MORPHO_BLUE_CLOSE;
+    case 'liquidationProtection':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION : bundlesIds.MORPHO_BLUE_SW_LIQUIDATION_PROTECTION;
     default:
       throw new Error(`Unknown Morpho Blue strategy: ${strategy}`);
   }
@@ -801,11 +802,7 @@ export const morphoBlueEncode = {
 
     const triggerData = triggerService.morphoBlueRatioTrigger.encode(marketId, user, triggerRatio, ratioState);
 
-
-    // Type casting because there is no MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION for Base chain.
-    // That is fine because we will just always send isEOA == false for Base chain.
-    const bundleNetwork = getBundleIdsByNetwork(network) as typeof Bundles.MainnetIds;
-    const bundleId = isEOA ? bundleNetwork.MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION : bundleNetwork.MORPHO_BLUE_SW_LIQUIDATION_PROTECTION;
+    const bundleId = getMorphoBlueBundleId(network, 'liquidationProtection', isEOA);
     const isBundle = true;
 
     return [bundleId, isBundle, triggerData, subData];
