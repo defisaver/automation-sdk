@@ -718,6 +718,44 @@ export const crvUSDEncode = {
   },
 };
 
+export type MorphoBlueBundleStrategy = 'repay' | 'boost' | 'repayOnPrice' | 'boostOnPrice' | 'close';
+
+function getMorphoBlueBundlesIds(network: ChainId) {
+  switch (network) {
+    case ChainId.Ethereum:
+      return Bundles.MainnetIds;
+    case ChainId.Base:
+      return Bundles.BaseIds;
+    case ChainId.Arbitrum:
+      return Bundles.ArbitrumIds;
+    default:
+      throw new Error(`Morpho Blue strategies are not supported on chain ${network}`);
+  }
+}
+
+export function getMorphoBlueBundleId(
+  network: ChainId,
+  strategy: MorphoBlueBundleStrategy,
+  isEOA: boolean,
+): number {
+  const bundlesIds = getMorphoBlueBundlesIds(network);
+
+  switch (strategy) {
+    case 'repay':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY : bundlesIds.MORPHO_BLUE_REPAY;
+    case 'boost':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST : bundlesIds.MORPHO_BLUE_BOOST;
+    case 'repayOnPrice':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY_ON_PRICE : bundlesIds.MORPHO_BLUE_REPAY_ON_PRICE;
+    case 'boostOnPrice':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST_ON_PRICE : bundlesIds.MORPHO_BLUE_BOOST_ON_PRICE;
+    case 'close':
+      return isEOA ? bundlesIds.MORPHO_BLUE_EOA_CLOSE : bundlesIds.MORPHO_BLUE_CLOSE;
+    default:
+      throw new Error(`Unknown Morpho Blue strategy: ${strategy}`);
+  }
+}
+
 export const morphoBlueEncode = {
   leverageManagement(
     marketId: string,
@@ -739,19 +777,10 @@ export const morphoBlueEncode = {
 
     // over is boost, under is repay
     const isBoost = ratioState === RatioState.OVER;
-    let strategyOrBundleId;
-
-    if (network === ChainId.Base) {
-      return [isBoost ? Bundles.BaseIds.MORPHO_BLUE_BOOST : Bundles.BaseIds.MORPHO_BLUE_REPAY, true, triggerData, subData];
-    }
-
-    const bundlesIds = network === ChainId.Arbitrum ? Bundles.ArbitrumIds : Bundles.MainnetIds;
-
-    if (isBoost) strategyOrBundleId = isEOA ? bundlesIds.MORPHO_BLUE_EOA_BOOST : bundlesIds.MORPHO_BLUE_BOOST;
-    else strategyOrBundleId = isEOA ? bundlesIds.MORPHO_BLUE_EOA_REPAY : bundlesIds.MORPHO_BLUE_REPAY;
+    const bundleId = getMorphoBlueBundleId(network, isBoost ? 'boost' : 'repay', isEOA);
     const isBundle = true;
 
-    return [strategyOrBundleId, isBundle, triggerData, subData];
+    return [bundleId, isBundle, triggerData, subData];
   },
 
   liquidationProtection(
@@ -799,6 +828,28 @@ export const morphoBlueEncode = {
     const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+  leverageManagementOnPriceGeneric(
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    user: EthereumAddress,
+    targetRatio: number,
+    price: number,
+    priceState: RatioState,
+    isBoost: boolean,
+    isEOA: boolean,
+    network: ChainId,
+  ) {
+    const subData = subDataService.morphoBlueLeverageManagementOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, targetRatio, user);
+    const triggerData = triggerService.morphoBluePriceTrigger.encode(oracle, collToken, loanToken, price, priceState);
+
+    const bundleId = getMorphoBlueBundleId(network, isBoost ? 'boostOnPrice' : 'repayOnPrice', isEOA);
+    const isBundle = true;
+
+    return [bundleId, isBundle, triggerData, subData];
+  },
   closeOnPrice(
     strategyOrBundleId: number,
     loanToken: EthereumAddress,
@@ -819,6 +870,30 @@ export const morphoBlueEncode = {
     const triggerDataEncoded = triggerService.morphoBluePriceRangeTrigger.encode(oracle, collToken, loanToken, stopLossPrice, takeProfitPrice);
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+  closeOnPriceGeneric(
+    loanToken: EthereumAddress,
+    collToken: EthereumAddress,
+    oracle: EthereumAddress,
+    irm: EthereumAddress,
+    lltv: string,
+    user: EthereumAddress,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+    isEOA: boolean,
+    network: ChainId,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.morphoBlueCloseOnPriceSubData.encode(loanToken, collToken, oracle, irm, lltv, user, closeType);
+    const triggerDataEncoded = triggerService.morphoBluePriceRangeTrigger.encode(oracle, collToken, loanToken, stopLossPrice, takeProfitPrice);
+
+    const bundleId = getMorphoBlueBundleId(network, 'close', isEOA);
+
+    return [bundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 };
 
