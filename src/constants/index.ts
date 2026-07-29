@@ -880,6 +880,11 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.LiquidationProtection,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.EoaLiquidationProtection,
+    protocol: PROTOCOLS.MorphoBlue,
+  },
   [Bundles.BaseIds.FLUID_T1_SW_LIQUIDATION_PROTECTION]: {
     strategyOrBundleId: Bundles.BaseIds.FLUID_T1_SW_LIQUIDATION_PROTECTION,
     strategyId: Strategies.Identifiers.LiquidationProtection,
