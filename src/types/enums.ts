@@ -153,6 +153,8 @@ export namespace Strategies {
     EoaRepayOnPrice = 'eoa-repay-on-price',
     CollateralSwitch = 'collateral-switch',
     EoaCollateralSwitch = 'eoa-collateral-switch',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -164,6 +166,8 @@ export namespace Strategies {
     EoaLeverageManagement = 'leverage-management-eoa',
     LeverageManagementOnPrice = 'leverage-management-on-price',
     EoaLeverageManagementOnPrice = 'leverage-management-on-price-eoa',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
 }
 
@@ -240,6 +244,17 @@ export namespace Bundles {
     AAVE_V4_EOA_REPAY_ON_PRICE = 68,
     AAVE_V4_EOA_BOOST_ON_PRICE = 69,
     AAVE_V4_EOA_CLOSE = 70,
+    AAVE_V3_SW_LIQUIDATION_PROTECTION = 71,
+    SPARK_SW_LIQUIDATION_PROTECTION = 72,
+    MAKER_SW_LIQUIDATION_PROTECTION = 75,
+    FLUID_T1_SW_LIQUIDATION_PROTECTION = 76,
+    AAVE_V4_SW_LIQUIDATION_PROTECTION = 77,
+    MORPHO_BLUE_SW_LIQUIDATION_PROTECTION = 78,
+    AAVE_V3_EOA_LIQUIDATION_PROTECTION = 79,
+    AAVE_V4_EOA_LIQUIDATION_PROTECTION = 80,
+    MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 81,
+    COMP_V3_SW_LIQUIDATION_PROTECTION = 82,
+    COMP_V3_EOA_LIQUIDATION_PROTECTION = 83,
     MORPHO_BLUE_REPAY_ON_PRICE = 84,
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 85,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 86,
@@ -258,6 +273,8 @@ export namespace Bundles {
     AAVE_V3_EOA_REPAY_ON_PRICE = 8,
     AAVE_V3_EOA_BOOST_ON_PRICE = 9,
     AAVE_V3_EOA_CLOSE = 10,
+    AAVE_V3_SW_LIQUIDATION_PROTECTION = 11,
+    AAVE_V3_EOA_LIQUIDATION_PROTECTION = 12,
   }
 
   export enum BaseIds {
@@ -288,12 +305,19 @@ export namespace Bundles {
     AAVE_V3_EOA_BOOST_ON_PRICE = 26,
     AAVE_V3_EOA_CLOSE = 27,
     MORPHO_BLUE_CLOSE = 28,
+    AAVE_V3_SW_LIQUIDATION_PROTECTION = 29,
+    FLUID_T1_SW_LIQUIDATION_PROTECTION = 30,
+    COMP_V3_SW_LIQUIDATION_PROTECTION = 32,
+    COMP_V3_EOA_LIQUIDATION_PROTECTION = 33,
+    AAVE_V3_EOA_LIQUIDATION_PROTECTION = 34,
+    MORPHO_BLUE_SW_LIQUIDATION_PROTECTION = 35,
     MORPHO_BLUE_REPAY_ON_PRICE = 36,
     MORPHO_BLUE_EOA_REPAY = 37,
     MORPHO_BLUE_EOA_BOOST = 38,
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 39,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 40,
     MORPHO_BLUE_EOA_CLOSE = 41,
+    MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 42,
   }
 
   export enum ArbitrumIds {
@@ -326,11 +350,16 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_REPAY = 26,
     MORPHO_BLUE_EOA_BOOST = 27,
     MORPHO_BLUE_CLOSE = 28,
+    AAVE_V3_SW_LIQUIDATION_PROTECTION = 29,
+    FLUID_T1_SW_LIQUIDATION_PROTECTION = 30,
+    MORPHO_BLUE_SW_LIQUIDATION_PROTECTION = 31,
+    COMP_V3_SW_LIQUIDATION_PROTECTION = 32,
+    COMP_V3_EOA_LIQUIDATION_PROTECTION = 33,
+    AAVE_V3_EOA_LIQUIDATION_PROTECTION = 34,
+    MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 35,
     MORPHO_BLUE_REPAY_ON_PRICE = 36,
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 37,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 38,
     MORPHO_BLUE_EOA_CLOSE = 39,
   }
 }
-
-

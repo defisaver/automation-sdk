@@ -24,18 +24,34 @@ import * as enums from './types/enums';
 import type * as types from './types';
 
 import {
-  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId, getCloseStrategyType,
+  getRatioStateInfoForAaveCloseStrategy,
+  compareSubHashes,
+  encodeSubId,
+  getCloseStrategyType,
 } from './services/utils';
 
 const utils = {
-  getRatioStateInfoForAaveCloseStrategy, compareSubHashes, encodeSubId, getCloseStrategyType,
+  compareSubHashes,
+  encodeSubId,
+  getCloseStrategyType,
+  getRatioStateInfoForAaveCloseStrategy,
 };
 
 export {
-  LegacyMakerAutomation, LegacyAaveAutomation, LegacyCompoundAutomation,
-  EthereumStrategies, OptimismStrategies, ArbitrumStrategies, BaseStrategies,
-  triggerService, subDataService, strategySubService, utils,
-  enums, constants, strategiesService,
+  ArbitrumStrategies,
+  BaseStrategies,
+  EthereumStrategies,
+  LegacyAaveAutomation,
+  LegacyCompoundAutomation,
+  LegacyMakerAutomation,
+  OptimismStrategies,
+  constants,
+  enums,
+  strategiesService,
+  strategySubService,
+  subDataService,
+  triggerService,
+  utils,
 };
 
 export type { types };
