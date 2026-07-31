@@ -623,6 +623,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.LiquidationProtection,
+    protocol: PROTOCOLS.Spark,
+  },
+  [Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION]: {
+    strategyOrBundleId: Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION,
+    strategyId: Strategies.Identifiers.EoaLiquidationProtection,
+    protocol: PROTOCOLS.Spark,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {

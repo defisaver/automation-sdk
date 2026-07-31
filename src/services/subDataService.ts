@@ -1293,7 +1293,7 @@ export const exchangeLimitOrderSubDataWithoutSubProxy = {
 .----)   |   |  |     /  _____  \  |  |\  \----.|  .  \
 |_______/    | _|    /__/     \__\ | _| `._____||__|\__\
  */
-export const sparkLeverageManagementSubData = {
+export const legacySparkLeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -1301,7 +1301,8 @@ export const sparkLeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const sparkLeverageManagementSubDataWithoutSubProxy = {
+
+export const sparkLeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -1320,6 +1321,9 @@ export const sparkLeverageManagementSubDataWithoutSubProxy = {
     return { targetRatio, ratioState };
   },
 };
+
+export const sparkLiquidationProtectionSubData = sparkLeverageManagementSubData;
+
 export const sparkGenericLeverageManagementSubData = {
   encode(
     targetRatio: number,
@@ -1339,6 +1343,8 @@ export const sparkGenericLeverageManagementSubData = {
     return { targetRatio, ratioState };
   },
 };
+
+export const sparkGenericLiquidationProtectionSubData = sparkGenericLeverageManagementSubData;
 
 export const sparkCloseGenericSubData = {
   encode(

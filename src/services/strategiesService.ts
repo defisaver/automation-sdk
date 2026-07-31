@@ -884,7 +884,7 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
   const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
   const subData = isEOA
     ? subDataService.sparkGenericLeverageManagementSubData.decode(subStruct.subData)
-    : subDataService.sparkLeverageManagementSubData.decode(subStruct.subData);
+    : subDataService.legacySparkLeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -919,6 +919,39 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
 
   return _position;
 }
+
+function parseSparkLiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
+  const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
+  const subData = isEOA
+    ? subDataService.sparkGenericLiquidationProtectionSubData.decode(subStruct.subData)
+    : subDataService.sparkLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEOA ? isEnabled : true,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  _position.strategy.strategyId = isEOA
+    ? Strategies.IdOverrides.EoaLiquidationProtection
+    : Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
 
 function parseSparkLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
@@ -1442,6 +1475,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaCloseOnPrice]: parseSparkCloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseSparkCollateralSwitch,
     [Strategies.Identifiers.EoaCollateralSwitch]: parseSparkCollateralSwitch,
+    [Strategies.Identifiers.LiquidationProtection]: parseSparkLiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseSparkLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,

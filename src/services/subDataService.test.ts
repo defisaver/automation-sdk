@@ -1191,21 +1191,126 @@ describe('Feature: subDataService.ts', () => {
   });
 
   describe('When testing subDataService.sparkLeverageManagementSubData', () => {
-    describe('decode()', () => {
-      const examples: Array<[{ targetRatio: number }, SubData]> = [
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [targetRatio: number, ratioState: RatioState]
+      ]> = [
         [
-          { targetRatio: 200 },
-          ['0x0000000000000000000000000000000000000000000000001bc16d674ec80000'],
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [180, RatioState.UNDER],
         ],
         [
-          { targetRatio: 123 },
-          ['0x0000000000000000000000000000000000000000000000001111d67bb1bb0000'],
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [160, RatioState.OVER],
         ],
       ];
 
       examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLeverageManagementSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ targetRatio: number, ratioState: string }, SubData]> = [
+        [
+          { targetRatio: 180, ratioState: '1' },
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        [
+          { targetRatio: 160, ratioState: '0' },
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(subDataService.sparkLeverageManagementSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
+  describe('When testing subDataService.sparkLiquidationProtectionSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [targetRatio: number, ratioState: RatioState]
+      ]> = [
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [180, RatioState.UNDER],
+        ],
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [160, RatioState.OVER],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLiquidationProtectionSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[{ targetRatio: number, ratioState: string }, SubData]> = [
+        [
+          { targetRatio: 180, ratioState: '1' },
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+        [
+          { targetRatio: 160, ratioState: '0' },
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkLiquidationProtectionSubData.decode(actual)).to.eql(expected);
         });
       });
     });
@@ -2764,6 +2869,83 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+
+  describe('When testing subDataService.sparkGenericLiquidationProtectionSubData', () => {
+    describe('encode()', () => {
+      const examples: Array<[
+        SubData,
+        [targetRatio: number, ratioState: RatioState, market: EthereumAddress, user: EthereumAddress]
+      ]> = [
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            180,
+            RatioState.UNDER,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+        [
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+          [
+            160,
+            RatioState.OVER,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkGenericLiquidationProtectionSubData.encode(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('decode()', () => {
+      const examples: Array<[
+        { targetRatio: number, ratioState: RatioState },
+        SubData,
+      ]> = [
+        [
+          { targetRatio: 180, ratioState: RatioState.UNDER },
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+        ],
+        [
+          { targetRatio: 160, ratioState: RatioState.OVER },
+          [
+            '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+            '0x0000000000000000000000001234567890123456789012345678901234567890',
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(subDataService.sparkGenericLiquidationProtectionSubData.decode(actual)).to.eql(expected);
+        });
+      });
+    });
+  });
+
   describe('When testing subDataService.sparkLeverageManagementOnPriceGenericSubData', () => {
     describe('encode()', () => {
       const examples: Array<[

@@ -1849,6 +1849,132 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
+    describe('liquidationProtection()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          market: EthereumAddress,
+          user: EthereumAddress,
+          ratioState: RatioState,
+          targetRatio: number,
+          triggerRatio: number,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION,
+            true,
+            ['0x000000000000000000000000123456789012345678901234567890123456789000000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee000000000000000000000000000000000000000000000000136dcc951d8c00000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            RatioState.UNDER,
+            180,
+            140,
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION,
+            true,
+            ['0x000000000000000000000000123456789012345678901234567890123456789000000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee0000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_SW_LIQUIDATION_PROTECTION,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            RatioState.OVER,
+            160,
+            200,
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkEncode.liquidationProtection(...actual)).to.eql(expected);
+        });
+      });
+    });
+
+    describe('liquidationProtectionGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          market: EthereumAddress,
+          user: EthereumAddress,
+          ratioState: RatioState,
+          targetRatio: number,
+          triggerRatio: number,
+        ]
+      ]> = [
+        [
+          [
+            Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION,
+            true,
+            ['0x000000000000000000000000123456789012345678901234567890123456789000000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee000000000000000000000000000000000000000000000000136dcc951d8c00000000000000000000000000000000000000000000000000000000000000000001'],
+            [
+              '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            RatioState.UNDER,
+            180,
+            140,
+          ],
+        ],
+        [
+          [
+            Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION,
+            true,
+            ['0x000000000000000000000000123456789012345678901234567890123456789000000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee0000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x00000000000000000000000000000000000000000000000016345785d8a00000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x00000000000000000000000002c3ea4e34c0cbd694d2adfa2c690eecbc1793ee',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.SPARK_EOA_LIQUIDATION_PROTECTION,
+            web3Utils.toChecksumAddress('0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            RatioState.OVER,
+            160,
+            200,
+          ],
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(sparkEncode.liquidationProtectionGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
     describe('leverageManagementOnPriceGeneric()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
