@@ -101,6 +101,7 @@ export namespace Strategies {
     AAVE_V4_COLLATERAL_SWITCH = 154,
     AAVE_V4_COLLATERAL_SWITCH_EOA = 155,
     SPARK_COLLATERAL_SWITCH = 156,
+    SPARK_GENERIC_FL_COLLATERAL_SWITCH = 167,
   }
 
   export enum OptimismIds {
@@ -153,6 +154,8 @@ export namespace Strategies {
     EoaRepayOnPrice = 'eoa-repay-on-price',
     CollateralSwitch = 'collateral-switch',
     EoaCollateralSwitch = 'eoa-collateral-switch',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
   export enum IdOverrides {
     TakeProfit = 'take-profit',
@@ -164,6 +167,8 @@ export namespace Strategies {
     EoaLeverageManagement = 'leverage-management-eoa',
     LeverageManagementOnPrice = 'leverage-management-on-price',
     EoaLeverageManagementOnPrice = 'leverage-management-on-price-eoa',
+    LiquidationProtection = 'liquidation-protection',
+    EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
 }
 
@@ -240,10 +245,17 @@ export namespace Bundles {
     AAVE_V4_EOA_REPAY_ON_PRICE = 68,
     AAVE_V4_EOA_BOOST_ON_PRICE = 69,
     AAVE_V4_EOA_CLOSE = 70,
+    SPARK_SW_LIQUIDATION_PROTECTION = 72,
     MORPHO_BLUE_REPAY_ON_PRICE = 84,
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 85,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 86,
     MORPHO_BLUE_EOA_CLOSE = 87,
+    SPARK_EOA_REPAY = 88,
+    SPARK_EOA_BOOST = 89,
+    SPARK_EOA_REPAY_ON_PRICE = 90,
+    SPARK_EOA_BOOST_ON_PRICE = 91,
+    SPARK_EOA_CLOSE = 92,
+    SPARK_EOA_LIQUIDATION_PROTECTION = 93,
   }
 
   export enum OptimismIds {

@@ -552,6 +552,7 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+
   closeOnPriceGeneric(
     strategyOrBundleId: number,
     collAsset: EthereumAddress,
@@ -573,7 +574,8 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
-  leverageManagementWithoutSubProxy(
+
+  leverageManagement(
     strategyOrBundleId: number,
     market: EthereumAddress,
     user: EthereumAddress,
@@ -583,7 +585,7 @@ export const sparkEncode = {
   ) {
     const isBundle = true;
 
-    const subData = subDataService.sparkLeverageManagementSubDataWithoutSubProxy.encode(
+    const subData = subDataService.sparkLeverageManagementSubData.encode(
       targetRatio,
       ratioState,
     );
@@ -591,6 +593,88 @@ export const sparkEncode = {
 
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
+
+  liquidationProtection(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkLiquidationProtectionSubData.encode(
+      targetRatio,
+      ratioState,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
+  leverageManagementGeneric(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkGenericLeverageManagementSubData.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
+  liquidationProtectionGeneric(
+    strategyOrBundleId: number,
+    market: EthereumAddress,
+    user: EthereumAddress,
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+  ) {
+    const isBundle = true;
+
+    const subData = subDataService.sparkGenericLiquidationProtectionSubData.encode(
+      targetRatio,
+      ratioState,
+      market,
+      user,
+    );
+    const triggerData = triggerService.sparkRatioTrigger.encode(user, market, triggerRatio, ratioState);
+
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
+  leverageManagementOnPriceGeneric(
+    strategyOrBundleId: number,
+    price: number,
+    ratioState: RatioState,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ) {
+    const isBundle = true;
+    const subData = subDataService.sparkLeverageManagementOnPriceGenericSubData.encode(
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, user,
+    );
+    const triggerData = triggerService.sparkQuotePriceTrigger.encode(collAsset, debtAsset, price, ratioState);
+    return [strategyOrBundleId, isBundle, triggerData, subData];
+  },
+
   collateralSwitch(
     strategyOrBundleId: number,
     fromAsset: EthereumAddress,
@@ -612,6 +696,29 @@ export const sparkEncode = {
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 
+  collateralSwitchGeneric(
+    strategyOrBundleId: number,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    state: RatioState,
+  ) {
+    const isBundle = false;
+
+    const subDataEncoded = subDataService.sparkGenericFLCollateralSwitchSubData.encode(
+      fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch, user,
+    );
+    const triggerDataEncoded = triggerService.sparkQuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const crvUSDEncode = {

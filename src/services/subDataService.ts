@@ -1293,7 +1293,7 @@ export const exchangeLimitOrderSubDataWithoutSubProxy = {
 .----)   |   |  |     /  _____  \  |  |\  \----.|  .  \
 |_______/    | _|    /__/     \__\ | _| `._____||__|\__\
  */
-export const sparkLeverageManagementSubData = {
+export const legacySparkLeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -1301,7 +1301,8 @@ export const sparkLeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const sparkLeverageManagementSubDataWithoutSubProxy = {
+
+export const sparkLeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -1320,6 +1321,31 @@ export const sparkLeverageManagementSubDataWithoutSubProxy = {
     return { targetRatio, ratioState };
   },
 };
+
+export const sparkLiquidationProtectionSubData = sparkLeverageManagementSubData;
+
+export const sparkGenericLeverageManagementSubData = {
+  encode(
+    targetRatio: number,
+    ratioState: RatioState,
+    market: EthereumAddress,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+    const encodedMarket = AbiCoder.encodeParameter('address', market);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    return [encodedTargetRatio, encodedRatioState, encodedMarket, encodedUser];
+  },
+  decode(subData: SubData): { targetRatio: number, ratioState: RatioState } {
+    const targetRatio = weiToRatioPercentage(String(AbiCoder.decodeParameter('uint256', subData[0])));
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[1])) as RatioState;
+    return { targetRatio, ratioState };
+  },
+};
+
+export const sparkGenericLiquidationProtectionSubData = sparkGenericLeverageManagementSubData;
+
 export const sparkCloseGenericSubData = {
   encode(
     collAsset: EthereumAddress,
@@ -1409,6 +1435,41 @@ export const sparkLeverageManagementOnPriceSubData = {
     };
   },
 };
+export const sparkLeverageManagementOnPriceGenericSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    targetRatio: number,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint16', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint16', debtAssetId);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    return [
+      encodedColl, encodedCollId, encodedDebt, encodedDebtId,
+      encodedMarket, encodedTargetRatio, encodedUser,
+    ];
+  },
+  decode(subData: SubData) {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as any as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint16', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as any as EthereumAddress;
+    const targetRatio = weiToRatioPercentage(String(AbiCoder.decodeParameter('uint256', subData[5])));
+    const user = AbiCoder.decodeParameter('address', subData[6]) as any as EthereumAddress;
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId, marketAddr, targetRatio, user,
+    };
+  },
+};
 export const sparkCollateralSwitchSubData = {
   encode(
     fromAsset: EthereumAddress,
@@ -1454,6 +1515,57 @@ export const sparkCollateralSwitchSubData = {
 
     return {
       fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch,
+    };
+  },
+};
+
+export const sparkGenericFLCollateralSwitchSubData = {
+  encode(
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedFromAsset = AbiCoder.encodeParameter('address', fromAsset);
+    const encodedFromAssetId = AbiCoder.encodeParameter('uint16', fromAssetId);
+    const encodedToAsset = AbiCoder.encodeParameter('address', toAsset);
+    const encodedToAssetId = AbiCoder.encodeParameter('uint16', toAssetId);
+    const encodedMarketAddr = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedAmountToSwitch = AbiCoder.encodeParameter('uint256', amountToSwitch);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+
+    return [
+      encodedFromAsset,
+      encodedFromAssetId,
+      encodedToAsset,
+      encodedToAssetId,
+      encodedMarketAddr,
+      encodedAmountToSwitch,
+      encodedUser,
+    ];
+  },
+  decode(subData: SubData): {
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+  } {
+    const fromAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const fromAssetId = Number(AbiCoder.decodeParameter('uint16', subData[1]));
+    const toAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const toAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const amountToSwitch = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
+    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+
+    return {
+      fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch, user,
     };
   },
 };

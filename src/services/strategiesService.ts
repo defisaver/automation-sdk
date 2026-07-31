@@ -392,11 +392,17 @@ function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: Pa
 function parseSparkCollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
+  const subData = isEOA
+    ? subDataService.sparkGenericFLCollateralSwitchSubData.decode(subStruct.subData)
+    : subDataService.sparkCollateralSwitchSubData.decode(subStruct.subData);
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  _position.strategy.strategyId = isEOA
+    ? Strategies.Identifiers.EoaCollateralSwitch
+    : Strategies.Identifiers.CollateralSwitch;
   return _position;
 }
 
@@ -873,24 +879,27 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
 
   const { subStruct, subId, subHash } = parseData.subscriptionEventData;
   const { isEnabled } = parseData.strategiesSubsData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkLeverageManagementSubData.decode(subStruct.subData);
+  const subData = isEOA
+    ? subDataService.sparkGenericLeverageManagementSubData.decode(subStruct.subData)
+    : subDataService.legacySparkLeverageManagementSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
 
-  const isRepay = _position.strategy.strategyId === Strategies.Identifiers.Repay;
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
 
   if (isRepay) {
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: isEnabled,
+      repayEnabled: isEOA ? isEnabled : true,
       subId1: Number(subId),
-      mergeWithId: Strategies.Identifiers.Boost,
+      mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
       subHashRepay: subHash,
     };
   } else {
@@ -899,22 +908,60 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
       targetBoostRatio: subData.targetRatio,
       boostEnabled: isEnabled,
       subId2: Number(subId),
-      mergeId: Strategies.Identifiers.Boost,
+      mergeId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
       subHashBoost: subHash,
     };
   }
 
-  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+  _position.strategy.strategyId = isEOA
+    ? Strategies.IdOverrides.EoaLeverageManagement
+    : Strategies.IdOverrides.LeverageManagement;
 
   return _position;
 }
 
+function parseSparkLiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
+  const triggerData = triggerService.sparkRatioTrigger.decode(subStruct.triggerData);
+  const subData = isEOA
+    ? subDataService.sparkGenericLiquidationProtectionSubData.decode(subStruct.subData)
+    : subDataService.sparkLiquidationProtectionSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, triggerData.market);
+
+  _position.specific = {
+    triggerRepayRatio: triggerData.ratio,
+    targetRepayRatio: subData.targetRatio,
+    repayEnabled: isEOA ? isEnabled : true,
+    subId1: Number(subId),
+    subHashRepay: subHash,
+  };
+
+  _position.strategy.strategyId = isEOA
+    ? Strategies.IdOverrides.EoaLiquidationProtection
+    : Strategies.IdOverrides.LiquidationProtection;
+
+  return _position;
+}
+
+
 function parseSparkLeverageManagementOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
 
   const triggerData = triggerService.sparkQuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.sparkLeverageManagementOnPriceSubData.decode(subStruct.subData);
+  const subData = isEOA
+    ? subDataService.sparkLeverageManagementOnPriceGenericSubData.decode(subStruct.subData)
+    : subDataService.sparkLeverageManagementOnPriceSubData.decode(subStruct.subData);
 
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
@@ -934,6 +981,10 @@ function parseSparkLeverageManagementOnPrice(position: Position.Automated, parse
     price: triggerData.price,
     ratioState: triggerData.ratioState,
   };
+
+  _position.strategy.strategyId = isEOA
+    ? Strategies.IdOverrides.EoaLeverageManagementOnPrice
+    : Strategies.IdOverrides.LeverageManagementOnPrice;
 
   return _position;
 }
@@ -1417,7 +1468,15 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.RepayOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.BoostOnPrice]: parseSparkLeverageManagementOnPrice,
     [Strategies.Identifiers.CloseOnPrice]: parseSparkCloseOnPrice,
+    [Strategies.Identifiers.EoaRepay]: parseSparkLeverageManagement,
+    [Strategies.Identifiers.EoaBoost]: parseSparkLeverageManagement,
+    [Strategies.Identifiers.EoaRepayOnPrice]: parseSparkLeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaBoostOnPrice]: parseSparkLeverageManagementOnPrice,
+    [Strategies.Identifiers.EoaCloseOnPrice]: parseSparkCloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseSparkCollateralSwitch,
+    [Strategies.Identifiers.EoaCollateralSwitch]: parseSparkCollateralSwitch,
+    [Strategies.Identifiers.LiquidationProtection]: parseSparkLiquidationProtection,
+    [Strategies.Identifiers.EoaLiquidationProtection]: parseSparkLiquidationProtection,
   },
   [ProtocolIdentifiers.StrategiesAutomation.CrvUSD]: {
     [Strategies.Identifiers.Repay]: parseCrvUSDLeverageManagement,
