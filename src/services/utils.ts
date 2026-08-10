@@ -5,6 +5,7 @@ import { getAssetInfo, getAssetInfoByAddress } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
 import {
+  Bundles,
   ChainId, CloseStrategyType, CloseToAssetType, RatioState,
 } from '../types/enums';
 
@@ -172,3 +173,4 @@ export function getStopLossAndTakeProfitTypeByCloseStrategyType(
       throw new Error('CloseStrategyType not supported');
   }
 }
+

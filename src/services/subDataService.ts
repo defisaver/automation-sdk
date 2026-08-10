@@ -6,7 +6,7 @@ import { assetAmountInEth, getAssetInfo, getAssetInfoByAddress } from '@defisave
 import { otherAddresses } from '@defisaver/sdk';
 
 import type { SubData, EthereumAddress } from '../types';
-import type { CloseStrategyType, OrderType } from '../types/enums';
+import type { CloseStrategyType } from '../types/enums';
 import {
   ChainId, CollActionType, DebtActionType, RatioState,
 } from '../types/enums';
@@ -24,22 +24,6 @@ import { compareAddresses, ratioPercentageToWei, weiToRatioPercentage } from './
 |_______/ |_______|| _|      | _| `._____||_______| \______/__/     \__\  |__|     |_______||_______/
  */
 export const morphoAaveV2LeverageManagementSubData = {
-  encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-  ): SubData {
-    return [
-      ratioPercentageToWei(triggerRepayRatio),
-      ratioPercentageToWei(triggerBoostRatio),
-      ratioPercentageToWei(targetBoostRatio),
-      ratioPercentageToWei(targetRepayRatio),
-      // @ts-ignore
-      boostEnabled,
-    ];
-  },
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint128', subData[1]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -48,10 +32,6 @@ export const morphoAaveV2LeverageManagementSubData = {
   },
 };
 export const cBondsRebondSubData = {
-  encode(bondId: number | string): SubData {
-    const bondIdEncoded = AbiCoder.encodeParameter('uint256', bondId);
-    return [bondIdEncoded];
-  },
   decode(subData: SubData): { bondId: string } {
     const bondId = AbiCoder.decodeParameter('uint256', subData[1])!.toString();
     return { bondId };
@@ -156,7 +136,7 @@ export const makerCloseSubData = {
     };
   },
 };
-export const makerLeverageManagementSubData = {
+export const legacyMakerLeverageManagementSubData = {
   decode: (subData:SubData) => {
     const vaultId = +AbiCoder.decodeParameter('uint256', subData[0])!.toString();
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
@@ -164,7 +144,8 @@ export const makerLeverageManagementSubData = {
     return { vaultId, targetRatio };
   },
 };
-export const makerLeverageManagementWithoutSubProxy = {
+
+export const makerLeverageManagementSubData = {
   encode(
     vaultId: number,
     targetRatio: number,
@@ -184,6 +165,9 @@ export const makerLeverageManagementWithoutSubProxy = {
   },
 };
 
+export const makerLiquidationProtectionSubData = makerLeverageManagementSubData;
+
+
 /**
   __       __    ______      __    __   __  .___________.____    ____    ____    ____  __
 |  |     |  |  /  __  \    |  |  |  | |  | |           |\   \  /   /    \   \  /   / /_ |
@@ -200,14 +184,14 @@ export const liquityRepayFromSavingsSubData = {
     return { targetRatio };
   },
 };
-export const liquityLeverageManagementSubData = {
+export const legacyLiquityLeverageManagementSubData = {
   decode: (subData:SubData) => {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
     return { targetRatio };
   },
 };
-export const liquityLeverageManagementSubDataWithoutSubProxy = {
+export const liquityLeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -510,23 +494,7 @@ export const liquityV2PaybackSubData = {
  /  _____  \   /  _____  \  \    /    |  |____       \    /     / /_
 /__/     \__\ /__/     \__\  \__/     |_______|       \__/     |____|
  */
-export const aaveV2LeverageManagementSubData = {
-  encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-  ): SubData {
-    return [
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled,
-    ];
-  },
+export const legacyAaveV2LeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[1]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -534,7 +502,7 @@ export const aaveV2LeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const aaveV2LeverageManagementSubDataWithoutSubProxy = {
+export const aaveV2LeverageManagementSubData = {
   encode(
     market: EthereumAddress,
     targetRatio: number,
@@ -570,7 +538,7 @@ export const aaveV2LeverageManagementSubDataWithoutSubProxy = {
  /  _____  \   /  _____  \  \    /    |  |____       \    /     ___) |
 /__/     \__\ /__/     \__\  \__/     |_______|       \__/     |____/
  */
-export const aaveV3LeverageManagementSubData = {
+export const legacyAaveV3LeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -578,7 +546,8 @@ export const aaveV3LeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
+
+export const aaveV3LeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -605,6 +574,9 @@ export const aaveV3LeverageManagementSubDataWithoutSubProxy = {
     return { targetRatio, ratioState };
   },
 };
+
+export const aaveV3LiquidationProtectionSubData = aaveV3LeverageManagementSubData;
+
 export const aaveV3LeverageManagementOnPriceGeneric = {
   encode(
     collAsset: EthereumAddress,
@@ -851,6 +823,7 @@ export const aaveV3LeverageManagementOnPriceSubData = {
  /  _____  \   /  _____  \  \    /    |  |____       \    /       | |
 /__/     \__\ /__/     \__\  \__/     |_______|       \__/        |_|
  */
+
 export const aaveV4LeverageManagementSubData = {
   encode: (
     spoke: EthereumAddress,
@@ -882,6 +855,9 @@ export const aaveV4LeverageManagementSubData = {
     };
   },
 };
+
+export const aaveV4LiquidationProtectionSubData = aaveV4LeverageManagementSubData;
+
 export const aaveV4LeverageManagementOnPriceSubData = {
   encode: (
     spoke: EthereumAddress,
@@ -1024,23 +1000,7 @@ export const aaveV4CollateralSwitchSubData = {
 |  `----.|  `--'  | |  |  |  | |  |            \    /     / /_
  \______| \______/  |__|  |__| | _|             \__/     |____|
  */
-export const compoundV2LeverageManagementSubData = {
-  encode(
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-  ): SubData {
-    return [
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled,
-    ];
-  },
+export const legacyCompoundV2LeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const weiRatio = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(weiRatio);
@@ -1048,7 +1008,7 @@ export const compoundV2LeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const compoundV2LeverageManagementSubDataWithoutSubProxy = {
+export const compoundV2LeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -1081,36 +1041,8 @@ export const compoundV2LeverageManagementSubDataWithoutSubProxy = {
 |  `----.|  `--'  | |  |  |  | |  |            \    /     ___) |
  \______| \______/  |__|  |__| | _|             \__/     |____/
  */
-export const compoundV3LeverageManagementSubData = {
-  encode(
-    market: EthereumAddress,
-    baseToken: EthereumAddress,
-    triggerRepayRatio: number,
-    triggerBoostRatio: number,
-    targetBoostRatio: number,
-    targetRepayRatio: number,
-    boostEnabled: boolean,
-    isEOA: boolean,
-  ): SubData {
-    return [
-      market,
-      baseToken,
-      new Dec(triggerRepayRatio).mul(1e16).toString(),
-      new Dec(triggerBoostRatio).mul(1e16).toString(),
-      new Dec(targetBoostRatio).mul(1e16).toString(),
-      new Dec(targetRepayRatio).mul(1e16).toString(),
-      // @ts-ignore // TODO
-      boostEnabled, isEOA,
-    ];
-  },
-  decode(subData: SubData): { targetRatio: number } {
-    const weiRatio = AbiCoder.decodeParameter('uint256', subData[3]) as any as string;
-    const targetRatio = weiToRatioPercentage(weiRatio);
 
-    return { targetRatio };
-  },
-};
-export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
+export const compoundV3LeverageManagementSubData = {
   encode(
     market: EthereumAddress,
     baseToken: EthereumAddress,
@@ -1134,6 +1066,9 @@ export const compoundV3LeverageManagementSubDataWithoutSubProxy = {
     };
   },
 };
+
+export const compoundV3LiquidationProtectionSubData = compoundV3LeverageManagementSubData;
+
 export const compoundV3LeverageManagementOnPriceSubData = {
   encode(
     market: EthereumAddress,
@@ -1251,17 +1186,7 @@ export const exchangeDcaSubData = {
     };
   },
 };
-export const exchangeLimitOrderSubData = {
-  encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string, targetPrice: string, goodUntil: string | number, orderType: OrderType) : SubData {
-    return [
-      fromToken,
-      toToken,
-      amount,
-      targetPrice,
-      new Dec(goodUntil).toString(),
-      new Dec(orderType).toString(),
-    ];
-  },
+export const legacyExchangeLimitOrderSubData = {
   decode: (subData: SubData, chainId: ChainId) => {
     const fromToken = AbiCoder.decodeParameter('address', subData[0])!.toString();
     const toToken = AbiCoder.decodeParameter('address', subData[1])!.toString();
@@ -1269,7 +1194,7 @@ export const exchangeLimitOrderSubData = {
     return { fromToken, toToken, amount };
   },
 };
-export const exchangeLimitOrderSubDataWithoutSubProxy = {
+export const exchangeLimitOrderSubData = {
   encode(fromToken: EthereumAddress, toToken: EthereumAddress, amount: string): SubData {
     return [
       AbiCoder.encodeParameter('address', fromToken),
@@ -1293,7 +1218,7 @@ export const exchangeLimitOrderSubDataWithoutSubProxy = {
 .----)   |   |  |     /  _____  \  |  |\  \----.|  .  \
 |_______/    | _|    /__/     \__\ | _| `._____||__|\__\
  */
-export const sparkLeverageManagementSubData = {
+export const legacySparkLeverageManagementSubData = {
   decode(subData: SubData): { targetRatio: number } {
     const ratioWei = AbiCoder.decodeParameter('uint256', subData[0]) as any as string;
     const targetRatio = weiToRatioPercentage(ratioWei);
@@ -1301,7 +1226,8 @@ export const sparkLeverageManagementSubData = {
     return { targetRatio };
   },
 };
-export const sparkLeverageManagementSubDataWithoutSubProxy = {
+
+export const sparkLeverageManagementSubData = {
   encode(
     targetRatio: number,
     ratioState: RatioState,
@@ -1320,6 +1246,10 @@ export const sparkLeverageManagementSubDataWithoutSubProxy = {
     return { targetRatio, ratioState };
   },
 };
+
+export const sparkLiquidationProtectionSubData = sparkLeverageManagementSubData;
+
+
 export const sparkCloseGenericSubData = {
   encode(
     collAsset: EthereumAddress,
@@ -1534,6 +1464,7 @@ export const crvUSDPaybackSubData = {
 |  |  |  | |  `--'  | |  |\  \----.|  |      |  |  |  | |  `--'  |
 |__|  |__|  \______/  | _| `._____|| _|      |__|  |__|  \______/
  */
+
 export const morphoBlueLeverageManagementSubData = {
   encode: (
     loanToken: EthereumAddress,
@@ -1578,6 +1509,9 @@ export const morphoBlueLeverageManagementSubData = {
     };
   },
 };
+
+export const morphoBlueLiquidationProtectionSubData = morphoBlueLeverageManagementSubData;
+
 export const morphoBlueLeverageManagementOnPriceSubData = {
   encode(
     loanToken: EthereumAddress,
@@ -1708,3 +1642,5 @@ export const fluidLeverageManagementSubData = {
     };
   },
 };
+
+export const fluidLiquidationProtectionSubData = fluidLeverageManagementSubData;
