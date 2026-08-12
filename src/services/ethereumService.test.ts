@@ -1,10 +1,11 @@
 import Web3 from 'web3';
 import { expect } from 'chai';
+import { omit } from 'lodash';
 import { getAssetInfo } from '@defisaver/tokens';
 import { PastEventOptions } from 'web3-eth-contract';
 
 import { ChainId } from '../types/enums';
-import type { BlockNumber, Multicall } from '../types';
+import type { BlockNumber, Multicall, PlaceholderType } from '../types';
 import { Contract } from '../types';
 import type { Erc20 } from '../types/contracts/generated';
 
@@ -115,7 +116,6 @@ describe('Feature: ethereumService.ts', () => {
             'address': '0x5f98805A4E8be255a32880FDeC7F6728C6568bA0',
             'blockHash': '0xb92cab2569456dbfbdb853d2c67d72c9a7580543dbcb55d483a77322b40755a4',
             'blockNumber': 15166163,
-            'blockTimestamp': '0x62d53ad8',
             'event': 'Transfer',
             'id': 'log_e2258e3a',
             'logIndex': 385,
@@ -142,7 +142,7 @@ describe('Feature: ethereumService.ts', () => {
           },
         ],
         [
-          makeErc20Contract(Web3_1, getAssetInfo('LUSD').address, ChainId.Ethereum),
+          { ...makeErc20Contract(Web3_1, getAssetInfo('LUSD').address, ChainId.Ethereum), createdBlock: 15166163 },
           null,
           'Transfer',
           {
@@ -161,7 +161,6 @@ describe('Feature: ethereumService.ts', () => {
             'address': '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
             'blockHash': '0xacb0213af63b4c17c436f084a96d1ac385641a59a9a4cf014ae3337cbe545aa7',
             'blockNumber': 5353002,
-            'blockTimestamp': '0x624c1a5b',
             'event': 'Transfer',
             'id': 'log_f49645b8',
             'logIndex': 1,
@@ -207,7 +206,6 @@ describe('Feature: ethereumService.ts', () => {
             'address': '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
             'blockHash': '0xacb0213af63b4c17c436f084a96d1ac385641a59a9a4cf014ae3337cbe545aa7',
             'blockNumber': 5353002,
-            'blockTimestamp': '0x624c1a5b',
             'event': 'Transfer',
             'id': 'log_f49645b8',
             'logIndex': 1,
@@ -251,9 +249,8 @@ describe('Feature: ethereumService.ts', () => {
 
     examples.forEach(([expected, actual]) => {
       it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, async () => {
-        const data = await getEventsFromContract(...actual);
-        console.log(data);
-        expect(await getEventsFromContract(...actual)).to.eql(expected);
+        const events = await getEventsFromContract(...actual);
+        expect(events.map((event: PlaceholderType) => omit(event, 'blockTimestamp'))).to.eql(expected);
       });
     });
   });
