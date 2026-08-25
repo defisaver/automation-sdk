@@ -1111,10 +1111,13 @@ function parseSparkCloseOnPrice(position: Position.Automated, parseData: ParseDa
   const triggerData = triggerService.sparkQuotePriceRangeTrigger.decode(subStruct.triggerData);
   const subData = subDataService.sparkCloseGenericSubData.decode(subStruct.subData);
 
+  const isEOA = _position.strategy.strategyId.includes('eoa');
+
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
 
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  _position.strategy.strategyId = isEOA ? Strategies.Identifiers.EoaCloseOnPrice : Strategies.Identifiers.CloseOnPrice;
 
   const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
 
