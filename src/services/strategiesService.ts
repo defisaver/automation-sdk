@@ -1011,7 +1011,7 @@ function parseSparkLeverageManagement(position: Position.Automated, parseData: P
     _position.specific = {
       triggerRepayRatio: triggerData.ratio,
       targetRepayRatio: subData.targetRatio,
-      repayEnabled: isEOA ? isEnabled : true,
+      repayEnabled: isEnabled,
       subId1: Number(subId),
       mergeWithId: isEOA ? Strategies.Identifiers.EoaBoost : Strategies.Identifiers.Boost,
       subHashRepay: subHash,
@@ -1054,7 +1054,7 @@ function parseSparkLiquidationProtection(position: Position.Automated, parseData
   _position.specific = {
     triggerRepayRatio: triggerData.ratio,
     targetRepayRatio: subData.targetRatio,
-    repayEnabled: isEOA ? isEnabled : true,
+    repayEnabled: isEnabled,
     subId1: Number(subId),
     subHashRepay: subHash,
   };
