@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import Dec from 'decimal.js';
 import { otherAddresses } from '@defisaver/sdk';
 import { getAssetInfo, MAXUINT } from '@defisaver/tokens';
 import * as web3Utils from 'web3-utils';
@@ -9,12 +8,10 @@ import type { EthereumAddress, StrategyOrBundleIds, SubData, TriggerData } from 
 
 import '../configuration';
 import {
-  chickenBondsEncode,
   liquityEncode,
   makerEncode,
   aaveV3Encode,
   compoundV3Encode,
-  morphoAaveV2Encode,
   exchangeEncode,
   crvUSDEncode,
   morphoBlueEncode,
@@ -137,7 +134,7 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('leverageManagementWithoutSubProxy()', () => {
+    describe('leverageManagement()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
         [
@@ -187,7 +184,7 @@ describe('Feature: strategySubService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(makerEncode.leverageManagementWithoutSubProxy(...actual)).to.eql(expected);
+          expect(makerEncode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });
@@ -343,26 +340,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(liquityEncode.debtInFrontRepay(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
-  describe('When testing strategySubService.chickenBondsEncode', () => {
-    describe('rebond()', () => {
-      const examples: Array<[
-        SubData,
-        [bondId: number],
-      ]> = [
-        [
-          ['0x00000000000000000000000000000000000000000000000000000000000005e3'],
-          [1507]
-        ]
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(chickenBondsEncode.rebond(...actual)).to.eql(expected);
         });
       });
     });
@@ -1151,27 +1128,6 @@ describe('Feature: strategySubService.ts', () => {
       examples.forEach(([expected, actual]) => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(compoundV3Encode.closeOnPrice(...actual)).to.eql(expected);
-        });
-      });
-    });
-  });
-
-  describe('When testing strategySubService.morphoAaveV2Encode', () => {
-    describe('leverageManagement()', () => {
-      const examples: Array<[[string, string, string, string, boolean], [triggerRepayRatio: number, triggerBoostRatio: number, targetBoostRatio: number, targetRepayRatio: number, boostEnabled: boolean]]> = [
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(220).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), true],
-          [160, 220, 180, 190, true]
-        ],
-        [
-          [new Dec(160).mul(1e16).toString(), new Dec(200).mul(1e16).toString(), new Dec(180).mul(1e16).toString(), new Dec(190).mul(1e16).toString(), false],
-          [160, 200, 180, 190, false]
-        ],
-      ];
-
-      examples.forEach(([expected, actual]) => {
-        it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(morphoAaveV2Encode.leverageManagement(...actual)).to.eql(expected);
         });
       });
     });

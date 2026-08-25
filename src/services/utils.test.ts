@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { getAssetInfo } from '@defisaver/tokens';
 
 import type { EthereumAddress } from '../types';
-import { ChainId, ProtocolIdentifiers, RatioState } from '../types/enums';
+import { Bundles, ChainId, ProtocolIdentifiers, RatioState } from '../types/enums';
 
 import '../configuration';
 import {
