@@ -1062,7 +1062,6 @@ function parseSparkLiquidationProtection(position: Position.Automated, parseData
   _position.strategy.strategyId = isEOA
     ? Strategies.IdOverrides.EoaLiquidationProtection
     : Strategies.IdOverrides.LiquidationProtection;
-  _position.strategy.strategyId = Strategies.IdOverrides.LiquidationProtection;
 
   return _position;
 }
