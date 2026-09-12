@@ -37,6 +37,7 @@ import {
   aaveV4RatioTrigger,
   aaveV4QuotePriceTrigger,
   aaveV4QuotePriceRangeTrigger,
+  ftDnmmRatioTrigger,
 } from './triggerService';
 
 describe('Feature: triggerService.ts', () => {
@@ -1497,6 +1498,46 @@ describe('Feature: triggerService.ts', () => {
         it(`Given ${actual} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(sparkQuotePriceTrigger.decode(actual)).to.eql(expected);
         });
+      });
+    });
+  });
+});
+
+describe('When testing triggerService.ftDnmmRatioTrigger', () => {
+  describe('encode()', () => {
+    const examples: Array<[[string], [owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState]]> = [
+      [
+        ['0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+        [web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c'), 120, RatioState.UNDER]
+      ],
+      [
+        ['0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c000000000000000000000000000000000000000000000000200ec4c2d72700000000000000000000000000000000000000000000000000000000000000000000'],
+        [web3Utils.toChecksumAddress('0x0231d218133AFaB8F2B819B1066c7E434Ad94E9c'), 231, RatioState.OVER]
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${expected}`, () => {
+        expect(ftDnmmRatioTrigger.encode(...actual)).to.eql(expected);
+      });
+    });
+  });
+
+  describe('decode()', () => {
+    const examples: Array<[{ owner: EthereumAddress, ratio: number, ratioState: RatioState }, TriggerData]> = [
+      [
+        { owner: web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c'), ratio: 120, ratioState: RatioState.UNDER },
+        ['0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001'],
+      ],
+      [
+        { owner: web3Utils.toChecksumAddress('0x0231d218133AFaB8F2B819B1066c7E434Ad94E9c'), ratio: 231, ratioState: RatioState.OVER },
+        ['0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c000000000000000000000000000000000000000000000000200ec4c2d72700000000000000000000000000000000000000000000000000000000000000000000'],
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${expected}`, () => {
+        expect(ftDnmmRatioTrigger.decode(actual)).to.eql(expected);
       });
     });
   });

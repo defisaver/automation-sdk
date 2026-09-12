@@ -403,6 +403,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaBoost,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.MainnetIds.FT_DNMM_REPAY]: {
+    strategyOrBundleId: Bundles.MainnetIds.FT_DNMM_REPAY,
+    strategyId: Strategies.Identifiers.Repay,
+    protocol: PROTOCOLS.FtDnmm,
+  },
+  [Bundles.MainnetIds.FT_DNMM_BOOST]: {
+    strategyOrBundleId: Bundles.MainnetIds.FT_DNMM_BOOST,
+    strategyId: Strategies.Identifiers.Boost,
+    protocol: PROTOCOLS.FtDnmm,
+  },
   [Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL]: {
     strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_OPEN_ORDER_FROM_COLLATERAL,
     strategyId: Strategies.Identifiers.OpenOrderFromCollateral,

@@ -307,6 +307,47 @@ function parseAaveV3LeverageManagement(position: Position.Automated, parseData: 
   return _position;
 }
 
+function parseFtDnmmLeverageManagement(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct, subId, subHash } = parseData.subscriptionEventData;
+  const { isEnabled } = parseData.strategiesSubsData;
+
+  const triggerData = triggerService.ftDnmmRatioTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.ftDnmmLeverageManagementSubData.decode(subStruct.subData);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  // ftDnmm accounts are cross-margin: the position is the account itself
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner);
+
+  const isRepay = [Strategies.Identifiers.Repay, Strategies.Identifiers.EoaRepay].includes(_position.strategy.strategyId as Strategies.Identifiers);
+
+  if (isRepay) {
+    _position.specific = {
+      triggerRepayRatio: triggerData.ratio,
+      targetRepayRatio: subData.targetRatio,
+      repayEnabled: isEnabled,
+      subId1: Number(subId),
+      mergeWithId: Strategies.Identifiers.Boost,
+      subHashRepay: subHash,
+    };
+  } else {
+    _position.specific = {
+      triggerBoostRatio: triggerData.ratio,
+      targetBoostRatio: subData.targetRatio,
+      boostEnabled: isEnabled,
+      subId2: Number(subId),
+      mergeId: Strategies.Identifiers.Boost,
+      subHashBoost: subHash,
+    };
+  }
+  _position.strategy.strategyId = Strategies.IdOverrides.LeverageManagement;
+
+  return _position;
+}
+
 function parseAaveV3LiquidationProtection(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
 
@@ -1684,6 +1725,10 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.Repay]: parseFluidT1LeverageManagement,
     [Strategies.Identifiers.Boost]: parseFluidT1LeverageManagement,
     [Strategies.Identifiers.LiquidationProtection]: parseFluidT1LiquidationProtection,
+  },
+  [ProtocolIdentifiers.StrategiesAutomation.FtDnmm]: {
+    [Strategies.Identifiers.Repay]: parseFtDnmmLeverageManagement,
+    [Strategies.Identifiers.Boost]: parseFtDnmmLeverageManagement,
   },
 };
 

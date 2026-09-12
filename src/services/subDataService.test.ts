@@ -3098,3 +3098,59 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 });
+
+describe('When testing subDataService.ftDnmmLeverageManagementSubData', () => {
+  describe('encode()', () => {
+    const examples: Array<[SubData, [targetRatio: number, ratioState: RatioState, user: EthereumAddress]]> = [
+      [
+        [
+          '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c',
+        ],
+        [140, RatioState.UNDER, web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c')]
+      ],
+      [
+        [
+          '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c',
+        ],
+        [180, RatioState.OVER, web3Utils.toChecksumAddress('0x0231d218133AFaB8F2B819B1066c7E434Ad94E9c')]
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${expected}`, () => {
+        expect(subDataService.ftDnmmLeverageManagementSubData.encode(...actual)).to.eql(expected);
+      });
+    });
+  });
+
+  describe('decode()', () => {
+    const examples: Array<[{ targetRatio: number, ratioState: RatioState, user: EthereumAddress }, SubData]> = [
+      [
+        { targetRatio: 140, ratioState: RatioState.UNDER, user: web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c') },
+        [
+          '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c',
+        ],
+      ],
+      [
+        { targetRatio: 180, ratioState: RatioState.OVER, user: web3Utils.toChecksumAddress('0x0231d218133AFaB8F2B819B1066c7E434Ad94E9c') },
+        [
+          '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c',
+        ],
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${expected}`, () => {
+        expect(subDataService.ftDnmmLeverageManagementSubData.decode(actual)).to.eql(expected);
+      });
+    });
+  });
+});

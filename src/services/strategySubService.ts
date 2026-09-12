@@ -1220,3 +1220,51 @@ export const aaveV4Encode = {
     return [strategyOrBundleId, isBundle, triggerData, subData];
   },
 };
+
+export type FtDnmmBundleStrategy = 'repay' | 'boost';
+
+function getFtDnmmBundlesIds(network: ChainId) {
+  switch (network) {
+    case ChainId.Ethereum:
+      return Bundles.MainnetIds;
+    default:
+      throw new Error(`ftDnmm strategies are not supported on chain ${network}`);
+  }
+}
+
+export function getFtDnmmBundleId(
+  network: ChainId,
+  strategy: FtDnmmBundleStrategy,
+): number {
+  const bundlesIds = getFtDnmmBundlesIds(network);
+
+  switch (strategy) {
+    case 'repay':
+      return bundlesIds.FT_DNMM_REPAY;
+    case 'boost':
+      return bundlesIds.FT_DNMM_BOOST;
+    default:
+      throw new Error(`Unknown ftDnmm strategy: ${strategy}`);
+  }
+}
+
+export const ftDnmmEncode = {
+  leverageManagement(
+    ratioState: RatioState,
+    targetRatio: number,
+    triggerRatio: number,
+    user: EthereumAddress,
+    network: ChainId,
+  ) {
+    const subData = subDataService.ftDnmmLeverageManagementSubData.encode(targetRatio, ratioState, user);
+
+    const triggerData = triggerService.ftDnmmRatioTrigger.encode(user, triggerRatio, ratioState);
+
+    // over is boost, under is repay
+    const isBoost = ratioState === RatioState.OVER;
+    const bundleId = getFtDnmmBundleId(network, isBoost ? 'boost' : 'repay');
+    const isBundle = true;
+
+    return [bundleId, isBundle, triggerData, subData];
+  },
+};

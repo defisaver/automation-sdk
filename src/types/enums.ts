@@ -71,6 +71,7 @@ export namespace ProtocolIdentifiers {
     CrvUSD = 'CurveUSD',
     MorphoBlue = 'MorphoBlue',
     FluidT1 = 'FluidT1',
+    FtDnmm = 'FtDnmm',
   }
 
   export enum LegacyAutomation {
@@ -266,6 +267,8 @@ export namespace Bundles {
     SPARK_EOA_BOOST_ON_PRICE = 91,
     SPARK_EOA_CLOSE = 92,
     SPARK_EOA_LIQUIDATION_PROTECTION = 93,
+    FT_DNMM_REPAY = 94,
+    FT_DNMM_BOOST = 95,
   }
 
   export enum OptimismIds {

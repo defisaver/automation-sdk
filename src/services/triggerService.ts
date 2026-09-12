@@ -328,6 +328,21 @@ export const sparkRatioTrigger = {
   },
 };
 
+export const ftDnmmRatioTrigger = {
+  encode(owner: EthereumAddress, ratioPercentage: number, ratioState: RatioState) {
+    const ratioWei = ratioPercentageToWei(ratioPercentage);
+    return [AbiCoder.encodeParameters(['address', 'uint256', 'uint8'], [owner, ratioWei, ratioState])];
+  },
+  decode(triggerData: TriggerData) {
+    const decodedData = AbiCoder.decodeParameters(['address', 'uint256', 'uint8'], triggerData[0]);
+    return {
+      owner: decodedData[0],
+      ratio: weiToRatioPercentage(decodedData[1] as string),
+      ratioState: Number(decodedData[2]),
+    };
+  },
+};
+
 export const curveUsdBorrowRateTrigger = {
   encode(
     market: EthereumAddress,

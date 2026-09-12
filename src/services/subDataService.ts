@@ -577,6 +577,26 @@ export const aaveV3LeverageManagementSubData = {
 
 export const aaveV3LiquidationProtectionSubData = aaveV3LeverageManagementSubData;
 
+export const ftDnmmLeverageManagementSubData = {
+  encode(
+    targetRatio: number,
+    ratioState: RatioState,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedTargetRatio = AbiCoder.encodeParameter('uint256', ratioPercentageToWei(targetRatio));
+    const encodedRatioState = AbiCoder.encodeParameter('uint8', ratioState);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    return [encodedTargetRatio, encodedRatioState, encodedUser];
+  },
+  decode(subData: SubData): { targetRatio: number, ratioState: RatioState, user: EthereumAddress } {
+    const targetRatio = weiToRatioPercentage(AbiCoder.decodeParameter('uint256', subData[0]) as any as string);
+    const ratioState = Number(AbiCoder.decodeParameter('uint8', subData[1])) as RatioState;
+    const user = AbiCoder.decodeParameter('address', subData[2]) as any as EthereumAddress;
+
+    return { targetRatio, ratioState, user };
+  },
+};
+
 export const aaveV3LeverageManagementOnPriceGeneric = {
   encode(
     collAsset: EthereumAddress,

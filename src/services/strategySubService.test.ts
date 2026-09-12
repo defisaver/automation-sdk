@@ -17,6 +17,7 @@ import {
   morphoBlueEncode,
   sparkEncode,
   aaveV4Encode,
+  ftDnmmEncode,
 } from './strategySubService';
 
 describe('Feature: strategySubService.ts', () => {
@@ -2418,6 +2419,76 @@ describe('Feature: strategySubService.ts', () => {
           expect(aaveV4Encode.collateralSwitch(...actual)).to.eql(expected);
         });
       });
+    });
+  });
+});
+
+describe('When testing strategySubService.ftDnmmEncode', () => {
+  describe('leverageManagement()', () => {
+    const examples: Array<[
+      [StrategyOrBundleIds, boolean, TriggerData, SubData],
+      [
+        ratioState: RatioState,
+        targetRatio: number,
+        triggerRatio: number,
+        user: EthereumAddress,
+        network: ChainId
+      ],
+    ]> = [
+      [
+        [
+          Bundles.MainnetIds.FT_DNMM_REPAY,
+          true,
+          [
+            '0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c00000000000000000000000000000000000000000000000010a741a4627800000000000000000000000000000000000000000000000000000000000000000001',
+          ],
+          [
+            '0x000000000000000000000000000000000000000000000000136dcc951d8c0000',
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+            '0x0000000000000000000000000031d218133afab8f2b819b1066c7e434ad94e9c',
+          ],
+        ],
+        [
+          RatioState.UNDER,
+          140,
+          120,
+          web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c'),
+          ChainId.Ethereum,
+        ]
+      ],
+      [
+        [
+          Bundles.MainnetIds.FT_DNMM_BOOST,
+          true,
+          [
+            '0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c000000000000000000000000000000000000000000000000200ec4c2d72700000000000000000000000000000000000000000000000000000000000000000000',
+          ],
+          [
+            '0x00000000000000000000000000000000000000000000000018fae27693b40000',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x0000000000000000000000000231d218133afab8f2b819b1066c7e434ad94e9c',
+          ],
+        ],
+        [
+          RatioState.OVER,
+          180,
+          231,
+          web3Utils.toChecksumAddress('0x0231d218133AFaB8F2B819B1066c7E434Ad94E9c'),
+          ChainId.Ethereum,
+        ]
+      ],
+    ];
+
+    examples.forEach(([expected, actual]) => {
+      it(`Given ${actual} should return expected value: ${expected}`, () => {
+        expect(ftDnmmEncode.leverageManagement(...actual)).to.eql(expected);
+      });
+    });
+  });
+
+  describe('unsupported chain', () => {
+    it('throws for chains without ftDnmm bundles', () => {
+      expect(() => ftDnmmEncode.leverageManagement(RatioState.UNDER, 140, 120, web3Utils.toChecksumAddress('0x0031d218133AFaB8F2B819B1066c7E434Ad94E9c'), ChainId.Base)).to.throw();
     });
   });
 });
