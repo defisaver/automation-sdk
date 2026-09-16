@@ -1,11 +1,12 @@
 import type Web3 from 'web3';
 import type { AbiItem } from 'web3-utils';
 import type { BaseContract, BlockType } from './contracts/generated/types';
-import type { Subscribe, StrategyModel } from './contracts/generated/SubStorage';
+import type { StrategyModel } from './contracts/generated/SubStorage';
 import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
   RatioState,
   CloseToAssetType,
+  SubscriptionStatus,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -71,6 +72,24 @@ interface _SubscriptionOptions {
 }
 
 export type SubscriptionOptions = Partial<_SubscriptionOptions>;
+
+/** Subscription record as returned by the automation API (GET /v1/subscriptions) */
+export interface ApiSubscriptionRecord {
+  id: number,
+  wallet: EthereumAddress,
+  wallet_type: string,
+  is_enabled: boolean,
+  invalid: boolean,
+  status: SubscriptionStatus,
+  is_bundle: boolean,
+  strategy_or_bundle_id: number,
+  strategy_ids: number[],
+  sub_data_hash: string,
+  trigger_data: string[],
+  sub_data: string[],
+  block_number: number,
+  additional_triggers: string[] | null,
+}
 
 export declare namespace Interfaces {
   interface ProtocolBase {
@@ -301,6 +320,8 @@ export declare namespace Position {
     subId: number,
     subIds?: number[],
     isEnabled?: boolean,
+    /** Set only for subscriptions parsed from the automation API */
+    status?: SubscriptionStatus,
     subHash: string,
     blockNumber: BlockNumber,
     protocol: Interfaces.Protocol,
@@ -369,10 +390,18 @@ export type StrategyOrBundleIds =
   | typeof Bundles.ArbitrumIds[keyof typeof Bundles.ArbitrumIds]
   | typeof Bundles.BaseIds[keyof typeof Bundles.BaseIds];
 
+/** Fields of the Subscribe event that parsing relies on */
+export interface SubscriptionEventData {
+  subId: string,
+  proxy: EthereumAddress,
+  subHash: string,
+  subStruct: StrategyModel.StrategySubStructOutputStruct,
+}
+
 export interface ParseData {
   chainId: ChainId,
   blockNumber: BlockNumber,
-  subscriptionEventData: Subscribe['returnValues']
+  subscriptionEventData: SubscriptionEventData,
   strategiesSubsData: StrategyModel.StoredSubDataStructOutputStruct,
 }
 

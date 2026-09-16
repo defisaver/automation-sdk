@@ -76,7 +76,6 @@ describe('Feature: strategiesService.ts', () => {
             subId: '379',
             proxy: '0x9cb7e19861665366011899d74e75d4f2a419aeed',
             subHash: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
-            // @ts-ignore
             subStruct:
               {
                 strategyOrBundleId: '8',

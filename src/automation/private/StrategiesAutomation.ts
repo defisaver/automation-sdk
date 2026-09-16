@@ -4,17 +4,19 @@ import type { PastEventOptions } from 'web3-eth-contract';
 import PromisePool from 'es6-promise-pool';
 import type {
   Position, Interfaces, EthereumAddress, SubscriptionOptions, Contract, ParseData, PlaceholderType, BlockNumber,
+  ApiSubscriptionRecord,
 } from '../../types';
 import type {
   StrategyModel, Subscribe, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
-import { Strategies, ProtocolIdentifiers } from '../../types/enums';
+import { Strategies, ProtocolIdentifiers, SubscriptionStatus } from '../../types/enums';
 
 import { addToObjectIf, isDefined, isUndefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
 import { getEventsFromContract, multicall } from '../../services/ethereumService';
 import { parseStrategiesAutomatedPosition } from '../../services/strategiesService';
+import { parseDataFromApiSubscription } from '../../services/apiSubscriptionsService';
 
 import Automation from './Automation';
 
@@ -167,6 +169,10 @@ export default class StrategiesAutomation extends Automation {
           blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
           subIds: [current.subId, mergePair.subId],
           isEnabled: mergePair.isEnabled || current.isEnabled,
+          // status is set only for subscriptions parsed from the automation API
+          ...addToObjectIf(isDefined(current.status), {
+            status: mergePair.status === SubscriptionStatus.Active ? SubscriptionStatus.Active : current.status,
+          }),
           specific: {
             ...mergePair.specific,
             ...current.specific,
@@ -257,6 +263,24 @@ export default class StrategiesAutomation extends Automation {
 
   public async getSubscriptions(options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
     return this._getSubscriptions(undefined, options);
+  }
+
+  /**
+   * @description Parses subscriptions returned by the automation API (GET /v1/subscriptions)
+   */
+  public parseSubscriptionsFromApi(records: ApiSubscriptionRecord[], options?: SubscriptionOptions): (Position.Automated | null)[] {
+    const filtered = options?.enabledOnly ? records.filter((record) => record.is_enabled) : records;
+
+    let subscriptions: (Position.Automated | null)[] = filtered.map((record) => {
+      const position = this.getParsedSubscriptions(parseDataFromApiSubscription(record, this.chainId));
+      return position && { ...position, status: record.status };
+    });
+
+    if (options?.mergeSubs) {
+      subscriptions = this.mergeSubs(subscriptions);
+    }
+
+    return options?.unexpiredOnly ? this.removeExpiredSubscriptions(subscriptions) : subscriptions;
   }
 
   public async getSubscriptionsFor(addresses: EthereumAddress[], options?: SubscriptionOptions): Promise<(Position.Automated | null)[]> {
