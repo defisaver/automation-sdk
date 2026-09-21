@@ -150,6 +150,9 @@ export declare namespace Position {
       triggerBoostRatio?: number,
       targetBoostRatio?: number,
       boostEnabled?: boolean,
+      /** Set only for subscriptions parsed from the automation API: the backend marked that half invalid */
+      repayInvalid?: boolean,
+      boostInvalid?: boolean,
     }
     interface CloseOnPrice extends Base {
       price: string,
@@ -320,8 +323,8 @@ export declare namespace Position {
     subId: number,
     subIds?: number[],
     isEnabled?: boolean,
-    /** Set only for subscriptions parsed from the automation API */
-    status?: SubscriptionStatus,
+    /** Set only for subscriptions parsed from the automation API: the backend will not execute this subscription */
+    invalid?: boolean,
     subHash: string,
     blockNumber: BlockNumber,
     protocol: Interfaces.Protocol,

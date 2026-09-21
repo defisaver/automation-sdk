@@ -743,20 +743,34 @@ describe('Feature: StrategiesAutomation.ts', () => {
       trigger_data: ['0000000000000000000000009cb7e19861665366011899d74e75d4f2a419aeed0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e0000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000000000000'],
     };
 
-    it('Given API records should return parsed positions carrying the API status', () => {
-      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost]);
+    it('Given API records should return parsed positions carrying the invalid flags', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, { ...boost, invalid: true }]);
       expect(positions).to.have.length(2);
       expect(positions.map((p) => p?.subId)).to.eql([379, 380]);
-      expect(positions.map((p) => p?.status)).to.eql([SubscriptionStatus.Active, SubscriptionStatus.Disabled]);
       expect(positions.map((p) => p?.isEnabled)).to.eql([true, false]);
+      expect(positions.map((p) => p?.invalid)).to.eql([false, true]);
+      expect((positions[0]?.specific as { repayInvalid?: boolean }).repayInvalid).to.equal(false);
+      expect((positions[1]?.specific as { boostInvalid?: boolean }).boostInvalid).to.equal(true);
     });
 
-    it('Given mergeSubs option should merge the repay and boost pair and keep the active status', () => {
+    it('Given a merged pair should keep each half\'s invalid flag and mark the pair invalid only when both are', () => {
+      const oneInvalid = strategiesAutomation.parseSubscriptionsFromApi([repay, { ...boost, invalid: true }], { mergeSubs: true });
+      expect(oneInvalid).to.have.length(1);
+      expect(oneInvalid[0]?.invalid).to.equal(false);
+      expect(oneInvalid[0]?.specific).to.include({ repayInvalid: false, boostInvalid: true });
+
+      const bothInvalid = strategiesAutomation.parseSubscriptionsFromApi(
+        [{ ...repay, invalid: true }, { ...boost, invalid: true }],
+        { mergeSubs: true },
+      );
+      expect(bothInvalid[0]?.invalid).to.equal(true);
+    });
+
+    it('Given mergeSubs option should merge the repay and boost pair', () => {
       const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost], { mergeSubs: true });
       expect(positions).to.have.length(1);
       expect(positions[0]?.subIds).to.eql([379, 380]);
       expect(positions[0]?.isEnabled).to.equal(true);
-      expect(positions[0]?.status).to.equal(SubscriptionStatus.Active);
     });
 
     it('Given enabledOnly option should drop disabled records before parsing', () => {

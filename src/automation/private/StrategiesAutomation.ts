@@ -10,7 +10,7 @@ import type {
   StrategyModel, Subscribe, SubStorage, UpdateData,
 } from '../../types/contracts/generated/SubStorage';
 import type { ChainId } from '../../types/enums';
-import { Strategies, ProtocolIdentifiers, SubscriptionStatus } from '../../types/enums';
+import { Strategies, ProtocolIdentifiers } from '../../types/enums';
 
 import { addToObjectIf, isDefined, isUndefined } from '../../services/utils';
 import { getAbiItem, makeSubStorageContract } from '../../services/contractService';
@@ -24,6 +24,17 @@ interface IStrategiesAutomation extends Interfaces.Automation {
   chainId: ChainId,
   providerFork?: Web3,
 }
+
+/**
+ * Adds the backend flags to a parsed position. A repay or boost half of a leverage management pair also gets its
+ * own invalid flag in specific, next to repayEnabled and boostEnabled, so it survives merging.
+ */
+const withApiFlags = (position: Position.Automated, record: ApiSubscriptionRecord): Position.Automated => {
+  const specific = { ...position.specific } as Position.Specific.RatioProtection;
+  if (isDefined(specific.mergeWithId)) specific.repayInvalid = record.invalid;
+  if (isDefined(specific.mergeId)) specific.boostInvalid = record.invalid;
+  return { ...position, invalid: record.invalid, specific: specific as Position.SpecificAny };
+};
 
 export default class StrategiesAutomation extends Automation {
   protected chainId: ChainId;
@@ -169,10 +180,8 @@ export default class StrategiesAutomation extends Automation {
           blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
           subIds: [current.subId, mergePair.subId],
           isEnabled: mergePair.isEnabled || current.isEnabled,
-          // status is set only for subscriptions parsed from the automation API
-          ...addToObjectIf(isDefined(current.status), {
-            status: mergePair.status === SubscriptionStatus.Active ? SubscriptionStatus.Active : current.status,
-          }),
+          // set only for subscriptions parsed from the automation API, per half flags live in specific
+          ...addToObjectIf(isDefined(current.invalid), { invalid: !!mergePair.invalid && !!current.invalid }),
           specific: {
             ...mergePair.specific,
             ...current.specific,
@@ -273,7 +282,7 @@ export default class StrategiesAutomation extends Automation {
 
     let subscriptions: (Position.Automated | null)[] = filtered.map((record) => {
       const position = this.getParsedSubscriptions(parseDataFromApiSubscription(record, this.chainId));
-      return position && { ...position, status: record.status };
+      return position && withApiFlags(position, record);
     });
 
     if (options?.mergeSubs) {
