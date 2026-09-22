@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import type { ApiSubscriptionRecord, ParseData } from '../types';
-import { ChainId, SubscriptionStatus } from '../types/enums';
+import { ChainId } from '../types/enums';
 
 import '../configuration';
 import { parseDataFromApiSubscription } from './apiSubscriptionsService';
@@ -15,8 +15,6 @@ describe('Feature: apiSubscriptionsService.ts', () => {
       wallet: '0x9cB7E19861665366011899d74E75d4F2A419aEeD',
       wallet_type: 'safe',
       is_enabled: true,
-      invalid: false,
-      status: SubscriptionStatus.Active,
       is_bundle: true,
       strategy_or_bundle_id: 8,
       strategy_ids: [34, 35],

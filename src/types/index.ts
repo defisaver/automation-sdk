@@ -6,7 +6,6 @@ import type {
   ChainId, Strategies, Bundles, ProtocolIdentifiers,
   RatioState,
   CloseToAssetType,
-  SubscriptionStatus,
 } from './enums';
 
 export type PlaceholderType = any; // TODO - fix any types
@@ -79,8 +78,6 @@ export interface ApiSubscriptionRecord {
   wallet: EthereumAddress,
   wallet_type: string,
   is_enabled: boolean,
-  invalid: boolean,
-  status: SubscriptionStatus,
   is_bundle: boolean,
   strategy_or_bundle_id: number,
   strategy_ids: number[],
@@ -150,9 +147,6 @@ export declare namespace Position {
       triggerBoostRatio?: number,
       targetBoostRatio?: number,
       boostEnabled?: boolean,
-      /** Set only for subscriptions parsed from the automation API: the backend marked that half invalid */
-      repayInvalid?: boolean,
-      boostInvalid?: boolean,
     }
     interface CloseOnPrice extends Base {
       price: string,
@@ -323,8 +317,6 @@ export declare namespace Position {
     subId: number,
     subIds?: number[],
     isEnabled?: boolean,
-    /** Set only for subscriptions parsed from the automation API: the backend will not execute this subscription */
-    invalid?: boolean,
     subHash: string,
     blockNumber: BlockNumber,
     protocol: Interfaces.Protocol,

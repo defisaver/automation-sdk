@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { expect } from 'chai';
 
-import { ChainId, SubscriptionStatus } from '../../types/enums';
+import { ChainId } from '../../types/enums';
 import type { ApiSubscriptionRecord } from '../../types';
 
 import '../../configuration';
@@ -722,8 +722,6 @@ describe('Feature: StrategiesAutomation.ts', () => {
       wallet: owner,
       wallet_type: 'safe',
       is_enabled: true,
-      invalid: false,
-      status: SubscriptionStatus.Active,
       is_bundle: true,
       strategy_or_bundle_id: 8,
       strategy_ids: [34, 35],
@@ -737,33 +735,16 @@ describe('Feature: StrategiesAutomation.ts', () => {
       ...repay,
       id: 380,
       is_enabled: false,
-      status: SubscriptionStatus.Disabled,
       strategy_or_bundle_id: 9,
       sub_data_hash: '0x1111111111111111111111111111111111111111111111111111111111111111',
       trigger_data: ['0000000000000000000000009cb7e19861665366011899d74e75d4f2a419aeed0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e0000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000000000000'],
     };
 
-    it('Given API records should return parsed positions carrying the invalid flags', () => {
-      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, { ...boost, invalid: true }]);
+    it('Given API records should return parsed positions', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost]);
       expect(positions).to.have.length(2);
       expect(positions.map((p) => p?.subId)).to.eql([379, 380]);
       expect(positions.map((p) => p?.isEnabled)).to.eql([true, false]);
-      expect(positions.map((p) => p?.invalid)).to.eql([false, true]);
-      expect((positions[0]?.specific as { repayInvalid?: boolean }).repayInvalid).to.equal(false);
-      expect((positions[1]?.specific as { boostInvalid?: boolean }).boostInvalid).to.equal(true);
-    });
-
-    it('Given a merged pair should keep each half\'s invalid flag and mark the pair invalid only when both are', () => {
-      const oneInvalid = strategiesAutomation.parseSubscriptionsFromApi([repay, { ...boost, invalid: true }], { mergeSubs: true });
-      expect(oneInvalid).to.have.length(1);
-      expect(oneInvalid[0]?.invalid).to.equal(false);
-      expect(oneInvalid[0]?.specific).to.include({ repayInvalid: false, boostInvalid: true });
-
-      const bothInvalid = strategiesAutomation.parseSubscriptionsFromApi(
-        [{ ...repay, invalid: true }, { ...boost, invalid: true }],
-        { mergeSubs: true },
-      );
-      expect(bothInvalid[0]?.invalid).to.equal(true);
     });
 
     it('Given mergeSubs option should merge the repay and boost pair', () => {

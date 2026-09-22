@@ -25,17 +25,6 @@ interface IStrategiesAutomation extends Interfaces.Automation {
   providerFork?: Web3,
 }
 
-/**
- * Adds the backend flags to a parsed position. A repay or boost half of a leverage management pair also gets its
- * own invalid flag in specific, next to repayEnabled and boostEnabled, so it survives merging.
- */
-const withApiFlags = (position: Position.Automated, record: ApiSubscriptionRecord): Position.Automated => {
-  const specific = { ...position.specific } as Position.Specific.RatioProtection;
-  if (isDefined(specific.mergeWithId)) specific.repayInvalid = record.invalid;
-  if (isDefined(specific.mergeId)) specific.boostInvalid = record.invalid;
-  return { ...position, invalid: record.invalid, specific: specific as Position.SpecificAny };
-};
-
 export default class StrategiesAutomation extends Automation {
   protected chainId: ChainId;
 
@@ -180,8 +169,6 @@ export default class StrategiesAutomation extends Automation {
           blockNumber: Dec.max(mergePair.blockNumber, current.blockNumber).toNumber(),
           subIds: [current.subId, mergePair.subId],
           isEnabled: mergePair.isEnabled || current.isEnabled,
-          // set only for subscriptions parsed from the automation API, per half flags live in specific
-          ...addToObjectIf(isDefined(current.invalid), { invalid: !!mergePair.invalid && !!current.invalid }),
           specific: {
             ...mergePair.specific,
             ...current.specific,
@@ -280,10 +267,7 @@ export default class StrategiesAutomation extends Automation {
   public parseSubscriptionsFromApi(records: ApiSubscriptionRecord[], options?: SubscriptionOptions): (Position.Automated | null)[] {
     const filtered = options?.enabledOnly ? records.filter((record) => record.is_enabled) : records;
 
-    let subscriptions: (Position.Automated | null)[] = filtered.map((record) => {
-      const position = this.getParsedSubscriptions(parseDataFromApiSubscription(record, this.chainId));
-      return position && withApiFlags(position, record);
-    });
+    let subscriptions = filtered.map((record) => this.getParsedSubscriptions(parseDataFromApiSubscription(record, this.chainId)));
 
     if (options?.mergeSubs) {
       subscriptions = this.mergeSubs(subscriptions);

@@ -5,13 +5,6 @@ export enum ChainId {
   Base = 8453,
 }
 
-export enum SubscriptionStatus {
-  Active = 'active',
-  Disabled = 'disabled',
-  Finished = 'finished',
-  Invalid = 'invalid',
-}
-
 export enum RatioState {
   OVER = 0,
   UNDER = 1,
