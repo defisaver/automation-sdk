@@ -102,24 +102,32 @@ export namespace Strategies {
     AAVE_V4_COLLATERAL_SWITCH_EOA = 155,
     SPARK_COLLATERAL_SWITCH = 156,
     SPARK_GENERIC_FL_COLLATERAL_SWITCH = 167,
+    AAVE_V3_DEBT_SWITCH = 168,
+    AAVE_V3_DEBT_SWITCH_EOA = 169,
   }
 
   export enum OptimismIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
     AAVE_V3_COLLATERAL_SWITCH = 24,
+    AAVE_V3_DEBT_SWITCH = 25,
+    AAVE_V3_DEBT_SWITCH_EOA = 26,
   }
 
   export enum BaseIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
     AAVE_V3_COLLATERAL_SWITCH = 56,
+    AAVE_V3_DEBT_SWITCH = 61,
+    AAVE_V3_DEBT_SWITCH_EOA = 62,
   }
 
   export enum ArbitrumIds {
     EXCHANGE_DCA = 8,
     EXCHANGE_LIMIT_ORDER = 9,
     AAVE_V3_COLLATERAL_SWITCH = 50,
+    AAVE_V3_DEBT_SWITCH = 55,
+    AAVE_V3_DEBT_SWITCH_EOA = 56,
   }
 
   export enum Identifiers {
@@ -154,6 +162,8 @@ export namespace Strategies {
     EoaRepayOnPrice = 'eoa-repay-on-price',
     CollateralSwitch = 'collateral-switch',
     EoaCollateralSwitch = 'eoa-collateral-switch',
+    DebtSwitch = 'debt-switch',
+    EoaDebtSwitch = 'eoa-debt-switch',
     LiquidationProtection = 'liquidation-protection',
     EoaLiquidationProtection = 'liquidation-protection-eoa',
   }
