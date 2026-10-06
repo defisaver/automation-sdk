@@ -2,7 +2,6 @@ import { expect } from 'chai';
 
 import { ChainId, ProtocolIdentifiers, RatioState, Strategies } from '../types/enums';
 import type { ParseData, Position } from '../types';
-import { MAINNET_STRATEGIES_INFO } from '../constants';
 
 import '../configuration';
 import { parseStrategiesAutomatedPosition } from './strategiesService';
@@ -56,40 +55,37 @@ describe('Feature: strategiesService.ts', () => {
       };
     }
 
-    it('decodes generic collateral switches with the user and uint16 reserve IDs', () => {
-      const strategyId = Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH;
-      const originalInfo = MAINNET_STRATEGIES_INFO[strategyId];
-      const parseData = getParseData(strategyId, true);
-      let position: Position.Automated;
-      MAINNET_STRATEGIES_INFO[strategyId] = {
-        ...originalInfo,
-        strategyId: Strategies.Identifiers.EoaCollateralSwitch,
-      };
-      try {
-        position = parseStrategiesAutomatedPosition(parseData)!;
-      } finally {
-        MAINNET_STRATEGIES_INFO[strategyId] = originalInfo;
-      }
+    const genericStrategies: Array<[ChainId, number]> = [
+      [ChainId.Ethereum, Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH_EOA],
+      [ChainId.Optimism, Strategies.OptimismIds.AAVE_V3_COLLATERAL_SWITCH_EOA],
+      [ChainId.Arbitrum, Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH_EOA],
+      [ChainId.Base, Strategies.BaseIds.AAVE_V3_COLLATERAL_SWITCH_EOA],
+    ];
+    genericStrategies.forEach(([chainId, strategyId]) => {
+      it(`decodes generic collateral switches with the user and uint16 reserve IDs on chain ${chainId}`, () => {
+        const parseData = getParseData(strategyId, true, chainId);
+        const position = parseStrategiesAutomatedPosition(parseData)!;
 
-      expect(position).not.to.equal(null);
-      expect(position.protocol.id).to.equal(ProtocolIdentifiers.StrategiesAutomation.AaveV3);
-      expect(position.strategy.strategyId).to.equal(Strategies.Identifiers.EoaCollateralSwitch);
-      expect(position.strategy.isBundle).to.equal(false);
-      expect(position.strategyData.encoded).to.eql({
-        triggerData,
-        subData: parseData.subscriptionEventData.subStruct.subData,
+        expect(position).not.to.equal(null);
+        expect(position.protocol.id).to.equal(ProtocolIdentifiers.StrategiesAutomation.AaveV3);
+        expect(position.strategy.strategyId).to.equal(Strategies.Identifiers.EoaCollateralSwitch);
+        expect(position.strategy.isBundle).to.equal(false);
+        expect(position.strategyData.encoded).to.eql({
+          triggerData,
+          subData: parseData.subscriptionEventData.subStruct.subData,
+        });
+        expect(position.strategyData.decoded.triggerData).to.eql({
+          baseTokenAddress: fromAsset,
+          quoteTokenAddress: toAsset,
+          price: '0.1',
+          ratioState: RatioState.UNDER,
+        });
+        expect(position.strategyData.decoded.subData).to.eql({
+          fromAsset, fromAssetId: 256, toAsset, toAssetId: 65535, marketAddr, amountToSwitch, user,
+        });
+        expect(position.owner).to.equal(proxy.toLowerCase());
+        expect(position.positionId).to.equal(`${chainId}-aave__v3-${proxy.toLowerCase()}-${marketAddr.toLowerCase()}`);
       });
-      expect(position.strategyData.decoded.triggerData).to.eql({
-        baseTokenAddress: fromAsset,
-        quoteTokenAddress: toAsset,
-        price: '0.1',
-        ratioState: RatioState.UNDER,
-      });
-      expect(position.strategyData.decoded.subData).to.eql({
-        fromAsset, fromAssetId: 256, toAsset, toAssetId: 65535, marketAddr, amountToSwitch, user,
-      });
-      expect(position.owner).to.equal(proxy.toLowerCase());
-      expect(position.positionId).to.equal(`1-aave__v3-${proxy.toLowerCase()}-${marketAddr.toLowerCase()}`);
     });
 
     const legacyStrategies: Array<[ChainId, number]> = [
