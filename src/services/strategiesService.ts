@@ -436,11 +436,17 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
 function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
+  const isEOA = _position.strategy.strategyId.includes('eoa');
   const triggerData = triggerService.aaveV3QuotePriceTrigger.decode(subStruct.triggerData);
-  const subData = subDataService.aaveV3CollateralSwitchSubData.decode(subStruct.subData);
+  const subData = isEOA
+    ? subDataService.aaveV3GenericFLCollateralSwitchSubData.decode(subStruct.subData)
+    : subDataService.aaveV3CollateralSwitchSubData.decode(subStruct.subData);
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
+  _position.strategy.strategyId = isEOA
+    ? Strategies.Identifiers.EoaCollateralSwitch
+    : Strategies.Identifiers.CollateralSwitch;
 
   return _position;
 }
@@ -1610,6 +1616,7 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV3CollateralSwitch,
+    [Strategies.Identifiers.EoaCollateralSwitch]: parseAaveV3CollateralSwitch,
     [Strategies.Identifiers.DebtSwitch]: parseAaveV3DebtSwitch,
     [Strategies.Identifiers.EoaDebtSwitch]: parseAaveV3DebtSwitch,
     [Strategies.Identifiers.LiquidationProtection]: parseAaveV3LiquidationProtection,

@@ -125,6 +125,11 @@ export const MAINNET_STRATEGIES_INFO: MainnetStrategiesInfo = {
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH_EOA]: {
+    strategyOrBundleId: Strategies.MainnetIds.AAVE_V3_COLLATERAL_SWITCH_EOA,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
   [Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH]: {
     strategyOrBundleId: Strategies.MainnetIds.AAVE_V4_COLLATERAL_SWITCH,
     strategyId: Strategies.Identifiers.CollateralSwitch,
@@ -173,6 +178,11 @@ export const OPTIMISM_STRATEGIES_INFO: OptimismStrategiesInfo = {
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Strategies.OptimismIds.AAVE_V3_COLLATERAL_SWITCH_EOA]: {
+    strategyOrBundleId: Strategies.OptimismIds.AAVE_V3_COLLATERAL_SWITCH_EOA,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
   [Strategies.OptimismIds.AAVE_V3_DEBT_SWITCH]: {
     strategyOrBundleId: Strategies.OptimismIds.AAVE_V3_DEBT_SWITCH,
     strategyId: Strategies.Identifiers.DebtSwitch,
@@ -201,6 +211,11 @@ export const BASE_STRATEGIES_INFO: BaseStrategiesInfo = {
     strategyId: Strategies.Identifiers.CollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Strategies.BaseIds.AAVE_V3_COLLATERAL_SWITCH_EOA]: {
+    strategyOrBundleId: Strategies.BaseIds.AAVE_V3_COLLATERAL_SWITCH_EOA,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
   [Strategies.BaseIds.AAVE_V3_DEBT_SWITCH]: {
     strategyOrBundleId: Strategies.BaseIds.AAVE_V3_DEBT_SWITCH,
     strategyId: Strategies.Identifiers.DebtSwitch,
@@ -227,6 +242,11 @@ export const ARBITRUM_STRATEGIES_INFO: ArbitrumStrategiesInfo = {
   [Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH]: {
     strategyOrBundleId: Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH,
     strategyId: Strategies.Identifiers.CollateralSwitch,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH_EOA]: {
+    strategyOrBundleId: Strategies.ArbitrumIds.AAVE_V3_COLLATERAL_SWITCH_EOA,
+    strategyId: Strategies.Identifiers.EoaCollateralSwitch,
     protocol: PROTOCOLS.AaveV3,
   },
   [Strategies.ArbitrumIds.AAVE_V3_DEBT_SWITCH]: {
