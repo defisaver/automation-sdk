@@ -13,7 +13,7 @@ jobs:
     # We don't trigger CI on PRs that are in draft
     if: github.event.pull_request.draft == false
     name: Run tests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@v6
@@ -39,7 +39,7 @@ jobs:
           RPC_42161: ${{ secrets.RPC_42161 }}
 
   on-failure:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() && (needs.test.result == 'failure' || needs.test.result == 'timed_out') }}
     needs:
       - test
