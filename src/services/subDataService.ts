@@ -687,6 +687,67 @@ export const aaveV3CloseGenericSubData = {
     };
   },
 };
+export const aaveV3InstantCloseGenericSubData = {
+  encode(
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    closeType: CloseStrategyType,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+    tsi: string,
+    slippage: string,
+  ): SubData {
+    const encodedColl = AbiCoder.encodeParameter('address', collAsset);
+    const encodedCollId = AbiCoder.encodeParameter('uint16', collAssetId);
+    const encodedDebt = AbiCoder.encodeParameter('address', debtAsset);
+    const encodedDebtId = AbiCoder.encodeParameter('uint16', debtAssetId);
+    const encodedCloseType = AbiCoder.encodeParameter('uint8', closeType);
+    const encodedMarket = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+    const encodedTsi = AbiCoder.encodeParameter('uint256', tsi);
+    const encodedSlippage = AbiCoder.encodeParameter('uint256', slippage);
+
+    return [
+      encodedColl,
+      encodedCollId,
+      encodedDebt,
+      encodedDebtId,
+      encodedCloseType,
+      encodedMarket,
+      encodedUser,
+      encodedTsi,
+      encodedSlippage,
+    ];
+  },
+
+  decode(subData: SubData): {
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    closeType: CloseStrategyType,
+    marketAddr: EthereumAddress,
+    owner: EthereumAddress,
+    tsi: string,
+    slippage: string,
+  } {
+    const collAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const collAssetId = Number(AbiCoder.decodeParameter('uint16', subData[1]));
+    const debtAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const debtAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
+    const closeType = Number(AbiCoder.decodeParameter('uint8', subData[4])) as CloseStrategyType;
+    const marketAddr = AbiCoder.decodeParameter('address', subData[5]) as unknown as EthereumAddress;
+    const owner = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+    const tsi = AbiCoder.decodeParameter('uint256', subData[7]) as unknown as string;
+    const slippage = AbiCoder.decodeParameter('uint256', subData[8]) as unknown as string;
+
+    return {
+      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, owner, tsi, slippage,
+    };
+  },
+};
 export const aaveV3CollateralSwitchSubData = {
   encode(
     fromAsset: EthereumAddress,

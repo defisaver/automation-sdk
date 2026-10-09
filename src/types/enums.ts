@@ -138,6 +138,8 @@ export namespace Strategies {
     CloseOnPriceToColl = 'close-on-price-to-collateral',
     CloseOnPrice = 'close-on-price',
     EoaCloseOnPrice = 'eoa-close-on-price',
+    InstantCloseOnPrice = 'instant-close-on-price',
+    EoaInstantCloseOnPrice = 'eoa-instant-close-on-price',
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
@@ -266,6 +268,8 @@ export namespace Bundles {
     SPARK_EOA_BOOST_ON_PRICE = 91,
     SPARK_EOA_CLOSE = 92,
     SPARK_EOA_LIQUIDATION_PROTECTION = 93,
+    AAVE_V3_SW_INSTANT_CLOSE = 94,
+    AAVE_V3_EOA_INSTANT_CLOSE = 95,
   }
 
   export enum OptimismIds {

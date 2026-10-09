@@ -1,10 +1,13 @@
 import { expect } from 'chai';
 
-import { ProtocolIdentifiers, Strategies } from '../types/enums';
+import {
+  Bundles, CloseStrategyType, CloseToAssetType, ProtocolIdentifiers, Strategies,
+} from '../types/enums';
 import type { ParseData, Position } from '../types';
 
 import '../configuration';
 import { parseStrategiesAutomatedPosition } from './strategiesService';
+import { aaveV3Encode } from './strategySubService';
 
 describe('Feature: strategiesService.ts', () => {
   describe('When testing strategiesService.parseStrategiesAutomatedPosition', async () => {
@@ -100,6 +103,80 @@ describe('Feature: strategiesService.ts', () => {
     examples.forEach(([expected, actual]) => {
       it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, async () => {
         expect(parseStrategiesAutomatedPosition(actual)).to.eql(expected);
+      });
+    });
+  });
+
+  describe('When parsing Aave V3 instant close bundles', () => {
+    const owner = '0x1234567890123456789012345678901234567890';
+    const market = '0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e';
+    const weth = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+    const usdc = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+    const bundles: Array<[string, Bundles.MainnetIds, Strategies.Identifiers]> = [
+      ['SW', Bundles.MainnetIds.AAVE_V3_SW_INSTANT_CLOSE, Strategies.Identifiers.InstantCloseOnPrice],
+      ['EOA', Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE, Strategies.Identifiers.EoaInstantCloseOnPrice],
+    ];
+
+    bundles.forEach(([walletType, expectedBundleId, expectedStrategyId]) => {
+      describe(`${walletType} bundle`, () => {
+        const [bundleId, isBundle, triggerData, subData] = aaveV3Encode.instantCloseOnPriceGeneric(
+          expectedBundleId,
+          weth, 0, usdc, 1, market, owner,
+          '1000000000000000000', '10000000000000000',
+          1500, CloseToAssetType.DEBT, 5000, CloseToAssetType.COLLATERAL,
+        );
+
+        const parseData = {
+          chainId: 1,
+          blockNumber: 1,
+          subscriptionEventData: {
+            subId: '1',
+            proxy: owner,
+            subHash: '0xhash',
+            subStruct: {
+              strategyOrBundleId: String(bundleId), isBundle, triggerData, subData,
+            },
+          },
+          strategiesSubsData: { userProxy: owner, isEnabled: true, strategySubHash: '0xhash' },
+        } as unknown as ParseData;
+
+        const result = parseStrategiesAutomatedPosition(parseData) as Position.Automated;
+
+        it('should identify the strategy as instant close on price', () => {
+          expect(result.strategy.strategyOrBundleId).to.equal(expectedBundleId);
+          expect(result.strategy.strategyId).to.equal(expectedStrategyId);
+          expect(result.protocol.id).to.equal(ProtocolIdentifiers.StrategiesAutomation.AaveV3);
+        });
+
+        it('should decode sub data including tsi and slippage', () => {
+          expect(result.strategyData.decoded.subData).to.eql({
+            collAsset: weth,
+            collAssetId: 0,
+            debtAsset: usdc,
+            debtAssetId: 1,
+            closeType: CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL_AND_STOP_LOSS_IN_DEBT,
+            marketAddr: market,
+            owner,
+            tsi: '1000000000000000000',
+            slippage: '10000000000000000',
+          });
+        });
+
+        it('should fill specific with prices and close types', () => {
+          expect(result.specific).to.eql({
+            collAsset: weth,
+            collAssetId: 0,
+            debtAsset: usdc,
+            debtAssetId: 1,
+            baseToken: weth,
+            quoteToken: usdc,
+            stopLossPrice: '1500',
+            takeProfitPrice: '5000',
+            stopLossType: CloseToAssetType.DEBT,
+            takeProfitType: CloseToAssetType.COLLATERAL,
+          });
+        });
       });
     });
   });
