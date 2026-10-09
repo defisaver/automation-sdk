@@ -887,6 +887,136 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
+    describe('instantCloseOnPriceGeneric()', () => {
+      const examples: Array<[
+        [StrategyOrBundleIds, boolean, TriggerData, SubData],
+        [
+          strategyOrBundleId: number,
+          collAsset: EthereumAddress,
+          collAssetId: number,
+          debtAsset: EthereumAddress,
+          debtAssetId: number,
+          marketAddr: EthereumAddress,
+          user: EthereumAddress,
+          tsi: string,
+          slippage: string,
+          stopLossPrice: number,
+          stopLossType: CloseToAssetType,
+          takeProfitPrice: number,
+          takeProfitType: CloseToAssetType
+        ]
+      ]> = [
+        // Stop loss only (to debt)
+        [
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            true,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000003',
+              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+              '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+              '0x000000000000000000000000000000000000000000000000002386f26fc10000',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            '1000000000000000000', // tsi
+            '10000000000000000', // slippage
+            1500, // stopLossPrice
+            CloseToAssetType.DEBT, // stopLossType
+            0, // takeProfitPrice
+            CloseToAssetType.COLLATERAL, // takeProfitType (not used since price is 0)
+          ]
+        ],
+        // Take profit only (to collateral), zero tsi and slippage
+        [
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            true,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            '0', // tsi
+            '0', // slippage
+            0, // stopLossPrice
+            CloseToAssetType.DEBT, // stopLossType (not used since price is 0)
+            5000, // takeProfitPrice
+            CloseToAssetType.COLLATERAL, // takeProfitType
+          ]
+        ],
+        // Take profit (to debt) and stop loss (to collateral)
+        [
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            true,
+            ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
+            [
+              '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+              '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              '0x0000000000000000000000000000000000000000000000000000000000000001',
+              '0x0000000000000000000000000000000000000000000000000000000000000007',
+              '0x0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e',
+              '0x0000000000000000000000001234567890123456789012345678901234567890',
+              '0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000',
+              '0x0000000000000000000000000000000000000000000000000011c37937e08000',
+            ],
+          ],
+          [
+            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
+            0,
+            web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
+            1,
+            web3Utils.toChecksumAddress('0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e'),
+            web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890'),
+            '50000000000000000', // tsi
+            '5000000000000000', // slippage
+            1500, // stopLossPrice
+            CloseToAssetType.COLLATERAL, // stopLossType
+            4000, // takeProfitPrice
+            CloseToAssetType.DEBT, // takeProfitType
+          ]
+        ],
+      ];
+
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(aaveV3Encode.instantCloseOnPriceGeneric(...actual)).to.eql(expected);
+        });
+      });
+    });
+
     describe('collateralSwitch()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],

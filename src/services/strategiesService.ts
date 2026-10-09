@@ -433,6 +433,37 @@ function parseAaveV3CloseOnPrice(position: Position.Automated, parseData: ParseD
   return _position;
 }
 
+function parseAaveV3InstantCloseOnPrice(position: Position.Automated, parseData: ParseData): Position.Automated {
+  const _position = cloneDeep(position);
+
+  const { subStruct } = parseData.subscriptionEventData;
+
+  const triggerData = triggerService.aaveV3QuotePriceRangeTrigger.decode(subStruct.triggerData);
+  const subData = subDataService.aaveV3InstantCloseGenericSubData.decode(subStruct.subData);
+
+  const { takeProfitType, stopLossType } = getStopLossAndTakeProfitTypeByCloseStrategyType(+subData.closeType);
+
+  _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, AAVE_V3_MARKET_ADDRESSES[_position.chainId]);
+
+  _position.strategyData.decoded.triggerData = triggerData;
+  _position.strategyData.decoded.subData = subData;
+
+  _position.specific = {
+    collAsset: subData.collAsset,
+    collAssetId: subData.collAssetId,
+    debtAsset: subData.debtAsset,
+    debtAssetId: subData.debtAssetId,
+    baseToken: triggerData.collToken,
+    quoteToken: triggerData.debtToken,
+    stopLossPrice: triggerData.lowerPrice,
+    takeProfitPrice: triggerData.upperPrice,
+    stopLossType,
+    takeProfitType,
+  };
+
+  return _position;
+}
+
 function parseAaveV3CollateralSwitch(position: Position.Automated, parseData: ParseData): Position.Automated {
   const _position = cloneDeep(position);
   const { subStruct } = parseData.subscriptionEventData;
@@ -1596,6 +1627,8 @@ const parsingMethodsMapping: StrategiesToProtocolVersionMapping = {
     [Strategies.Identifiers.EoaRepayOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaBoostOnPrice]: parseAaveV3LeverageManagementOnPrice,
     [Strategies.Identifiers.EoaCloseOnPrice]: parseAaveV3CloseOnPrice,
+    [Strategies.Identifiers.InstantCloseOnPrice]: parseAaveV3InstantCloseOnPrice,
+    [Strategies.Identifiers.EoaInstantCloseOnPrice]: parseAaveV3InstantCloseOnPrice,
     [Strategies.Identifiers.CollateralSwitch]: parseAaveV3CollateralSwitch,
     [Strategies.Identifiers.LiquidationProtection]: parseAaveV3LiquidationProtection,
     [Strategies.Identifiers.EoaLiquidationProtection]: parseAaveV3LiquidationProtection,

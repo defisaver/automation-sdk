@@ -424,6 +424,32 @@ export const aaveV3Encode = {
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 
+  instantCloseOnPriceGeneric(
+    strategyOrBundleId: number,
+    collAsset: EthereumAddress,
+    collAssetId: number,
+    debtAsset: EthereumAddress,
+    debtAssetId: number,
+    marketAddr: EthereumAddress,
+    user: EthereumAddress,
+    tsi: string,
+    slippage: string,
+    stopLossPrice: number = 0,
+    stopLossType: CloseToAssetType = CloseToAssetType.DEBT,
+    takeProfitPrice: number = 0,
+    takeProfitType: CloseToAssetType = CloseToAssetType.COLLATERAL,
+  ) {
+    const isBundle = true;
+    const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
+
+    const subDataEncoded = subDataService.aaveV3InstantCloseGenericSubData.encode(
+      collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user, tsi, slippage,
+    );
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
+
   collateralSwitch(
     strategyOrBundleId: number,
     fromAsset: EthereumAddress,

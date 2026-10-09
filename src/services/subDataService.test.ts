@@ -2495,6 +2495,104 @@ describe('Feature: subDataService.ts', () => {
       });
     });
   });
+
+  describe("When testing subDataService.aaveV3InstantCloseGenericSubData", () => {
+    const WETH = web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address);
+    const USDC = web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address);
+    const MARKET = web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39');
+    const USER = web3Utils.toChecksumAddress('0x1234567890123456789012345678901234567890');
+
+    const examples: Array<
+      [
+        string[],
+        [
+          collAsset: EthereumAddress,
+          collAssetId: number,
+          debtAsset: EthereumAddress,
+          debtAssetId: number,
+          closeType: CloseStrategyType,
+          marketAddr: EthereumAddress,
+          user: EthereumAddress,
+          tsi: string,
+          slippage: string
+        ]
+      ]
+    > = [
+      // TAKE_PROFIT_IN_COLLATERAL, zero tsi and slippage
+      [
+        [
+          '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+          '0x0000000000000000000000001234567890123456789012345678901234567890',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+        ],
+        [WETH, 0, USDC, 1, CloseStrategyType.TAKE_PROFIT_IN_COLLATERAL, MARKET, USER, '0', '0'],
+      ],
+      // STOP_LOSS_IN_DEBT
+      [
+        [
+          '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          '0x0000000000000000000000000000000000000000000000000000000000000001',
+          '0x0000000000000000000000000000000000000000000000000000000000000003',
+          '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+          '0x0000000000000000000000001234567890123456789012345678901234567890',
+          '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+          '0x000000000000000000000000000000000000000000000000002386f26fc10000',
+        ],
+        [WETH, 0, USDC, 1, CloseStrategyType.STOP_LOSS_IN_DEBT, MARKET, USER, '1000000000000000000', '10000000000000000'],
+      ],
+      // TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL, asset ids above uint8 range
+      [
+        [
+          '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          '0x000000000000000000000000000000000000000000000000000000000000012c',
+          '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          '0x0000000000000000000000000000000000000000000000000000000000000190',
+          '0x0000000000000000000000000000000000000000000000000000000000000007',
+          '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+          '0x0000000000000000000000001234567890123456789012345678901234567890',
+          '0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000',
+          '0x0000000000000000000000000000000000000000000000000011c37937e08000',
+        ],
+        [WETH, 300, USDC, 400, CloseStrategyType.TAKE_PROFIT_IN_DEBT_AND_STOP_LOSS_IN_COLLATERAL, MARKET, USER, '50000000000000000', '5000000000000000'],
+      ],
+    ];
+
+    describe("encode()", () => {
+      examples.forEach(([expected, actual]) => {
+        it(`Given ${JSON.stringify(
+          actual
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3InstantCloseGenericSubData.encode(...actual)
+          ).to.eql(expected);
+        });
+      });
+    });
+
+    describe("decode()", () => {
+      examples.forEach(([encoded, [collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user, tsi, slippage]]) => {
+        const expected = {
+          collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, owner: user, tsi, slippage,
+        };
+
+        it(`Given ${JSON.stringify(
+          encoded
+        )} should return expected value: ${JSON.stringify(expected)}`, () => {
+          expect(
+            subDataService.aaveV3InstantCloseGenericSubData.decode(encoded)
+          ).to.eql(expected);
+        });
+      });
+    });
+  });
   describe('When testing subDataService.sparkLeverageManagementOnPriceSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [collAsset: EthereumAddress, collAssetId: number, debtAsset: EthereumAddress, debtAssetId: number, marketAddr: EthereumAddress, targetRatio: number]] > = 

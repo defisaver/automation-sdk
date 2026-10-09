@@ -684,6 +684,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.Spark,
   },
+  [Bundles.MainnetIds.AAVE_V3_SW_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_SW_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
