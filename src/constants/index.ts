@@ -762,6 +762,16 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.AaveV3,
   },
+  [Bundles.OptimismIds.AAVE_V3_SW_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_SW_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const BASE_BUNDLES_INFO: BaseBundleInfo = {
@@ -964,6 +974,16 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyOrBundleId: Bundles.BaseIds.MORPHO_BLUE_EOA_CLOSE,
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.BaseIds.AAVE_V3_SW_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_SW_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
@@ -1168,6 +1188,16 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_CLOSE,
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_SW_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_SW_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_INSTANT_CLOSE,
+    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 

@@ -286,6 +286,9 @@ export namespace Bundles {
     AAVE_V3_EOA_CLOSE = 10,
     AAVE_V3_SW_LIQUIDATION_PROTECTION = 11,
     AAVE_V3_EOA_LIQUIDATION_PROTECTION = 12,
+    // TODO -> Fix ids
+    AAVE_V3_SW_INSTANT_CLOSE = 13,
+    AAVE_V3_EOA_INSTANT_CLOSE = 14,
   }
 
   export enum BaseIds {
@@ -329,6 +332,8 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 40,
     MORPHO_BLUE_EOA_CLOSE = 41,
     MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 42,
+    AAVE_V3_SW_INSTANT_CLOSE = 43,
+    AAVE_V3_EOA_INSTANT_CLOSE = 44,
   }
 
   export enum ArbitrumIds {
@@ -372,5 +377,7 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 37,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 38,
     MORPHO_BLUE_EOA_CLOSE = 39,
+    AAVE_V3_SW_INSTANT_CLOSE = 40,
+    AAVE_V3_EOA_INSTANT_CLOSE = 41,
   }
 }
