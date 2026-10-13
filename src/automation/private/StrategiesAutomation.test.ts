@@ -1,7 +1,8 @@
 import Web3 from 'web3';
 import { expect } from 'chai';
 
-import {ChainId} from '../../types/enums';
+import { ChainId } from '../../types/enums';
+import type { ApiSubscriptionRecord } from '../../types';
 
 import '../../configuration';
 import StrategiesAutomation from './StrategiesAutomation';
@@ -698,6 +699,69 @@ describe('Feature: StrategiesAutomation.ts', () => {
       const loneBoost = merged.find((m: { subIds?: number[] }) => m.subIds?.length === 1);
       expect(mergedPair?.strategyData?.decoded?.triggerData?.spoke).to.equal(spoke2);
       expect(loneBoost?.subId).to.equal(1);
+    });
+  });
+
+  describe('When testing StrategiesAutomation.parseSubscriptionsFromApi', () => {
+    const strategiesAutomation = new StrategiesAutomation({
+      chainId: ChainId.Ethereum,
+      provider: Web3_1,
+      providerFork: null!,
+    });
+
+    const owner = '0x9cB7E19861665366011899d74E75d4F2A419aEeD';
+    const subData = [
+      '0x0000000000000000000000000000000000000000000000001bc16d674ec80000',
+      '0x0000000000000000000000000000000000000000000000000000000000000001',
+      '0x0000000000000000000000000000000000000000000000000000000000000001',
+      '0x0000000000000000000000000000000000000000000000000000000000000000',
+    ];
+    // Aave V3 leverage management: repay (bundle 8, ratio under) and boost (bundle 9, ratio over) for the same owner and market
+    const repay: ApiSubscriptionRecord = {
+      id: 379,
+      wallet: owner,
+      wallet_type: 'safe',
+      is_enabled: true,
+      is_bundle: true,
+      strategy_or_bundle_id: 8,
+      strategy_ids: [34, 35],
+      sub_data_hash: '0xafa4d200be62f171b57b1ae0f4e8348d1ac3f6d0812ad6da74a2adae8037dde1',
+      trigger_data: ['0000000000000000000000009cb7e19861665366011899d74e75d4f2a419aeed0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e00000000000000000000000000000000000000000000000019ac8532c27900000000000000000000000000000000000000000000000000000000000000000001'],
+      sub_data: subData,
+      block_number: 18015756,
+      additional_triggers: null,
+    };
+    const boost: ApiSubscriptionRecord = {
+      ...repay,
+      id: 380,
+      is_enabled: false,
+      strategy_or_bundle_id: 9,
+      sub_data_hash: '0x1111111111111111111111111111111111111111111111111111111111111111',
+      trigger_data: ['0000000000000000000000009cb7e19861665366011899d74e75d4f2a419aeed0000000000000000000000002f39d218133afab8f2b819b1066c7e434ad94e9e0000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000000000000'],
+    };
+
+    it('Given API records should return parsed positions', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost]);
+      expect(positions).to.have.length(2);
+      expect(positions.map((p) => p?.subId)).to.eql([379, 380]);
+      expect(positions.map((p) => p?.isEnabled)).to.eql([true, false]);
+    });
+
+    it('Given mergeSubs option should merge the repay and boost pair', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost], { mergeSubs: true });
+      expect(positions).to.have.length(1);
+      expect(positions[0]?.subIds).to.eql([379, 380]);
+      expect(positions[0]?.isEnabled).to.equal(true);
+    });
+
+    it('Given enabledOnly option should drop disabled records before parsing', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([repay, boost], { enabledOnly: true });
+      expect(positions.map((p) => p?.subId)).to.eql([379]);
+    });
+
+    it('Given a record of an unknown strategy should return null for it', () => {
+      const positions = strategiesAutomation.parseSubscriptionsFromApi([{ ...repay, strategy_or_bundle_id: 9999 }]);
+      expect(positions).to.eql([null]);
     });
   });
 });
