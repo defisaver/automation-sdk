@@ -444,6 +444,28 @@ export const aaveV3Encode = {
 
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
+
+  debtSwitch(
+    strategyOrBundleId: number,
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+    baseTokenAddress: EthereumAddress,
+    quoteTokenAddress: EthereumAddress,
+    price: number,
+    state: RatioState,
+  ) {
+    const isBundle = false;
+
+    const subDataEncoded = subDataService.aaveV3DebtSwitchSubData.encode(fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch, user);
+    const triggerDataEncoded = triggerService.aaveV3QuotePriceTrigger.encode(baseTokenAddress, quoteTokenAddress, price, state);
+
+    return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
+  },
 };
 
 export const compoundV2Encode = {
