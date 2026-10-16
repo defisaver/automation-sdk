@@ -684,14 +684,14 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.Spark,
   },
-  [Bundles.MainnetIds.AAVE_V3_SW_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_SW_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+  [Bundles.MainnetIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-  [Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+  [Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
@@ -762,14 +762,14 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.AaveV3,
   },
-  [Bundles.OptimismIds.AAVE_V3_SW_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_SW_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+  [Bundles.OptimismIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-  [Bundles.OptimismIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+  [Bundles.OptimismIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
@@ -975,14 +975,14 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
-  [Bundles.BaseIds.AAVE_V3_SW_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_SW_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+  [Bundles.BaseIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-  [Bundles.BaseIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+  [Bundles.BaseIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
@@ -1189,14 +1189,14 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
-  [Bundles.ArbitrumIds.AAVE_V3_SW_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_SW_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.InstantCloseOnPrice,
+  [Bundles.ArbitrumIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
-  [Bundles.ArbitrumIds.AAVE_V3_EOA_INSTANT_CLOSE]: {
-    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_INSTANT_CLOSE,
-    strategyId: Strategies.Identifiers.EoaInstantCloseOnPrice,
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };

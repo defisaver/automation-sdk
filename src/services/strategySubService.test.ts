@@ -887,7 +887,7 @@ describe('Feature: strategySubService.ts', () => {
       });
     });
 
-    describe('instantCloseOnPriceGeneric()', () => {
+    describe('tsiOptimizedCloseOnPriceGeneric()', () => {
       const examples: Array<[
         [StrategyOrBundleIds, boolean, TriggerData, SubData],
         [
@@ -909,7 +909,7 @@ describe('Feature: strategySubService.ts', () => {
         // Stop loss only (to debt)
         [
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             true,
             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000000000000000'],
             [
@@ -925,7 +925,7 @@ describe('Feature: strategySubService.ts', () => {
             ],
           ],
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
@@ -943,7 +943,7 @@ describe('Feature: strategySubService.ts', () => {
         // Take profit only (to collateral), zero tsi and slippage
         [
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             true,
             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000746a528800'],
             [
@@ -959,7 +959,7 @@ describe('Feature: strategySubService.ts', () => {
             ],
           ],
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
@@ -977,7 +977,7 @@ describe('Feature: strategySubService.ts', () => {
         // Take profit (to debt) and stop loss (to collateral)
         [
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             true,
             ['0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000022ecb25c000000000000000000000000000000000000000000000000000000005d21dba000'],
             [
@@ -993,7 +993,7 @@ describe('Feature: strategySubService.ts', () => {
             ],
           ],
           [
-            Bundles.MainnetIds.AAVE_V3_EOA_INSTANT_CLOSE,
+            Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
             web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address),
             0,
             web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address),
@@ -1012,7 +1012,7 @@ describe('Feature: strategySubService.ts', () => {
 
       examples.forEach(([expected, actual]) => {
         it(`Given ${JSON.stringify(actual)} should return expected value: ${JSON.stringify(expected)}`, () => {
-          expect(aaveV3Encode.instantCloseOnPriceGeneric(...actual)).to.eql(expected);
+          expect(aaveV3Encode.tsiOptimizedCloseOnPriceGeneric(...actual)).to.eql(expected);
         });
       });
     });

@@ -687,7 +687,7 @@ export const aaveV3CloseGenericSubData = {
     };
   },
 };
-export const aaveV3InstantCloseGenericSubData = {
+export const aaveV3TsiOptimizedCloseGenericSubData = {
   encode(
     collAsset: EthereumAddress,
     collAssetId: number,

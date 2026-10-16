@@ -424,7 +424,7 @@ export const aaveV3Encode = {
     return [strategyOrBundleId, isBundle, triggerDataEncoded, subDataEncoded];
   },
 
-  instantCloseOnPriceGeneric(
+  tsiOptimizedCloseOnPriceGeneric(
     strategyOrBundleId: number,
     collAsset: EthereumAddress,
     collAssetId: number,
@@ -442,7 +442,7 @@ export const aaveV3Encode = {
     const isBundle = true;
     const closeType = getCloseStrategyType(stopLossPrice, stopLossType, takeProfitPrice, takeProfitType);
 
-    const subDataEncoded = subDataService.aaveV3InstantCloseGenericSubData.encode(
+    const subDataEncoded = subDataService.aaveV3TsiOptimizedCloseGenericSubData.encode(
       collAsset, collAssetId, debtAsset, debtAssetId, closeType, marketAddr, user, tsi, slippage,
     );
     const triggerDataEncoded = triggerService.aaveV3QuotePriceRangeTrigger.encode(collAsset, debtAsset, stopLossPrice, takeProfitPrice);

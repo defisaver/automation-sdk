@@ -2496,7 +2496,7 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
-  describe("When testing subDataService.aaveV3InstantCloseGenericSubData", () => {
+  describe("When testing subDataService.aaveV3TsiOptimizedCloseGenericSubData", () => {
     const WETH = web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address);
     const USDC = web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address);
     const MARKET = web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39');
@@ -2571,7 +2571,7 @@ describe('Feature: subDataService.ts', () => {
           actual
         )} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(
-            subDataService.aaveV3InstantCloseGenericSubData.encode(...actual)
+            subDataService.aaveV3TsiOptimizedCloseGenericSubData.encode(...actual)
           ).to.eql(expected);
         });
       });
@@ -2587,7 +2587,7 @@ describe('Feature: subDataService.ts', () => {
           encoded
         )} should return expected value: ${JSON.stringify(expected)}`, () => {
           expect(
-            subDataService.aaveV3InstantCloseGenericSubData.decode(encoded)
+            subDataService.aaveV3TsiOptimizedCloseGenericSubData.decode(encoded)
           ).to.eql(expected);
         });
       });
