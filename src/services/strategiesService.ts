@@ -458,7 +458,6 @@ function parseAaveV3DebtSwitch(position: Position.Automated, parseData: ParseDat
   const subData = subDataService.aaveV3DebtSwitchSubData.decode(subStruct.subData);
   _position.strategyData.decoded.triggerData = triggerData;
   _position.strategyData.decoded.subData = subData;
-  // TODO -> This isn't enough for ID
   _position.positionId = getPositionId(_position.chainId, _position.protocol.id, _position.owner, subData.marketAddr);
 
   return _position;
