@@ -735,6 +735,57 @@ export const aaveV3CollateralSwitchSubData = {
     };
   },
 };
+export const aaveV3GenericFLCollateralSwitchSubData = {
+  encode(
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+  ): SubData {
+    const encodedFromAsset = AbiCoder.encodeParameter('address', fromAsset);
+    const encodedFromAssetId = AbiCoder.encodeParameter('uint16', fromAssetId);
+    const encodedToAsset = AbiCoder.encodeParameter('address', toAsset);
+    const encodedToAssetId = AbiCoder.encodeParameter('uint16', toAssetId);
+    const encodedMarketAddr = AbiCoder.encodeParameter('address', marketAddr);
+    const encodedAmountToSwitch = AbiCoder.encodeParameter('uint256', amountToSwitch);
+    const encodedUser = AbiCoder.encodeParameter('address', user);
+
+    return [
+      encodedFromAsset,
+      encodedFromAssetId,
+      encodedToAsset,
+      encodedToAssetId,
+      encodedMarketAddr,
+      encodedAmountToSwitch,
+      encodedUser,
+    ];
+  },
+  decode(subData: SubData): {
+    fromAsset: EthereumAddress,
+    fromAssetId: number,
+    toAsset: EthereumAddress,
+    toAssetId: number,
+    marketAddr: EthereumAddress,
+    amountToSwitch: string,
+    user: EthereumAddress,
+  } {
+    const fromAsset = AbiCoder.decodeParameter('address', subData[0]) as unknown as EthereumAddress;
+    const fromAssetId = Number(AbiCoder.decodeParameter('uint16', subData[1]));
+    const toAsset = AbiCoder.decodeParameter('address', subData[2]) as unknown as EthereumAddress;
+    const toAssetId = Number(AbiCoder.decodeParameter('uint16', subData[3]));
+    const marketAddr = AbiCoder.decodeParameter('address', subData[4]) as unknown as EthereumAddress;
+    const amountToSwitch = AbiCoder.decodeParameter('uint256', subData[5]) as unknown as string;
+    const user = AbiCoder.decodeParameter('address', subData[6]) as unknown as EthereumAddress;
+
+    return {
+      fromAsset, fromAssetId, toAsset, toAssetId, marketAddr, amountToSwitch, user,
+    };
+  },
+};
+
 export const aaveV3DebtSwitchSubData = {
   encode(
     fromAsset: EthereumAddress,

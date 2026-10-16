@@ -657,6 +657,47 @@ describe('Feature: subDataService.ts', () => {
     });
   });
 
+  describe('When testing subDataService.aaveV3GenericFLCollateralSwitchSubData', () => {
+    const fromAsset = web3Utils.toChecksumAddress(getAssetInfo('WETH', ChainId.Ethereum).address);
+    const toAsset = web3Utils.toChecksumAddress(getAssetInfo('USDC', ChainId.Ethereum).address);
+    const marketAddr = web3Utils.toChecksumAddress('0x87870Bca3F3fD6335C3F4ce8392D69d0B4161d39');
+    const user = web3Utils.toChecksumAddress('0x1234567890abcdef1234567890abcdef12345678');
+    const examples = [
+      ['10000000000000000000', '0x0000000000000000000000000000000000000000000000008ac7230489e80000'],
+      [MAXUINT, '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'],
+    ];
+
+    examples.forEach(([amountToSwitch, encodedAmount]) => {
+      const subData: SubData = [
+        '0x000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        '0x0000000000000000000000000000000000000000000000000000000000000100',
+        '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        '0x000000000000000000000000000000000000000000000000000000000000ffff',
+        '0x00000000000000000000000087870bca3f3fd6335c3f4ce8392d69d0b4161d39',
+        encodedAmount,
+        '0x0000000000000000000000001234567890abcdef1234567890abcdef12345678',
+      ];
+
+      it(`encode() preserves uint16 asset IDs and user when switching ${amountToSwitch}`, () => {
+        expect(subDataService.aaveV3GenericFLCollateralSwitchSubData.encode(
+          fromAsset, 256, toAsset, 65535, marketAddr, amountToSwitch, user,
+        )).to.eql(subData);
+      });
+
+      it(`decode() preserves uint16 asset IDs and user when switching ${amountToSwitch}`, () => {
+        expect(subDataService.aaveV3GenericFLCollateralSwitchSubData.decode(subData)).to.eql({
+          fromAsset,
+          fromAssetId: 256,
+          toAsset,
+          toAssetId: 65535,
+          marketAddr,
+          amountToSwitch,
+          user,
+        });
+      });
+    });
+  });
+
   describe('When testing subDataService.sparkCollateralSwitchSubData', () => {
     describe('encode()', () => {
       const examples: Array<[SubData, [fromAsset: EthereumAddress, fromAssetId: number, toAsset: EthereumAddress, toAssetId: number, marketAddr: EthereumAddress, amountToSwitch: string, useOnBehalf?: boolean]]> = [
