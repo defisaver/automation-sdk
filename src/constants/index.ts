@@ -724,6 +724,16 @@ export const MAINNET_BUNDLES_INFO: MainnetBundleInfo = {
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
     protocol: PROTOCOLS.Spark,
   },
+  [Bundles.MainnetIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.MainnetIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
@@ -790,6 +800,16 @@ export const OPTIMISM_BUNDLES_INFO: OptimismBundleInfo = {
   [Bundles.OptimismIds.AAVE_V3_EOA_LIQUIDATION_PROTECTION]: {
     strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_LIQUIDATION_PROTECTION,
     strategyId: Strategies.Identifiers.EoaLiquidationProtection,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.OptimismIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.OptimismIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
     protocol: PROTOCOLS.AaveV3,
   },
 };
@@ -995,6 +1015,16 @@ export const BASE_BUNDLES_INFO: BaseBundleInfo = {
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
   },
+  [Bundles.BaseIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.BaseIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.BaseIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
 };
 
 export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
@@ -1198,6 +1228,16 @@ export const ARBITRUM_BUNDLES_INFO: ArbitrumBundleInfo = {
     strategyOrBundleId: Bundles.ArbitrumIds.MORPHO_BLUE_EOA_CLOSE,
     strategyId: Strategies.Identifiers.EoaCloseOnPrice,
     protocol: PROTOCOLS.MorphoBlue,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_SW_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.TsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
+  },
+  [Bundles.ArbitrumIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE]: {
+    strategyOrBundleId: Bundles.ArbitrumIds.AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE,
+    strategyId: Strategies.Identifiers.EoaTsiOptimizedCloseOnPrice,
+    protocol: PROTOCOLS.AaveV3,
   },
 };
 
