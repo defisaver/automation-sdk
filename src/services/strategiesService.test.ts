@@ -47,7 +47,6 @@ describe('Feature: strategiesService.ts', () => {
         blockNumber: 18015756,
         subscriptionEventData: {
           subId: '379', proxy, subHash, subStruct,
-          0: '379', 1: proxy, 2: subHash, 3: subStruct,
         },
         strategiesSubsData: {
           userProxy: proxy, isEnabled: true, strategySubHash: subHash,
