@@ -104,6 +104,7 @@ export namespace Strategies {
     SPARK_GENERIC_FL_COLLATERAL_SWITCH = 167,
     AAVE_V3_DEBT_SWITCH = 168,
     AAVE_V3_DEBT_SWITCH_EOA = 169,
+    AAVE_V3_COLLATERAL_SWITCH_EOA = 170,
   }
 
   export enum OptimismIds {
@@ -112,6 +113,7 @@ export namespace Strategies {
     AAVE_V3_COLLATERAL_SWITCH = 24,
     AAVE_V3_DEBT_SWITCH = 25,
     AAVE_V3_DEBT_SWITCH_EOA = 26,
+    AAVE_V3_COLLATERAL_SWITCH_EOA = 27,
   }
 
   export enum BaseIds {
@@ -120,6 +122,7 @@ export namespace Strategies {
     AAVE_V3_COLLATERAL_SWITCH = 56,
     AAVE_V3_DEBT_SWITCH = 61,
     AAVE_V3_DEBT_SWITCH_EOA = 62,
+    AAVE_V3_COLLATERAL_SWITCH_EOA = 63,
   }
 
   export enum ArbitrumIds {
@@ -128,6 +131,7 @@ export namespace Strategies {
     AAVE_V3_COLLATERAL_SWITCH = 50,
     AAVE_V3_DEBT_SWITCH = 55,
     AAVE_V3_DEBT_SWITCH_EOA = 56,
+    AAVE_V3_COLLATERAL_SWITCH_EOA = 57,
   }
 
   export enum Identifiers {
