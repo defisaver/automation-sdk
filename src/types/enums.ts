@@ -150,6 +150,8 @@ export namespace Strategies {
     CloseOnPriceToColl = 'close-on-price-to-collateral',
     CloseOnPrice = 'close-on-price',
     EoaCloseOnPrice = 'eoa-close-on-price',
+    TsiOptimizedCloseOnPrice = 'tsi-optimized-close-on-price',
+    EoaTsiOptimizedCloseOnPrice = 'eoa-tsi-optimized-close-on-price',
     TrailingStopToColl = 'trailing-stop-to-collateral',
     TrailingStopToDebt = 'trailing-stop-to-debt',
     Rebond = 'rebond',
@@ -280,6 +282,8 @@ export namespace Bundles {
     SPARK_EOA_BOOST_ON_PRICE = 91,
     SPARK_EOA_CLOSE = 92,
     SPARK_EOA_LIQUIDATION_PROTECTION = 93,
+    AAVE_V3_SW_TSI_OPTIMIZED_CLOSE = 94,
+    AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE = 95,
   }
 
   export enum OptimismIds {
@@ -296,6 +300,8 @@ export namespace Bundles {
     AAVE_V3_EOA_CLOSE = 10,
     AAVE_V3_SW_LIQUIDATION_PROTECTION = 11,
     AAVE_V3_EOA_LIQUIDATION_PROTECTION = 12,
+    AAVE_V3_SW_TSI_OPTIMIZED_CLOSE = 13,
+    AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE = 14,
   }
 
   export enum BaseIds {
@@ -339,6 +345,8 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 40,
     MORPHO_BLUE_EOA_CLOSE = 41,
     MORPHO_BLUE_EOA_LIQUIDATION_PROTECTION = 42,
+    AAVE_V3_SW_TSI_OPTIMIZED_CLOSE = 43,
+    AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE = 44,
   }
 
   export enum ArbitrumIds {
@@ -382,5 +390,7 @@ export namespace Bundles {
     MORPHO_BLUE_EOA_BOOST_ON_PRICE = 37,
     MORPHO_BLUE_EOA_REPAY_ON_PRICE = 38,
     MORPHO_BLUE_EOA_CLOSE = 39,
+    AAVE_V3_SW_TSI_OPTIMIZED_CLOSE = 40,
+    AAVE_V3_EOA_TSI_OPTIMIZED_CLOSE = 41,
   }
 }
